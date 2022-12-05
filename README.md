@@ -15,7 +15,7 @@ The **STM32CubeMP25 MCU Package** projects are directly running on the STM32MP25
 
 ## Release note
 
-Details about the content of this release are available in the release note [here](https://htmlpreview.github.io/?https://github.com/STMicroelectronics/STM32CubeMP25/blob/master/Release_Notes.html).
+Details about the content of this release are available in the release note [here](https://htmlpreview.github.io/?https://github.com/PRG-MPU-ALPHA/STM32CubeMP2/blob/main/Release_Notes.html).
 
 ## Boards available
 
