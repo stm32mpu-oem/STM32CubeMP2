@@ -33,15 +33,24 @@
 #include "platform_info.h"
 
 #define RPU_CPU_ID          0 /* RPU remote CPU Index. We only talk to
-                               * one CPU in the exmaple. We set the CPU
-                               * index to 0. */
+			       * one CPU in the example. We set the CPU
+			       * index to 0.
+			       */
 #ifdef versal
+#ifndef IPI_CHN_BITMASK
 #define IPI_CHN_BITMASK     0x08 /* IPI channel bit mask for IPI
 					* from/to RPU0 */
+#endif /* !IPI_CHN_BITMASK */
+#ifndef IPI_DEV_NAME
 #define IPI_DEV_NAME        "ff360000.ipi" /* IPI device name */
+#endif /* !IPI_DEV_NAME */
 #else
+#ifndef IPI_CHN_BITMASK
 #define IPI_CHN_BITMASK	    0x00000100
+#endif /* !IPI_CHN_BITMASK */
+#ifndef IPI_DEV_NAME
 #define IPI_DEV_NAME	    "ff340000.ipi"
+#endif /* !IPI_DEV_NAME */
 #endif /* versal */
 #define DEV_BUS_NAME        "platform" /* device bus name. "platform" bus
                                         * is used in Linux kernel for generic
@@ -49,15 +58,27 @@
 /* libmetal devices names used in the examples.
  * They are platform devices, you find them in Linux sysfs
  * sys/bus/platform/devices */
+#ifndef SHM_DEV_NAME
 #define SHM_DEV_NAME        "3ed20000.shm" /* shared device name */
-
+#endif /* SHM_DEV_NAME */
+#ifndef RSC_MEM_PA
 #define RSC_MEM_PA          0x3ED20000UL
+#endif /* !RSC_MEM_PA */
+#ifndef RSC_MEM_SIZE
 #define RSC_MEM_SIZE        0x2000UL
+#endif /* !RSC_MEM_SIZE */
+#ifndef VRING_MEM_PA
 #define VRING_MEM_PA        0x3ED40000UL
+#endif /* !VRING_MEM_PA */
+#ifndef VRING_MEM_SIZE
 #define VRING_MEM_SIZE      0x8000UL
+#endif /* !VRING_MEM_SIZE */
+#ifndef SHARED_BUF_PA
 #define SHARED_BUF_PA       0x3ED48000UL
+#endif /* !SHARED_BUF_PA */
+#ifndef SHARED_BUF_SIZE
 #define SHARED_BUF_SIZE     0x40000UL
-
+#endif /* !SHARED_BUF_SIZE */
 
 struct remoteproc_priv rproc_priv = {
 	.shm_name = SHM_DEV_NAME,
@@ -84,7 +105,7 @@ extern void cleanup_system(void);
 
 /* processor operations from r5 to a53. It defines
  * notification operation and remote processor managementi operations. */
-extern struct remoteproc_ops zynqmp_linux_r5_proc_ops;
+extern const struct remoteproc_ops zynqmp_linux_r5_proc_ops;
 
 /* RPMsg virtio shared buffer pool */
 static struct rpmsg_virtio_shm_pool shpool;
@@ -120,7 +141,7 @@ platform_create_proc(int proc_index, int rsc_index)
 	/* parse resource table to remoteproc */
 	ret = remoteproc_set_rsc_table(&rproc_inst, rsc_table, rsc_size);
 	if (ret) {
-		printf("Failed to intialize remoteproc\r\n");
+		printf("Failed to initialize remoteproc\r\n");
 		remoteproc_remove(&rproc_inst);
 		return NULL;
 	}
@@ -191,11 +212,11 @@ platform_create_rpmsg_vdev(void *platform, unsigned int vdev_index,
 	}
 	printf("Successfully created virtio device.\r\n");
 
-	/* Only RPMsg virtio master needs to initialize the shared buffers pool */
+	/* Only RPMsg virtio driver needs to initialize the shared buffers pool */
 	rpmsg_virtio_init_shm_pool(&shpool, shbuf, SHARED_BUF_SIZE);
 
 	printf("initializing rpmsg vdev\r\n");
-	/* RPMsg virtio slave can set shared buffers pool argument to NULL */
+	/* RPMsg virtio device can set shared buffers pool argument to NULL */
 	ret = rpmsg_init_vdev(rpmsg_vdev, vdev, ns_bind_cb,
 			      shbuf_io, &shpool);
 	if (ret) {

@@ -690,6 +690,38 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
       /* Check the MSI State */
       if ((pRCC_OscInitStruct->MSIState) != RCC_MSI_OFF)
       {
+        if (HAL_IS_BIT_CLR(PWR->BDCR1, PWR_BDCR1_DBD3P))
+        {
+          backup_domain = 1;
+
+          /* Enable write access to Backup domain */
+          HAL_PWR_EnableBkUpD3Access();
+
+          /* Wait for Backup domain Write protection disable */
+          tickstart = HAL_GetTick();
+
+          while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == RESET)
+          {
+            if ((HAL_GetTick() - tickstart) > DBP_TIMEOUT_VALUE)
+            {
+              return HAL_TIMEOUT;
+            }
+          }
+        }
+        else
+        {
+          backup_domain = 0;
+        }
+
+        if (pRCC_OscInitStruct->MSIFrequency == RCC_MSI_4MHZ)
+        {
+          CLEAR_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL);
+        }
+        else
+        {
+          SET_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL);
+        }
+
         /* Enable the Internal High Speed oscillator (MSI). */
         SET_BIT(RCC->D3DCR, RCC_D3DCR_MSION);
 
@@ -707,6 +739,12 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
 
         /* Adjusts the Internal High Speed oscillator (MSI) calibration value */
         __HAL_RCC_MSI_CALIBRATIONVALUE_ADJUST(pRCC_OscInitStruct->MSICalibrationValue);
+
+        /* Enable backup domain write protection */
+        if (backup_domain == 1)
+        {
+          HAL_PWR_DisableBkUpD3Access();
+        }
       }
       else
       {
@@ -736,7 +774,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
       backup_domain = 1;
 
       /* Enable write access to Backup domain */
-      SET_BIT(PWR->BDCR1, PWR_BDCR1_DBD3P);
+      HAL_PWR_EnableBkUpD3Access();
 
       /* Wait for Backup domain Write protection disable */
       tickstart = HAL_GetTick();
@@ -795,7 +833,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
 
     if (backup_domain == 1)
     {
-      CLEAR_BIT(PWR->BDCR1, PWR_BDCR1_DBD3P);
+      HAL_PWR_DisableBkUpD3Access();
     }
   }
 
@@ -820,7 +858,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
       backup_domain = 1;
 
       /* Enable write access to Backup domain */
-      SET_BIT(PWR->BDCR1, PWR_BDCR1_DBD3P);
+      HAL_PWR_EnableBkUpD3Access();
 
       /* Wait for Backup domain Write protection disable */
       tickstart = HAL_GetTick();
@@ -888,7 +926,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
 
     if (backup_domain == 1)
     {
-      CLEAR_BIT(PWR->BDCR1, PWR_BDCR1_DBD3P);
+      HAL_PWR_DisableBkUpD3Access();
     }
   }
 
@@ -896,7 +934,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
 }
 
 /**
-  * @brief  Initialize the CPU, AHB and APB busses clocks according to the specified
+  * @brief  Initialize the CPU, AHB, APB busses and RTC clocks according to the specified
   *         parameters in the pRCC_ClkInitStruct.
   * @param  pRCC_ClkInitStruct  pointer to an RCC_ClkInitTypeDef structure that
   *         contains the configuration information for the RCC peripheral.
@@ -920,6 +958,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
 HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_ClkInitStruct, uint32_t FLatency)
 {
   uint32_t tickstart;
+  uint32_t backup_domain;
 
   /* Check Null pointer */
   if (pRCC_ClkInitStruct == NULL)
@@ -1631,6 +1670,54 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     }
   }
 
+  if ((pRCC_ClkInitStruct->ClockType & RCC_CLOCKTYPE_RTC) == RCC_CLOCKTYPE_RTC)
+  {
+    if (HAL_IS_BIT_CLR(PWR->BDCR1, PWR_BDCR1_DBD3P))
+    {
+      backup_domain = 1;
+
+      /* Enable write access to Backup domain */
+      HAL_PWR_EnableBkUpD3Access();
+
+      /* Wait for Backup domain Write protection disable */
+      tickstart = HAL_GetTick();
+
+      while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == RESET)
+      {
+        if ((HAL_GetTick() - tickstart) > DBP_TIMEOUT_VALUE)
+        {
+          return HAL_TIMEOUT;
+        }
+      }
+    }
+    else
+    {
+      backup_domain = 0;
+    }
+
+    if (pRCC_ClkInitStruct->RTCState == RCC_RTC_ON)
+    {
+      LL_RCC_EnableRTC();
+
+      LL_RCC_SetRTC_HSEPrescaler(pRCC_ClkInitStruct->RTC_Div);
+
+      LL_RCC_SetRTCClockSource(pRCC_ClkInitStruct->RTC_Src);
+
+      __HAL_RCC_RTC_CLK_ENABLE();
+    }
+    else
+    {
+      __HAL_RCC_RTC_CLK_DISABLE();
+
+      LL_RCC_DisableRTC();
+    }
+
+    if (backup_domain == 1)
+    {
+      HAL_PWR_DisableBkUpD3Access();
+    }
+  }
+
   return HAL_OK;
 }
 
@@ -1905,6 +1992,15 @@ void HAL_RCC_GetOscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
   }
   pRCC_OscInitStruct->MSICalibrationValue = LL_RCC_MSI_GetCalibTrimming();
 
+  if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0)
+  {
+    pRCC_OscInitStruct->MSIFrequency = RCC_MSI_4MHZ;
+  }
+  else
+  {
+    pRCC_OscInitStruct->MSIFrequency = RCC_MSI_16MHZ;
+  }
+
   /* Get LSI Config */
   temp_reg = RCC->BDCR;
   if ((temp_reg & RCC_LSI_ON) == RCC_LSI_ON)
@@ -1950,7 +2046,7 @@ void HAL_RCC_GetClockConfig(RCC_ClkInitTypeDef  *pRCC_ClkInitStruct, uint32_t *p
   pRCC_ClkInitStruct->ClockType = RCC_CLOCKTYPE_ICN_HS_MCU | RCC_CLOCKTYPE_ICN_LS_MCU | RCC_CLOCKTYPE_ICN_SDMMC |
                                   RCC_CLOCKTYPE_ICN_DDR | RCC_CLOCKTYPE_ICN_DISPLAY | RCC_CLOCKTYPE_ICN_HCL | RCC_CLOCKTYPE_ICN_NIC |
                                   RCC_CLOCKTYPE_ICN_VID | RCC_CLOCKTYPE_ICN_APB1 | RCC_CLOCKTYPE_ICN_APB2 | RCC_CLOCKTYPE_ICN_APB3 |
-                                  RCC_CLOCKTYPE_ICN_APB4 | RCC_CLOCKTYPE_ICN_APBDBG;
+                                  RCC_CLOCKTYPE_ICN_APB4 | RCC_CLOCKTYPE_ICN_APBDBG | RCC_CLOCKTYPE_RTC;
 
   /* Get ICN_HS_MCU config */
   pRCC_ClkInitStruct->ICN_HS_MCU.XBAR_ClkSrc = LL_RCC_GetCrossbarSource(0);
@@ -1997,6 +2093,20 @@ void HAL_RCC_GetClockConfig(RCC_ClkInitTypeDef  *pRCC_ClkInitStruct, uint32_t *p
 
   /* Get ICN_APBDBG config */
   pRCC_ClkInitStruct->APBDBG_Div = LL_RCC_GetAPBDBGPrescaler();
+
+  /* Get RTC settings */
+  if (READ_BIT(RCC->BDCR, RCC_BDCR_RTCCKEN) == 0)
+  {
+    pRCC_ClkInitStruct->RTCState = RCC_RTC_OFF;
+  }
+  else
+  {
+    pRCC_ClkInitStruct->RTCState = RCC_RTC_ON;
+  }
+
+  pRCC_ClkInitStruct->RTC_Src = LL_RCC_GetRTCClockSource();
+
+  pRCC_ClkInitStruct->RTC_Div = LL_RCC_GetRTC_HSEPrescaler();
 }
 
 /**
@@ -2096,6 +2206,15 @@ uint32_t HAL_RCC_GetFreq(uint32_t clk)
 
     case RCC_XBAR_CLKSRC_LSE:
       xbar_source_freq = LSE_VALUE;
+      break;
+
+    case RCC_XBAR_CLKSRC_MSI:
+      if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0)
+      {
+        xbar_source_freq = RCC_MSI_4MHZ;
+      }
+      else
+        xbar_source_freq = RCC_MSI_16MHZ;
       break;
 
     default:

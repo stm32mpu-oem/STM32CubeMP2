@@ -26,17 +26,44 @@
 #if STM32MP_DDR3_TYPE || STM32MP_DDR4_TYPE
 #define MAX_NUM_RET_REGS	129
 #elif STM32MP_LPDDR4_TYPE
-#define MAX_NUM_RET_REGS	282
+#define MAX_NUM_RET_REGS	283
 #endif /* STM32MP_LPDDR4_TYPE */
 
 /*
  * Array of Address/value pairs used to store register values for the purpose
  * of retention restore.
+ * By default, set base address at the end of RETRAM area.
+ * Reserving a total of 4KB should be enough to mamange this data.
  */
-reg_addr_val_t retreglist[MAX_NUM_RET_REGS];
+#define RETREG_AREA	((MAX_NUM_RET_REGS + 1) * sizeof(reg_addr_val_t))
+#define RETREG_BASE	(RETRAM_BASE + RETRAM_SIZE - RETREG_AREA)
+int *retregsize = (int *)(RETREG_BASE);
+reg_addr_val_t *retreglist = (reg_addr_val_t *)(RETREG_BASE + sizeof(int));
 
 int numregsaved = 0;    /* Current Number of registers saved. */
 int tracken = 1;        /* Enabled tracking of registers */
+
+int ddrphy_phyinit_setretreglistbase(uint32_t base)
+{
+  int *value = (int *)base;
+  int save = *value;;
+  int pattern = 0x5555AAAA;
+
+  /* Check access capability */
+  *value = pattern;
+  if (*value != pattern)
+  {
+    return -1;
+  }
+
+  /* Restore intial value */
+  *value = save;
+
+  retregsize = (int *)base;
+  retreglist = (reg_addr_val_t *)(base + 4);
+
+  return 0;
+}
 
 /*
  * Tags a register if tracking is enabled in the register
@@ -131,6 +158,8 @@ int ddrphy_phyinit_reginterface(reginstr myreginstr,
 			retreglist[regindx].value = data;
 		}
 
+		*retregsize = numregsaved;
+
 		return 0;
 	} else if (myreginstr == restoreregs) {
 		int regindx;
@@ -139,7 +168,7 @@ int ddrphy_phyinit_reginterface(reginstr myreginstr,
 		 * write PHY registers based on Address, Data value pairs stores in
 		 * retreglist
 		 */
-		for (regindx = 0; regindx < numregsaved; regindx++) {
+		for (regindx = 0; regindx < *retregsize; regindx++) {
 			mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * retreglist[regindx].address),
 				      retreglist[regindx].value);
 		}

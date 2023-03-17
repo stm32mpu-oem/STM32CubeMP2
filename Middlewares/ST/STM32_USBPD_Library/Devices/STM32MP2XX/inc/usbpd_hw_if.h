@@ -108,13 +108,6 @@ typedef struct
   */
   void (*USBPD_HW_IF_TX_HardResetCompleted)(uint8_t PortNum, USBPD_SOPType_TypeDef Type);
 
-  /**
-    * @brief  FRS reception.
-    * @param  PortNum Port number
-    * @retval None
-  */
-  void (*USBPD_HW_IF_TX_FRSReception)(uint8_t PortNum);
-
 } USBPD_HW_IF_Callbacks_TypeDef;
 
 /** @defgroup USBPD_PORT_HandleTypeDef USB PD handle Structure definition for USBPD_PHY_HW_IF

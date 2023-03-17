@@ -24,9 +24,6 @@
 #if defined(_LOW_POWER)
 #include "usbpd_lowpower.h"
 #endif /* _LOW_POWER */
-#if defined(_FRS)
-#include "usbpd_timersserver.h"
-#endif /* _FRS */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -52,7 +49,7 @@ void PORTx_IRQHandler(uint8_t PortNum)
     /* TXIS no need to enable it all the transfer are done by DMA */
     if (UCPD_SR_TXMSGDISC == (_interrupt & UCPD_SR_TXMSGDISC))
     {
-      /* the message has been discarded */
+      /* Message has been discarded */
       LL_UCPD_ClearFlag_TxMSGDISC(hucpd);
       SET_BIT(Ports[PortNum].hdmatx->CCR, DMA_CCR_SUSP | DMA_CCR_RESET);
       Ports[PortNum].cbs.USBPD_HW_IF_TxCompleted(PortNum, 1);
@@ -80,7 +77,7 @@ void PORTx_IRQHandler(uint8_t PortNum)
       return;
     }
 
-    /* HRSTDISC : the sent of the hard reset has been discarded */
+    /* HRSTDISC : hard reset sending has been discarded */
     if (UCPD_SR_HRSTDISC == (_interrupt & UCPD_SR_HRSTDISC))
     {
       LL_UCPD_ClearFlag_TxHRSTDISC(hucpd);
@@ -90,7 +87,7 @@ void PORTx_IRQHandler(uint8_t PortNum)
     /* TXUND : tx underrun detected */
     if (UCPD_SR_HRSTSENT == (_interrupt & UCPD_SR_HRSTSENT))
     {
-      /* Mhum, the stack is not expected to get this answer */
+      /* Answer not expected by the stack */
       LL_UCPD_ClearFlag_TxHRSTSENT(hucpd);
       Ports[PortNum].cbs.USBPD_HW_IF_TX_HardResetCompleted(PortNum, USBPD_SOPTYPE_HARD_RESET);
       return;
@@ -99,8 +96,9 @@ void PORTx_IRQHandler(uint8_t PortNum)
     /* TXUND : tx underrun detected */
     if (UCPD_SR_TXUND == (_interrupt & UCPD_SR_TXUND))
     {
-      /* nothing to do the port partner check message integrity with CRC so PRL will repeat the sent
-         can be used for debug purpose */
+      /* Nothing to do.
+         The port partner checks the message integrity with CRC, so PRL will repeat the sending.
+         Can be used for debugging purpose */
       LL_UCPD_ClearFlag_TxUND(hucpd);
       return;
     }
@@ -121,7 +119,7 @@ void PORTx_IRQHandler(uint8_t PortNum)
       return;
     }
 
-    /* check RXHRSTDET */
+    /* Check RXHRSTDET */
     if (UCPD_SR_RXHRSTDET == (_interrupt & UCPD_SR_RXHRSTDET))
     {
       Ports[PortNum].cbs.USBPD_HW_IF_RX_ResetIndication(PortNum, USBPD_SOPTYPE_HARD_RESET);
@@ -129,23 +127,23 @@ void PORTx_IRQHandler(uint8_t PortNum)
       return;
     }
 
-    /* check RXOVR */
+    /* Check RXOVR */
     if (UCPD_SR_RXOVR == (_interrupt & UCPD_SR_RXOVR))
     {
-      /* nothing to do the message will be discarded and the port partner retry the send */
+      /* Nothing to do, the message will be discarded and port Partner will try sending again. */
       ovrflag = 1;
       LL_UCPD_ClearFlag_RxOvr(hucpd);
       return;
     }
 
-    /* check RXMSGEND an Rx message has been received */
+    /* Check RXMSGEND an Rx message has been received */
     if (UCPD_SR_RXMSGEND == (_interrupt & UCPD_SR_RXMSGEND))
     {
-      /* for DMA mode add a control to check if the number of data received is corresponding with the number of
-         data receive by USBPD */
+      /* For DMA mode, add a check to ensure the number of data received matches
+         the number of data received by UCPD */
       LL_UCPD_ClearFlag_RxMsgEnd(hucpd);
 
-      /* disable DMA */
+      /* Disable DMA */
       SET_BIT(Ports[PortNum].hdmarx->CCR, DMA_CCR_SUSP | DMA_CCR_RESET);
       while ((Ports[PortNum].hdmarx->CCR & DMA_CCR_EN) == DMA_CCR_EN);
 
@@ -153,7 +151,7 @@ void PORTx_IRQHandler(uint8_t PortNum)
       WRITE_REG(Ports[PortNum].hdmarx->CDAR, (uint32_t)Ports[PortNum].ptr_RxBuff);
       MODIFY_REG(Ports[PortNum].hdmarx->CBR1, DMA_CBR1_BNDT, (SIZE_MAX_PD_TRANSACTION_UNCHUNK & DMA_CBR1_BNDT));
 
-      /* enable the DMA */
+      /* Enable the DMA */
       SET_BIT(Ports[PortNum].hdmarx->CCR, DMA_CCR_EN);
 #if defined(_LOW_POWER)
       UTIL_LPM_SetOffMode(0 == PortNum ? LPM_PE_0 : LPM_PE_1, UTIL_LPM_ENABLE);
@@ -168,11 +166,11 @@ void PORTx_IRQHandler(uint8_t PortNum)
       return;
     }
 
-    /* check TYPECEVT1IE/TYPECEVT1IE || check TYPECEVT2IE/TYPECEVT2IE */
+    /* Check TYPECEVT1IE/TYPECEVT1IE || check TYPECEVT2IE/TYPECEVT2IE */
     if ((UCPD_SR_TYPECEVT1 == (_interrupt & UCPD_SR_TYPECEVT1))
         || (UCPD_SR_TYPECEVT2 == (_interrupt & UCPD_SR_TYPECEVT2)))
     {
-      /* clear both interrupt */
+      /* Clear both interrupt */
       LL_UCPD_ClearFlag_TypeCEventCC1(hucpd);
       LL_UCPD_ClearFlag_TypeCEventCC2(hucpd);
       Ports[PortNum].USBPD_CAD_WakeUp();
@@ -180,31 +178,6 @@ void PORTx_IRQHandler(uint8_t PortNum)
       return;
     }
 
-#if defined(_FRS)
-    /* check FRSEVTIE */
-    if (UCPD_SR_FRSEVT == (_interrupt & UCPD_SR_FRSEVT))
-    {
-      LL_UCPD_ClearFlag_FRS(hucpd);
-      if ((USBPD_PORTPOWERROLE_SNK == Ports[PortNum].params->PE_PowerRole)
-          && (Ports[PortNum].params->PE_SwapOngoing == USBPD_FALSE))
-      {
-        /* Confirm the FRS by checking if an RP is always present on the current CC line
-        we should wait for maximum FRS timing 120us */
-        USBPD_TIM_Start((TIM_identifier)(2 * PortNum), 150);
-        while ((USBPD_TIM_IsExpired((TIM_identifier)(2u * PortNum)) == 0u));
-
-        if ((0 != (hucpd->SR & (UCPD_SR_TYPEC_VSTATE_CC1 | UCPD_SR_TYPEC_VSTATE_CC2))) &&
-            (USBPD_POWER_EXPLICITCONTRACT == Ports[PortNum].params->PE_Power))
-        {
-          /* Switch the power to take the control of VBUS
-             when VBUS go under VSAFE5V the sink shall switch ON VBUS in timing < tSrcFRSwap (150us) */
-          BSP_USBPD_PWR_FRSVBUSEnable(PortNum);
-          USBPD_TRACE_Add(USBPD_TRACE_DEBUG, PortNum, 0, "FRS received", 12u);
-          Ports[PortNum].cbs.USBPD_HW_IF_TX_FRSReception(PortNum);
-        }
-      }
-    }
-#endif /* _FRS */
   }
 }
 

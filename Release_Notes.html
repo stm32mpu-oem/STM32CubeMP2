@@ -4,76 +4,134 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Release Notes for Projects of STM32CubeMP25 Firmware Package</title>
-  <style type="text/css">
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <title>Release Notes for Projects of STM32CubeMP2 Firmware
+Package</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="_htmresc/mini-st_2020.css" />
+  <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png" />
 </head>
 <body>
 <div class="row">
 <div class="col-sm-12 col-lg-4">
 <center>
-<h1 id="release-notes-for-stm32cubemp25-firmware-package">Release Notes for <mark>STM32CubeMP25 Firmware Package</mark></h1>
-<p>Copyright © 2022 STMicroelectronics<br />
+<h1 id="release-notes-for-stm32cubemp2-firmware-package">Release Notes
+for <mark>STM32CubeMP2 Firmware Package</mark></h1>
+<p>Copyright © 2023 STMicroelectronics<br />
 </p>
-<a href="https://www.st.com" class="logo"><img src="_htmresc/st_logo_2020.png" alt="ST logo" /></a>
+<a href="https://www.st.com" class="logo"><img
+src="_htmresc/st_logo_2020.png" alt="ST logo" /></a>
 </center>
 <h1 id="purpose">Purpose</h1>
-<p><span style="font-weight: bold;">STMCube is an STMicroelectronics original initiative to ease developers life by reducing development efforts, time and cost.</span></p>
+<p><span style="font-weight: bold;">STMCube is an STMicroelectronics
+original initiative to ease developers life by reducing development
+efforts, time and cost.</span></p>
 <p>STM32Cube covers STM32 portfolio.</p>
 <p>STM32Cube Version 1.x includes:</p>
 <ul>
-<li><p>The STM32CubeMX, a graphical software configuration tool that allows to generate C initialization code using graphical wizards.</p></li>
-<li><p>A comprehensive embedded software platform, delivered per series</p>
+<li><p>The STM32CubeMX, a graphical software configuration tool that
+allows to generate C initialization code using graphical
+wizards.</p></li>
+<li><p>A comprehensive embedded software platform, delivered per
+series</p>
 <ul>
-<li><p>The STM32Cube HAL, an STM32 abstraction layer embedded software, ensuring maximized portability across STM32 portfolio.HAL APIs are available for all peripherals.</p></li>
-<li><p>Low-layer APIs (LL) offering a fast light-weight expert-oriented layer which is closer to the hardware than the HAL. LL APIs are available only for a set of peripherals.</p></li>
-<li><p>A consistent set of middleware components such as FreeRTOS, OpenAMP.</p></li>
-<li><p>All embedded software utilities, delivered with a full set of examples.</p></li>
+<li><p>The STM32Cube HAL, an STM32 abstraction layer embedded software,
+ensuring maximized portability across STM32 portfolio.HAL APIs are
+available for all peripherals.</p></li>
+<li><p>Low-layer APIs (LL) offering a fast light-weight expert-oriented
+layer which is closer to the hardware than the HAL. LL APIs are
+available only for a set of peripherals.</p></li>
+<li><p>A consistent set of middleware components such as FreeRTOS,
+OpenAMP.</p></li>
+<li><p>All embedded software utilities, delivered with a full set of
+examples.</p></li>
 </ul></li>
 </ul>
-<p>The STM32Cube firmware solution offers a straightforward API with a modular architecture, making it simple to fine tune custom applications and scalable to fit most requirements. <img src="_htmresc/STM32CubeMP2.png" alt="STM32Cube" /></p>
-<p>The <strong>drivers</strong> provided within this package <strong>support</strong> the <strong>STM32MP251/253/257 lines.</strong></p>
+<p>The STM32Cube firmware solution offers a straightforward API with a
+modular architecture, making it simple to fine tune custom applications
+and scalable to fit most requirements. <img
+src="_htmresc/STM32CubeMP2.png" alt="STM32Cube" /></p>
+<p>The <strong>drivers</strong> provided within this package
+<strong>support</strong> the <strong>STM32MP251/253/257
+lines.</strong></p>
 </div>
-<div class="col-sm-12 col-lg-8">
-<h1 id="update-history">Update history</h1>
+<section id="update-history" class="col-sm-12 col-lg-8">
+<h1>Update history</h1>
 <div class="collapse">
-<input type="checkbox" id="collapse-section1" checked aria-hidden="true"> <label for="collapse-section4" aria-hidden="true">V0.1.0 / 18-November-2022</label>
+<input type="checkbox" id="collapse-section1" checked aria-hidden="true">
+<label for="collapse-section4" aria-hidden="true">V0.2.0 /
+14-April-2023</label>
 <div>
 <h2 id="main-changes">Main changes</h2>
-<h3 id="pre-alpha-release">Pre-Alpha release</h3>
+<h3 id="alpha-release">Alpha release</h3>
 <h2 id="contents">Contents</h2>
-<p><small>The Project categories flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
+<p><small>The Project categories flagged by “<span
+class="icon-st-update"></span>” have changed since the previous release.
+“<span class="icon-st-add"></span>” are new.</small></p>
 <p>Projects</p>
-<p>All Projects are tested on STM32MP2 VALID3 board but can easily be tuned for other MP2 boards</p>
+<p>All Projects are tested on TM32MP257F-EV1 or STM32MP2 VALID3 board
+but can easily be tuned for other MP2 boards</p>
 <table>
 <thead>
 <tr class="header">
 <th style="text-align: left;">Board</th>
 <th style="text-align: left;">Project category</th>
-<th style="text-align: left;">Path</th>
-<th style="text-align: left;">Status</th>
+<th style="text-align: left;">Version</th>
+<th style="text-align: left;">Project Name</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">STM32MP2 VALID3</td>
-<td style="text-align: left;">Application</td>
-<td style="text-align: left;">ProjectsSTM32MP257F-VALID3/Applications/OpenAMP/OpenAMP_TTY_echo</td>
-<td style="text-align: left;">PASSED</td>
+<td style="text-align: left;">STM32MP257F-EV1</td>
+<td style="text-align: left;">Applications</td>
+<td style="text-align: left;">V0.2.0</td>
+<td style="text-align: left;">OpenAMP_TTY_echo</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32MP257F-EV1</td>
+<td style="text-align: left;">Applications</td>
+<td style="text-align: left;">V0.2.0</td>
+<td style="text-align: left;">TFM_Protected_Storage</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32MP257F-EV1</td>
+<td style="text-align: left;">Applications</td>
+<td style="text-align: left;">V0.2.0</td>
+<td style="text-align: left;">USBPD_DRP_UCSI</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32MP257F-EV1</td>
+<td style="text-align: left;">Templates</td>
+<td style="text-align: left;">V0.2.0</td>
+<td style="text-align: left;">Template_CM33_NonSecure</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32MP257F-VALID3</td>
+<td style="text-align: left;">Applications</td>
+<td style="text-align: left;">V0.2.0</td>
+<td style="text-align: left;">OpenAMP_TTY_echo</td>
 </tr>
 </tbody>
 </table>
 <p>Components</p>
-<p><small>The components flagged by “<span class="icon-st-update"></span>” have changed since the previous release. “<span class="icon-st-add"></span>” are new.</small></p>
+<p><small>The components flagged by “<span
+class="icon-st-update"></span>” have changed since the previous release.
+“<span class="icon-st-add"></span>” are new.</small></p>
 <table>
 <thead>
 <tr class="header">
@@ -86,42 +144,58 @@
 <tr class="odd">
 <td style="text-align: left;">ARM CMSIS Package</td>
 <td style="text-align: center;">V5.6.0</td>
-<td style="text-align: left;"><a href="Drivers/CMSIS/docs/General/html/index.html">release notes</a></td>
+<td style="text-align: left;"><a
+href="Drivers/CMSIS/docs/General/html/index.html">release notes</a></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Cortex-M CMSIS</td>
 <td style="text-align: center;">V5.3.0</td>
-<td style="text-align: left;"><a href="Drivers/CMSIS/docs/Core/html/index.html">release notes</a></td>
+<td style="text-align: left;"><a
+href="Drivers/CMSIS/docs/Core/html/index.html">release notes</a></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Cortex-A CMSIS</td>
 <td style="text-align: center;">V1.1.4</td>
-<td style="text-align: left;"><a href="Drivers/CMSIS/docs/Core_A/html/index.html">release notes</a></td>
+<td style="text-align: left;"><a
+href="Drivers/CMSIS/docs/Core_A/html/index.html">release notes</a></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">STM32MP2xx CMSIS</td>
-<td style="text-align: center;">V0.1.0</td>
-<td style="text-align: left;"><a href="Drivers/CMSIS/Device/ST/STM32MP2xx/Release_Notes.html">release notes</a></td>
+<td style="text-align: center;">V0.2.0</td>
+<td style="text-align: left;"><a
+href="Drivers/CMSIS/Device/ST/STM32MP2xx/Release_Notes.html">release
+notes</a></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">STM32MP2xx HAL</td>
-<td style="text-align: center;">V0.1.0</td>
-<td style="text-align: left;"><a href="Drivers/STM32MP2xx_HAL_Driver/Release_Notes.html">release notes</a></td>
+<td style="text-align: center;">V0.2.0</td>
+<td style="text-align: left;"><a
+href="Drivers/STM32MP2xx_HAL_Driver/Release_Notes.html">release
+notes</a></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">BSP STM32MP2xx VALIDx (VALID3)</td>
-<td style="text-align: center;">V0.1.0</td>
+<td style="text-align: center;">V0.2.0</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">BSP Common</td>
-<td style="text-align: center;">V7.2.1</td>
-<td style="text-align: left;"><a href="Drivers/BSP/Components/Common/Release_Notes.html">release notes</a></td>
+<td style="text-align: left;">BSP STM32MP257F-EV1</td>
+<td style="text-align: center;">V0.2.0</td>
+<td style="text-align: left;"></td>
 </tr>
 <tr class="even">
+<td style="text-align: left;">BSP Common</td>
+<td style="text-align: center;">V7.2.1</td>
+<td style="text-align: left;"><a
+href="Drivers/BSP/Components/Common/Release_Notes.html">release
+notes</a></td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">BSP tcpp0203</td>
 <td style="text-align: center;">V1.2.2</td>
-<td style="text-align: left;"><a href="Drivers/BSP/Components/tcpp0203/Release_Notes.html">release notes</a></td>
+<td style="text-align: left;"><a
+href="Drivers/BSP/Components/tcpp0203/Release_Notes.html">release
+notes</a></td>
 </tr>
 </tbody>
 </table>
@@ -142,53 +216,85 @@
 </tr>
 <tr class="even">
 <td style="text-align: left;">- libmetal</td>
-<td style="text-align: center;">V2021.10_20220118</td>
-<td style="text-align: center;"><a href="Middlewares/Third_Party/OpenAMP/libmetal/st_readme.txt">release notes</a></td>
+<td style="text-align: center;">v2022.10_20230315</td>
+<td style="text-align: center;"><a
+href="Middlewares/Third_Party/OpenAMP/libmetal/st_readme.txt">release
+notes</a></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">- open-amp</td>
-<td style="text-align: center;">V2021.10_20220118</td>
-<td style="text-align: center;"><a href="Middlewares/Third_Party/OpenAMP/open-amp/st_readme.txt">release notes</a></td>
+<td style="text-align: center;">v2022.10_20230315</td>
+<td style="text-align: center;"><a
+href="Middlewares/Third_Party/OpenAMP/open-amp/st_readme.txt">release
+notes</a></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">- mw_if</td>
-<td style="text-align: center;">V2021.10_20220118</td>
-<td style="text-align: center;"><a href="Middlewares/Third_Party/OpenAMP/mw_if/st_readme.txt">release notes</a></td>
+<td style="text-align: center;">v2022.10_20230315</td>
+<td style="text-align: center;"><a
+href="Middlewares/Third_Party/OpenAMP/mw_if/st_readme.txt">release
+notes</a></td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">STM32 USB-C Power Delivery MP2 Device Driver</td>
-<td style="text-align: center;">v0.1.0</td>
-<td style="text-align: center;"><a href="Middlewares/ST/STM32_USBPD_Library/Devices/STM32MP2XX/Release_Notes.html">release notes</a></td>
+<td style="text-align: left;">-virtual_driver</td>
+<td style="text-align: center;">v2022.10_20230315</td>
+<td style="text-align: center;"></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">STM32 USB-C Power Delivery Core Stack Library</td>
-<td style="text-align: center;">v4.3.0_rc1</td>
-<td style="text-align: center;"><a href="Middlewares/ST/STM32_USBPD_Library/Core/Release_Notes.html">release notes</a></td>
+<td style="text-align: left;">STM32 USB-C Power Delivery MP2 Device
+Driver</td>
+<td style="text-align: center;">v1.0.0</td>
+<td style="text-align: center;"><a
+href="Middlewares/ST/STM32_USBPD_Library/Devices/STM32MP2XX/Release_Notes.html">release
+notes</a></td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">CMSIS-RTOS wrapper for Azure RTOS ThreadX</td>
+<td style="text-align: left;">STM32 USB-C Power Delivery Core Stack
+Library</td>
+<td style="text-align: center;">v4.3.0_rc1</td>
+<td style="text-align: center;"><a
+href="Middlewares/ST/STM32_USBPD_Library/Core/Release_Notes.html">release
+notes</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32 USB-C Power Delivery UCSI
+Library</td>
+<td style="text-align: center;">v1.0.0</td>
+<td style="text-align: center;"><a
+href="Middlewares/ST/STM32_USBPD_Library/Core/Release_Notes.html">release
+notes</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CMSIS-RTOS wrapper for Azure RTOS
+ThreadX</td>
 <td style="text-align: center;">tx-cmsis-1.0.4.211108</td>
-<td style="text-align: center;"><a href="Middlewares/ST/cmsis_rtos_threadx/Release_Notes.html">release notes</a></td>
+<td style="text-align: center;"><a
+href="Middlewares/ST/cmsis_rtos_threadx/Release_Notes.html">release
+notes</a></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Azure RTOS FileX for STM32 devices</td>
 <td style="text-align: center;">filex-6.1.10.220401</td>
-<td style="text-align: center;"><a href="Middlewares/ST/filex/st_readme.txt">release notes</a></td>
+<td style="text-align: center;"><a
+href="Middlewares/ST/filex/st_readme.txt">release notes</a></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Azure RTOS LevelX for STM32 devices</td>
 <td style="text-align: center;">levelx-6.1.10.220401</td>
-<td style="text-align: center;"><a href="Middlewares/ST/levelx/st_readme.txt">release notes</a></td>
+<td style="text-align: center;"><a
+href="Middlewares/ST/levelx/st_readme.txt">release notes</a></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Azure RTOS NetXDuo for STM32 devices</td>
 <td style="text-align: center;">netxduo-6.1.10.220513</td>
-<td style="text-align: center;"><a href="Middlewares/ST/netxduo/st_readme.txt">release notes</a></td>
+<td style="text-align: center;"><a
+href="Middlewares/ST/netxduo/st_readme.txt">release notes</a></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Azure RTOS Threadx for STM32 devices</td>
 <td style="text-align: center;">threadx-6.1.10.220513</td>
-<td style="text-align: center;"><a href="Middlewares/ST/threadx/st_readme.txt">release notes</a></td>
+<td style="text-align: center;"><a
+href="Middlewares/ST/threadx/st_readme.txt">release notes</a></td>
 </tr>
 </tbody>
 </table>
@@ -210,17 +316,20 @@
 <tr class="even">
 <td style="text-align: left;">GUI_INTERFACE</td>
 <td style="text-align: center;">GUI_V2.2.2</td>
-<td style="text-align: center;"><a href="Utilities/GUI_INTERFACE/Release_Notes.html">release notes</a></td>
+<td style="text-align: center;"><a
+href="Utilities/GUI_INTERFACE/Release_Notes.html">release notes</a></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">TRACER_EMB</td>
 <td style="text-align: center;">V1.9.0_rc1</td>
-<td style="text-align: center;"><a href="Utilities/TRACER_EMB/Release_Notes.html">release notes</a></td>
+<td style="text-align: center;"><a
+href="Utilities/TRACER_EMB/Release_Notes.html">release notes</a></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">lpbam</td>
 <td style="text-align: center;">V0.1.0</td>
-<td style="text-align: center;"><a href="Utilities/lpbam/Release_Notes.html">release notes</a></td>
+<td style="text-align: center;"><a
+href="Utilities/lpbam/Release_Notes.html">release notes</a></td>
 </tr>
 </tbody>
 </table>
@@ -239,12 +348,13 @@ Requirements not met
   --------------------------------------------------------------------------------- -----------------------------------------------------------
   [\<[Bz12345]{style="background-color: yellow;"}\>](https://intbugzilla.st.com/)   \<[Ticket headline]{style="background-color: yellow;"}\>
 --->
-<h2 id="development-toolchains-and-compilers">Development toolchains and compilers</h2>
+<h2 id="development-toolchains-and-compilers">Development toolchains and
+compilers</h2>
 <ul>
-<li>STM32CubeIDE 1.11.0.22_MP2-D2
-<ul>
-<li>Toolchain version (GCC): GNU Tools for STM32 (10.3-2021.10)</li>
-</ul></li>
+<li>PYTHON3 required for optee signature - postbuild command inside
+CubeIDE projects</li>
+<li>CMAKE required for OpenAMP project or TFM build</li>
+<li>STM32CubeIDE 1.12.0_MP2-D3</li>
 </ul>
 <h2 id="supported-devices-and-boards">Supported devices and boards</h2>
 <ul>
@@ -254,6 +364,7 @@ Requirements not met
 </ul></li>
 <li>Boards supported; :
 <ul>
+<li>STM32MP257F-EV1 (MB1936)</li>
 <li>STM32MP2xx-VALID3 (using STM32MP57CXX_VALIDX BSP)</li>
 </ul></li>
 </ul>
@@ -272,12 +383,15 @@ This projects release is compatible with:
 --->
 </div>
 </div>
-</div>
+</section>
 </div>
 <footer class="sticky">
 <div class="columns">
 <div class="column" style="width:95%;">
-<p>For complete documentation on <strong>&lt;SW or product family name&gt;</strong> , visit: <span style="background-color: yellow;"><a href="http://www.st.com/STM32">&lt;SW or product family URL&gt;</a></span></p>
+<p>For complete documentation on <strong>&lt;SW or product family
+name&gt;</strong> , visit: <span style="background-color: yellow;"><a
+href="http://www.st.com/STM32">&lt;SW or product family
+URL&gt;</a></span></p>
 </div><div class="column" style="width:5%;">
 <p><abbr title="Based on template cx626901 version 2.1">Info</abbr></p>
 </div>

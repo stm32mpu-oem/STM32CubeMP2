@@ -1,10 +1,13 @@
 /*
+ * Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-/* This is a sample demonstration application that showcases usage of proxy from the remote core. 
- This application is meant to run on the remote CPU running baremetal.
- This applicationr can print to to master console and perform file I/O using proxy mechanism. */
+/*
+ * This is a sample demonstration application that showcases usage of proxy from the remote core.
+ * This application is meant to run on the remote CPU running baremetal.
+ * This applicationr can print to to host console and perform file I/O using proxy mechanism.
+ */
 
 #include <errno.h>
 #include <stdio.h>
@@ -17,7 +20,7 @@
 #include "platform_info.h"
 #include "rpmsg-rpc-demo.h"
 
-#define RPC_BUFF_SIZE 496
+#define RPC_BUFF_SIZE 1024
 #define REDEF_O_CREAT 100
 #define REDEF_O_EXCL 200
 #define REDEF_O_RDONLY 0
@@ -27,39 +30,33 @@
 #define REDEF_O_ACCMODE 3
 
 #define raw_printf(format, ...) printf(format, ##__VA_ARGS__)
-#define LPRINTF(format, ...) raw_printf("Master> " format, ##__VA_ARGS__)
+#define LPRINTF(format, ...) raw_printf("Host> " format, ##__VA_ARGS__)
 #define LPERROR(format, ...) LPRINTF("ERROR: " format, ##__VA_ARGS__)
 
 static void *platform;
 static struct rpmsg_device *rpdev;
 static struct rpmsg_endpoint app_ept;
+static struct metal_io_region *shbuf_io;
 static int request_termination = 0;
 static int ept_deleted = 0;
 static int err_cnt = 0;
 
-static void *copy_from_shbuf(void *dst, void *shbuf, int len)
+static int copy_from_shbuf(void *dst, void *shbuf, int len)
 {
-	void *retdst = dst;
+	int ret;
+	unsigned long offset = metal_io_virt_to_offset(shbuf_io, shbuf);
 
-	while (len && ((uintptr_t)shbuf % sizeof(int))) {
-		*(uint8_t *)dst = *(uint8_t *)shbuf;
-		dst++;
-		shbuf++;
-		len--;
+	if (offset == METAL_BAD_OFFSET) {
+		LPERROR("no offset within IO region for data ptr: %p\r\n",
+			shbuf);
+		return -EINVAL;
 	}
-	while (len >= (int)sizeof(int)) {
-		*(unsigned int *)dst = *(unsigned int *)shbuf;
-		dst += sizeof(int);
-		shbuf += sizeof(int);
-		len -= sizeof(int);
-	}
-	while (len > 0) {
-		*(uint8_t *)dst = *(uint8_t *)shbuf;
-		dst++;
-		shbuf++;
-		len--;
-	}
-	return retdst;
+
+	ret = metal_io_block_read(shbuf_io, offset, dst, len);
+	if (ret < 0)
+		LPERROR("metal_io_block_read failed with err: %d\r\n", ret);
+
+	return ret;
 }
 
 static int handle_open(struct rpmsg_rpc_syscall *syscall,
@@ -124,17 +121,16 @@ static int handle_read(struct rpmsg_rpc_syscall *syscall,
 	if (!syscall || !ept)
 		return -EINVAL;
 	payload = buf + sizeof(*resp);
-	if (syscall->args.int_field1 == 0) {
-		bytes_read = sizeof(buf) - sizeof(*resp);
-		/* Perform read from fd for large size since this is a
-		   STD/I request */
-		bytes_read = read(syscall->args.int_field1, payload,
-				  bytes_read);
-	} else {
-		/* Perform read from fd */
-		bytes_read = read(syscall->args.int_field1, payload,
-				  syscall->args.int_field2);
-	}
+
+	/*
+	 * For STD_IN read up to the buf size. Otherwise read
+	 * only the size requested in in syscall->rgs.int_field2
+	 */
+	bytes_read = sizeof(buf) - sizeof(*resp);
+	if (!syscall->args.int_field1 && syscall->args.int_field2 < bytes_read)
+		bytes_read = syscall->args.int_field2;
+
+	bytes_read = read(syscall->args.int_field1, payload, bytes_read);
 
 	/* Construct rpc response */
 	resp = (struct rpmsg_rpc_syscall *)buf;
@@ -239,6 +235,7 @@ static int rpmsg_endpoint_cb(struct rpmsg_endpoint *ept, void *data, size_t len,
 {
 	unsigned char buf[RPC_BUFF_SIZE];
 	struct rpmsg_rpc_syscall *syscall;
+	int ret;
 
 	(void)priv;
 	(void)src;
@@ -255,7 +252,10 @@ static int rpmsg_endpoint_cb(struct rpmsg_endpoint *ept, void *data, size_t len,
 	 */
 	if (len > RPC_BUFF_SIZE)
 		len = RPC_BUFF_SIZE;
-	copy_from_shbuf(buf, data, len);
+	ret = copy_from_shbuf(buf, data, len);
+	if (ret < 0)
+		return ret;
+
 	syscall = (struct rpmsg_rpc_syscall *)buf;
 	if (handle_rpc(syscall, ept)) {
 		LPRINTF("\nHandling remote procedure call errors:\r\n");
@@ -302,6 +302,7 @@ int app(struct rpmsg_device *rdev, void *priv)
 	int ret = 0;
 	struct sigaction exit_action;
 	struct sigaction kill_action;
+	struct rpmsg_virtio_device *rvdev;
 
 	/* Initialize signalling infrastructure */
 	memset(&exit_action, 0, sizeof(struct sigaction));
@@ -326,6 +327,13 @@ int app(struct rpmsg_device *rdev, void *priv)
 	}
 
 	LPRINTF("Successfully created rpmsg endpoint.\r\n");
+	rvdev = metal_container_of(rdev, struct rpmsg_virtio_device, rdev);
+	shbuf_io = rvdev->shbuf_io;
+	if (!shbuf_io) {
+		LPERROR("no IO region for the application.\r\n");
+		return -ENOMEM;
+	}
+
 	while(1) {
 		platform_poll(priv);
 		if (err_cnt) {
@@ -357,7 +365,7 @@ int main(int argc, char *argv[])
 		ret = -1;
 	} else {
 		rpdev = platform_create_rpmsg_vdev(platform, 0,
-						   VIRTIO_DEV_MASTER,
+						   VIRTIO_DEV_DRIVER,
 						   NULL, NULL);
 		if (!rpdev) {
 			LPERROR("Failed to create rpmsg virtio device.\r\n");

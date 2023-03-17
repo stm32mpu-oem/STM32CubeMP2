@@ -2,9 +2,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-/* This is a sample demonstration application that showcases usage of rpmsg 
-This application is meant to run on the remote CPU running baremetal code. 
-This application echoes back data that was sent to it by the master core. */
+/*
+ * This is a sample demonstration application that showcases usage of rpmsg
+ * This application is meant to run on the remote CPU running baremetal code.
+ * This application echoes back data that was sent to it by the host core.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -108,7 +110,7 @@ int app (struct rpmsg_device *rdev, void *priv)
 
 	max_size = rpmsg_virtio_get_buffer_size(rdev);
 	if (max_size < 0) {
-		LPERROR("No avaiable buffer size.\r\n");
+		LPERROR("No available buffer size.\r\n");
 		return -1;
 	}
 	max_size -= sizeof(struct _payload);
@@ -189,7 +191,7 @@ int main(int argc, char *argv[])
 		ret = -1;
 	} else {
 		rpdev = platform_create_rpmsg_vdev(platform, 0,
-						  VIRTIO_DEV_MASTER,
+						  VIRTIO_DEV_DRIVER,
 						  NULL,
 						  rpmsg_name_service_bind_cb);
 		if (!rpdev) {

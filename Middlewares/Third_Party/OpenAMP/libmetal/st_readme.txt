@@ -18,6 +18,37 @@
   ******************************************************************************
   @endverbatim
 
+### V1.0.6/04-November-2022 ###
+===============================
+   + Integrate official release v2021.10
+
+   + Add support of threadX
+     - lib/system/threadx/CMakeLists.txt
+     - lib/system/threadx/alloc.c
+     - lib/system/threadx/alloc.h
+     - lib/system/threadx/assert.h
+     - lib/system/threadx/cache.h
+     - lib/system/threadx/condition.c
+     - lib/system/threadx/condition.h
+     - lib/system/threadx/device.c
+     - lib/system/threadx/init.c
+     - lib/system/threadx/io.h
+     - lib/system/threadx/irq.c
+     - lib/system/threadx/irq.h
+     - lib/system/threadx/log.h
+     - lib/system/threadx/mutex.h
+     - lib/system/threadx/shmem.c
+     - lib/system/threadx/sleep.h
+     - lib/system/threadx/sys.c
+     - lib/system/threadx/sys.h
+     - lib/system/threadx/time.c
+
+   + Add include cmake configuguration files
+     - cmake/platforms/stm32mp-generic-gcc.cmake
+     - cmake/platforms/cross-threadx-gcc.cmake
+     - cmake/platforms/stm32mp-threadx-gcc.cmake
+
+
 ### V1.0.5/18-January-2022 ###
 ===============================
    + Integrate official release v2021.10

@@ -756,8 +756,8 @@ void HAL_PWR_EnablePVD(void);
 void HAL_PWR_DisablePVD(void);
 uint32_t HAL_PWR_GetPVDRange(void);
 void HAL_PWR_PVD_IRQHandler(void);
-void HAL_PWR_PVD_Callback(void);
-
+void HAL_PWR_PVD_EqualHigherCallback(void);
+void HAL_PWR_PVD_LowerCallback(void);
 
 
 /* WakeUp pins configuration */
@@ -862,9 +862,10 @@ HAL_StatusTypeDef HAL_PWR_ReleaseResourceSemaphore(uint16_t Item);
   * @{
   */
   #define PWR_EXTI_LINE_PVD        EXTI1_IMR1_IM16         /*PVD signal connected on line16 of EXTI*/
-  #define PWR_EXTI_LINE_PVM        EXTI1_IMR1_IM17         /*PVM signal connected on line16 of EXTI*/
+  #define PWR_EXTI_LINE_PVM        EXTI1_IMR1_IM17         /*PVM signal connected on line17 of EXTI*/
   #define PWR_EXTI_LINE_VDDcoreD   EXTI2_IMR3_IM65         /*VDD core detection signal connected on line65 of EXTI*/
   #define PWR_EXTI_LINE_VDDcpuD    EXTI2_IMR3_IM64         /*VDD cpu  detection signal connected on line64 of EXTI*/
+  #define PWR_EXTI_LINE_VDDgpuD    EXTI1_IMR1_IM18         /*VDD gpu  detection signal connected on line18 of EXTI*/
 #if defined(CORE_CM0PLUS)
   #define PWR_EXTI_LINE_NS_TAMPER     EXTI2_IMR1_IM20         /*non secure TAMPER  signal for M0+  connected on line20 of EXTI*/
 #endif

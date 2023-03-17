@@ -59,24 +59,7 @@ void ddrphy_phyinit_usercustom_custompretrain(void)
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | B1 | TDBYTE |
 						      CSR_TXODTDRVSTREN_ADDR)), 0x0U);
 
-#if STM32MP_DDR3_TYPE
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB4 | P0 | B0 | TDBYTE |
-						      CSR_TXODTDRVSTREN_ADDR)), 0x0U);
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB4 | P0 | B1 | TDBYTE |
-						      CSR_TXODTDRVSTREN_ADDR)), 0x0U);
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB5 | P0 | B0 | TDBYTE |
-						      CSR_TXODTDRVSTREN_ADDR)), 0x0U);
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB5 | P0 | B1 | TDBYTE |
-						      CSR_TXODTDRVSTREN_ADDR)), 0x0U);
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB6 | P0 | B0 | TDBYTE |
-						      CSR_TXODTDRVSTREN_ADDR)), 0x0U);
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB6 | P0 | B1 | TDBYTE |
-						      CSR_TXODTDRVSTREN_ADDR)), 0x0U);
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB7 | P0 | B0 | TDBYTE |
-						      CSR_TXODTDRVSTREN_ADDR)), 0x0U);
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB7 | P0 | B1 | TDBYTE |
-						      CSR_TXODTDRVSTREN_ADDR)), 0x0U);
-#elif STM32MP_LPDDR4_TYPE
+#if STM32MP_LPDDR4_TYPE
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | B0 | TDBYTE |
 						      CSR_DQDQSRCVCNTRL_ADDR)), 0xB22U);
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | B1 | TDBYTE |

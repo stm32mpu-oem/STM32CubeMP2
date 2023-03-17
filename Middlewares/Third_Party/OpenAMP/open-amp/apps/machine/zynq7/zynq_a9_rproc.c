@@ -45,7 +45,7 @@ static int zynq_a9_proc_irq_handler(int vect_id, void *data)
 
 static struct remoteproc *
 zynq_a9_proc_init(struct remoteproc *rproc,
-			struct remoteproc_ops *ops, void *arg)
+			const struct remoteproc_ops *ops, void *arg)
 {
 	struct remoteproc_priv *prproc = arg;
 	struct metal_device *dev;
@@ -72,7 +72,7 @@ zynq_a9_proc_init(struct remoteproc *rproc,
 	irq_vect = prproc->irq_notification;
 	metal_irq_register(irq_vect, zynq_a9_proc_irq_handler, rproc);
 	metal_irq_enable(irq_vect);
-	xil_printf("Successfully intialize remoteproc.\r\n");
+	xil_printf("Successfully initialize remoteproc.\r\n");
 	return rproc;
 err1:
 	metal_device_close(dev);
@@ -157,7 +157,7 @@ static int zynq_a9_proc_notify(struct remoteproc *rproc, uint32_t id)
 
 /* processor operations from r5 to a53. It defines
  * notification operation and remote processor managementi operations. */
-struct remoteproc_ops zynq_a9_proc_ops = {
+const struct remoteproc_ops zynq_a9_proc_ops = {
 	.init = zynq_a9_proc_init,
 	.remove = zynq_a9_proc_remove,
 	.mmap = zynq_a9_proc_mmap,

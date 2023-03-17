@@ -200,6 +200,9 @@
       (+) Request a Controller Role in target mode in non-blocking mode using HAL_I3C_Tgt_ControlRoleReq_IT()
       (+) At completion, HAL_I3C_NotifyCallback() is executed and users can
            add their own code by customization of function pointer HAL_I3C_NotifyCallback()
+      (+) To manage the wakeup capability, HAL_I3C_ActivateNotification() or HAL_I3C_DeactivateNotification() function
+          is used for enable or disable Wake Up interrupt.
+          At wakeup detection the associated HAL_I3C_NotifyCallback() is executed.
       (+) In case of transfer Error, HAL_I3C_ErrorCallback() function is executed and users can
            add their own code by customization of function pointer HAL_I3C_ErrorCallback()
       (+) Abort an I3C process communication with Interrupt using HAL_I3C_Abort_IT()
@@ -512,18 +515,18 @@ HAL_StatusTypeDef HAL_I3C_Init(I3C_HandleTypeDef *hi3c)
 
       /*----------------- SCL signal waveform configuration : I3C timing register 0 (I3C_TIMINGR0) ------------------ */
       /* Set the controller SCL waveform */
-      waveform_value = ((uint32_t)hi3c->Init.CtrlBusCharacteristic.SCLPPLowDuration                                  | \
-                       ((uint32_t)hi3c->Init.CtrlBusCharacteristic.SCLI3CHighDuration << I3C_TIMINGR0_SCLH_I3C_Pos)  | \
-                       ((uint32_t)hi3c->Init.CtrlBusCharacteristic.SCLODLowDuration << I3C_TIMINGR0_SCLL_OD_Pos)     | \
-                       ((uint32_t)hi3c->Init.CtrlBusCharacteristic.SCLI2CHighDuration << I3C_TIMINGR0_SCLH_I2C_Pos));
+      waveform_value = ((uint32_t)hi3c->Init.CtrlBusCharacteristic.SCLPPLowDuration                                   |
+                        ((uint32_t)hi3c->Init.CtrlBusCharacteristic.SCLI3CHighDuration << I3C_TIMINGR0_SCLH_I3C_Pos)  |
+                        ((uint32_t)hi3c->Init.CtrlBusCharacteristic.SCLODLowDuration << I3C_TIMINGR0_SCLL_OD_Pos)     |
+                        ((uint32_t)hi3c->Init.CtrlBusCharacteristic.SCLI2CHighDuration << I3C_TIMINGR0_SCLH_I2C_Pos));
 
       LL_I3C_ConfigClockWaveForm(hi3c->Instance, waveform_value);
 
       /*------------------ Timing configuration : I3C timing register 1 (I3C_TIMINGR1) ------------------------------ */
       /* Set SDA hold time, activity state, bus free duration and bus available duration */
-      timing_value = ((uint32_t)hi3c->Init.CtrlBusCharacteristic.SDAHoldTime                                 | \
-                      (uint32_t)hi3c->Init.CtrlBusCharacteristic.WaitTime                                    | \
-                      ((uint32_t)hi3c->Init.CtrlBusCharacteristic.BusFreeDuration <<  I3C_TIMINGR1_FREE_Pos) | \
+      timing_value = ((uint32_t)hi3c->Init.CtrlBusCharacteristic.SDAHoldTime                                 |
+                      (uint32_t)hi3c->Init.CtrlBusCharacteristic.WaitTime                                    |
+                      ((uint32_t)hi3c->Init.CtrlBusCharacteristic.BusFreeDuration <<  I3C_TIMINGR1_FREE_Pos) |
                       (uint32_t)hi3c->Init.CtrlBusCharacteristic.BusIdleDuration);
 
       LL_I3C_SetCtrlBusCharacteristic(hi3c->Instance, timing_value);
@@ -731,64 +734,64 @@ HAL_StatusTypeDef HAL_I3C_RegisterCallback(I3C_HandleTypeDef *hi3c,
     {
       switch (callbackID)
       {
-      case HAL_I3C_CTRL_TX_COMPLETE_CB_ID :
-        hi3c->CtrlTxCpltCallback = pCallback;
-        break;
+        case HAL_I3C_CTRL_TX_COMPLETE_CB_ID :
+          hi3c->CtrlTxCpltCallback = pCallback;
+          break;
 
-      case HAL_I3C_CTRL_RX_COMPLETE_CB_ID :
-        hi3c->CtrlRxCpltCallback = pCallback;
-        break;
+        case HAL_I3C_CTRL_RX_COMPLETE_CB_ID :
+          hi3c->CtrlRxCpltCallback = pCallback;
+          break;
 
-      case HAL_I3C_CTRL_DAA_COMPLETE_CB_ID :
-        hi3c->CtrlDAACpltCallback = pCallback;
-        break;
+        case HAL_I3C_CTRL_DAA_COMPLETE_CB_ID :
+          hi3c->CtrlDAACpltCallback = pCallback;
+          break;
 
-      case HAL_I3C_TGT_TX_COMPLETE_CB_ID :
-        hi3c->TgtTxCpltCallback = pCallback;
-        break;
+        case HAL_I3C_TGT_TX_COMPLETE_CB_ID :
+          hi3c->TgtTxCpltCallback = pCallback;
+          break;
 
-      case HAL_I3C_TGT_RX_COMPLETE_CB_ID :
-        hi3c->TgtRxCpltCallback = pCallback;
-        break;
+        case HAL_I3C_TGT_RX_COMPLETE_CB_ID :
+          hi3c->TgtRxCpltCallback = pCallback;
+          break;
 
-      case HAL_I3C_ERROR_CB_ID :
-        hi3c->ErrorCallback = pCallback;
-        break;
+        case HAL_I3C_ERROR_CB_ID :
+          hi3c->ErrorCallback = pCallback;
+          break;
 
-      case HAL_I3C_ABORT_CB_ID :
-        hi3c->AbortCpltCallback = pCallback;
-        break;
+        case HAL_I3C_ABORT_CB_ID :
+          hi3c->AbortCpltCallback = pCallback;
+          break;
 
-      case HAL_I3C_MSPINIT_CB_ID :
-        hi3c->MspInitCallback = pCallback;
-        break;
+        case HAL_I3C_MSPINIT_CB_ID :
+          hi3c->MspInitCallback = pCallback;
+          break;
 
-      case HAL_I3C_MSPDEINIT_CB_ID :
-        hi3c->MspDeInitCallback = pCallback;
-        break;
+        case HAL_I3C_MSPDEINIT_CB_ID :
+          hi3c->MspDeInitCallback = pCallback;
+          break;
 
-      default :
-        hi3c->ErrorCode = HAL_I3C_ERROR_INVALID_CALLBACK;
-        status =  HAL_ERROR;
-        break;
+        default :
+          hi3c->ErrorCode = HAL_I3C_ERROR_INVALID_CALLBACK;
+          status =  HAL_ERROR;
+          break;
       }
     }
     else if (HAL_I3C_STATE_RESET == hi3c->State)
     {
       switch (callbackID)
       {
-      case HAL_I3C_MSPINIT_CB_ID :
-        hi3c->MspInitCallback = pCallback;
-        break;
+        case HAL_I3C_MSPINIT_CB_ID :
+          hi3c->MspInitCallback = pCallback;
+          break;
 
-      case HAL_I3C_MSPDEINIT_CB_ID :
-        hi3c->MspDeInitCallback = pCallback;
-        break;
+        case HAL_I3C_MSPDEINIT_CB_ID :
+          hi3c->MspDeInitCallback = pCallback;
+          break;
 
-      default :
-        hi3c->ErrorCode = HAL_I3C_ERROR_INVALID_CALLBACK;
-        status =  HAL_ERROR;
-        break;
+        default :
+          hi3c->ErrorCode = HAL_I3C_ERROR_INVALID_CALLBACK;
+          status =  HAL_ERROR;
+          break;
       }
     }
     else
@@ -955,76 +958,76 @@ HAL_StatusTypeDef HAL_I3C_UnRegisterCallback(I3C_HandleTypeDef *hi3c, HAL_I3C_Ca
     {
       switch (callbackID)
       {
-      case HAL_I3C_CTRL_TX_COMPLETE_CB_ID :
-        hi3c->CtrlTxCpltCallback = HAL_I3C_CtrlTxCpltCallback;               /* Legacy weak CtrlTxCpltCallback        */
-        break;
+        case HAL_I3C_CTRL_TX_COMPLETE_CB_ID :
+          hi3c->CtrlTxCpltCallback = HAL_I3C_CtrlTxCpltCallback;             /* Legacy weak CtrlTxCpltCallback        */
+          break;
 
-      case HAL_I3C_CTRL_RX_COMPLETE_CB_ID :
-        hi3c->CtrlRxCpltCallback = HAL_I3C_CtrlRxCpltCallback;               /* Legacy weak CtrlRxCpltCallback        */
-        break;
+        case HAL_I3C_CTRL_RX_COMPLETE_CB_ID :
+          hi3c->CtrlRxCpltCallback = HAL_I3C_CtrlRxCpltCallback;             /* Legacy weak CtrlRxCpltCallback        */
+          break;
 
-      case HAL_I3C_CTRL_DAA_COMPLETE_CB_ID :
-        hi3c->CtrlDAACpltCallback = HAL_I3C_CtrlDAACpltCallback;             /* Legacy weak CtrlDAACpltCallback       */
-        break;
+        case HAL_I3C_CTRL_DAA_COMPLETE_CB_ID :
+          hi3c->CtrlDAACpltCallback = HAL_I3C_CtrlDAACpltCallback;           /* Legacy weak CtrlDAACpltCallback       */
+          break;
 
-      case HAL_I3C_TGT_REQ_DYNAMIC_ADDR_CB_ID :
-        hi3c->TgtReqDynamicAddrCallback = HAL_I3C_TgtReqDynamicAddrCallback; /* Legacy weak TgtReqDynamicAddrCallback */
-        break;
+        case HAL_I3C_TGT_REQ_DYNAMIC_ADDR_CB_ID :
+          hi3c->TgtReqDynamicAddrCallback = HAL_I3C_TgtReqDynamicAddrCallback;/*Legacy weak TgtReqDynamicAddrCallback */
+          break;
 
-      case HAL_I3C_TGT_TX_COMPLETE_CB_ID :
-        hi3c->TgtTxCpltCallback = HAL_I3C_TgtTxCpltCallback;                 /* Legacy weak TgtTxCpltCallback         */
-        break;
+        case HAL_I3C_TGT_TX_COMPLETE_CB_ID :
+          hi3c->TgtTxCpltCallback = HAL_I3C_TgtTxCpltCallback;               /* Legacy weak TgtTxCpltCallback         */
+          break;
 
-      case HAL_I3C_TGT_RX_COMPLETE_CB_ID :
-        hi3c->TgtRxCpltCallback = HAL_I3C_TgtRxCpltCallback;                 /* Legacy weak TgtRxCpltCallback         */
-        break;
+        case HAL_I3C_TGT_RX_COMPLETE_CB_ID :
+          hi3c->TgtRxCpltCallback = HAL_I3C_TgtRxCpltCallback;               /* Legacy weak TgtRxCpltCallback         */
+          break;
 
-      case HAL_I3C_TGT_HOTJOIN_CB_ID :
-        hi3c->TgtHotJoinCallback = HAL_I3C_TgtHotJoinCallback;               /* Legacy weak TgtHotJoinCallback        */
-        break;
+        case HAL_I3C_TGT_HOTJOIN_CB_ID :
+          hi3c->TgtHotJoinCallback = HAL_I3C_TgtHotJoinCallback;             /* Legacy weak TgtHotJoinCallback        */
+          break;
 
-      case HAL_I3C_NOTIFY_CB_ID :
-        hi3c->NotifyCallback = HAL_I3C_NotifyCallback;                       /* Legacy weak NotifyCallback            */
-        break;
+        case HAL_I3C_NOTIFY_CB_ID :
+          hi3c->NotifyCallback = HAL_I3C_NotifyCallback;                     /* Legacy weak NotifyCallback            */
+          break;
 
-      case HAL_I3C_ERROR_CB_ID :
-        hi3c->ErrorCallback = HAL_I3C_ErrorCallback;                         /* Legacy weak ErrorCallback             */
-        break;
+        case HAL_I3C_ERROR_CB_ID :
+          hi3c->ErrorCallback = HAL_I3C_ErrorCallback;                       /* Legacy weak ErrorCallback             */
+          break;
 
-      case HAL_I3C_ABORT_CB_ID :
-        hi3c->AbortCpltCallback = HAL_I3C_AbortCpltCallback;                 /* Legacy weak AbortCpltCallback         */
-        break;
+        case HAL_I3C_ABORT_CB_ID :
+          hi3c->AbortCpltCallback = HAL_I3C_AbortCpltCallback;               /* Legacy weak AbortCpltCallback         */
+          break;
 
-      case HAL_I3C_MSPINIT_CB_ID :
-        hi3c->MspInitCallback = HAL_I3C_MspInit;                             /* Legacy weak MspInit                   */
-        break;
+        case HAL_I3C_MSPINIT_CB_ID :
+          hi3c->MspInitCallback = HAL_I3C_MspInit;                           /* Legacy weak MspInit                   */
+          break;
 
-      case HAL_I3C_MSPDEINIT_CB_ID :
-        hi3c->MspDeInitCallback = HAL_I3C_MspDeInit;                         /* Legacy weak MspDeInit                 */
-        break;
+        case HAL_I3C_MSPDEINIT_CB_ID :
+          hi3c->MspDeInitCallback = HAL_I3C_MspDeInit;                       /* Legacy weak MspDeInit                 */
+          break;
 
-      default :
-        hi3c->ErrorCode = HAL_I3C_ERROR_INVALID_CALLBACK;
-        status =  HAL_ERROR;
-        break;
+        default :
+          hi3c->ErrorCode = HAL_I3C_ERROR_INVALID_CALLBACK;
+          status =  HAL_ERROR;
+          break;
       }
     }
     else if (HAL_I3C_STATE_RESET == hi3c->State)
     {
       switch (callbackID)
       {
-      case HAL_I3C_MSPINIT_CB_ID :
-        hi3c->MspInitCallback = HAL_I3C_MspInit;                              /* Legacy weak MspInit                  */
-        break;
+        case HAL_I3C_MSPINIT_CB_ID :
+          hi3c->MspInitCallback = HAL_I3C_MspInit;                            /* Legacy weak MspInit                  */
+          break;
 
-      case HAL_I3C_MSPDEINIT_CB_ID :
-        hi3c->MspDeInitCallback = HAL_I3C_MspDeInit;                          /* Legacy weak MspDeInit                */
-        break;
+        case HAL_I3C_MSPDEINIT_CB_ID :
+          hi3c->MspDeInitCallback = HAL_I3C_MspDeInit;                        /* Legacy weak MspDeInit                */
+          break;
 
-      default :
-        hi3c->ErrorCode = HAL_I3C_ERROR_INVALID_CALLBACK;
-        status =  HAL_ERROR;
-        break;
+        default :
+          hi3c->ErrorCode = HAL_I3C_ERROR_INVALID_CALLBACK;
+          status =  HAL_ERROR;
+          break;
       }
     }
     else
@@ -1068,8 +1071,8 @@ HAL_StatusTypeDef HAL_I3C_ActivateNotification(I3C_HandleTypeDef *hi3c, I3C_Xfer
     assert_param(IS_I3C_INTERRUPTMASK(hi3c->Mode, interruptMask));
 
     /* Check the I3C state and mode */
-    if ((hi3c->State == HAL_I3C_STATE_RESET) || \
-      ((hi3c->Mode != HAL_I3C_MODE_CONTROLLER) && (hi3c->Mode != HAL_I3C_MODE_TARGET)))
+    if ((hi3c->State == HAL_I3C_STATE_RESET) ||
+        ((hi3c->Mode != HAL_I3C_MODE_CONTROLLER) && (hi3c->Mode != HAL_I3C_MODE_TARGET)))
     {
       hi3c->ErrorCode = HAL_I3C_ERROR_NOT_ALLOWED;
       status = HAL_ERROR;
@@ -1486,18 +1489,18 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_BusCharacteristicConfig(I3C_HandleTypeDef *hi3c,
 
       /*----------------- SCL signal waveform configuration : I3C timing register 0 (I3C_TIMINGR0) ------------------ */
       /* Set the controller SCL waveform */
-      waveform_value = ((uint32_t)pConfig->SCLPPLowDuration                                    | \
-                        ((uint32_t)pConfig->SCLI3CHighDuration << I3C_TIMINGR0_SCLH_I3C_Pos)   | \
-                        ((uint32_t)pConfig->SCLODLowDuration << I3C_TIMINGR0_SCLL_OD_Pos)      | \
+      waveform_value = ((uint32_t)pConfig->SCLPPLowDuration                                    |
+                        ((uint32_t)pConfig->SCLI3CHighDuration << I3C_TIMINGR0_SCLH_I3C_Pos)   |
+                        ((uint32_t)pConfig->SCLODLowDuration << I3C_TIMINGR0_SCLL_OD_Pos)      |
                         ((uint32_t)pConfig->SCLI2CHighDuration << I3C_TIMINGR0_SCLH_I2C_Pos));
 
       LL_I3C_ConfigClockWaveForm(hi3c->Instance, waveform_value);
 
       /*------------------ Timing configuration : I3C timing register 1 (I3C_TIMINGR1) ------------------------------ */
       /* Set SDA hold time, activity state, bus free duration and bus available duration */
-      timing_value = ((uint32_t)pConfig->SDAHoldTime                                 | \
-                      (uint32_t)pConfig->WaitTime                                    | \
-                      ((uint32_t)pConfig->BusFreeDuration <<  I3C_TIMINGR1_FREE_Pos) | \
+      timing_value = ((uint32_t)pConfig->SDAHoldTime                                 |
+                      (uint32_t)pConfig->WaitTime                                    |
+                      ((uint32_t)pConfig->BusFreeDuration <<  I3C_TIMINGR1_FREE_Pos) |
                       (uint32_t)pConfig->BusIdleDuration);
 
       LL_I3C_SetCtrlBusCharacteristic(hi3c->Instance, timing_value);
@@ -1683,17 +1686,17 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_Config(I3C_HandleTypeDef *hi3c, const I3C_CtrlCon
       LL_I3C_Disable(hi3c->Instance);
 
       /* Calculate value to be written in timing register 2 */
-      timing2_value = (((uint32_t)pConfig->StallTime << I3C_TIMINGR2_STALL_Pos)      | \
-                       ((uint32_t)pConfig->ACKStallState << I3C_TIMINGR2_STALLA_Pos) | \
-                       ((uint32_t)pConfig->CCCStallState << I3C_TIMINGR2_STALLC_Pos) | \
-                       ((uint32_t)pConfig->TxStallState << I3C_TIMINGR2_STALLD_Pos)  | \
+      timing2_value = (((uint32_t)pConfig->StallTime << I3C_TIMINGR2_STALL_Pos)      |
+                       ((uint32_t)pConfig->ACKStallState << I3C_TIMINGR2_STALLA_Pos) |
+                       ((uint32_t)pConfig->CCCStallState << I3C_TIMINGR2_STALLC_Pos) |
+                       ((uint32_t)pConfig->TxStallState << I3C_TIMINGR2_STALLD_Pos)  |
                        ((uint32_t)pConfig->RxStallState << I3C_TIMINGR2_STALLT_Pos));
 
       /* Set value in timing 2 register */
       WRITE_REG(hi3c->Instance->TIMINGR2, timing2_value);
 
       /* Calculate value to be written in CFGR register */
-      cfgr_value = (((uint32_t)pConfig->HighKeeperSDA << I3C_CFGR_HKSDAEN_Pos) | \
+      cfgr_value = (((uint32_t)pConfig->HighKeeperSDA << I3C_CFGR_HKSDAEN_Pos) |
                     ((uint32_t)pConfig->HotJoinAllowed << I3C_CFGR_HJACK_Pos));
 
       /* Set hot join acknowledge and high keeper values */
@@ -1737,7 +1740,7 @@ HAL_StatusTypeDef HAL_I3C_Tgt_Config(I3C_HandleTypeDef *hi3c, const I3C_TgtConfT
   }
   else
   {
-     /* Check the instance and the mode parameters */
+    /* Check the instance and the mode parameters */
     assert_param(IS_I3C_ALL_INSTANCE(hi3c->Instance));
     assert_param(IS_I3C_MODE(hi3c->Mode));
 
@@ -1775,7 +1778,7 @@ HAL_StatusTypeDef HAL_I3C_Tgt_Config(I3C_HandleTypeDef *hi3c, const I3C_TgtConfT
       LL_I3C_Disable(hi3c->Instance);
 
       /* Calculate value to be written in the GETMXDSR register */
-      getmxdsr_value = (pConfig->HandOffActivityState | pConfig->MaxDataSpeed | pConfig->DataTurnAroundDuration | \
+      getmxdsr_value = (pConfig->HandOffActivityState | pConfig->MaxDataSpeed | pConfig->DataTurnAroundDuration |
                         ((uint32_t)pConfig->MaxReadTurnAround << I3C_GETMXDSR_RDTURN_Pos));
 
       /* Set value in GETMXDSR register */
@@ -1797,7 +1800,7 @@ HAL_StatusTypeDef HAL_I3C_Tgt_Config(I3C_HandleTypeDef *hi3c, const I3C_TgtConfT
       LL_I3C_SetDeviceCharacteristics(hi3c->Instance, pConfig->Identifier);
 
       /* Calculate value to be written in CRCCAPR register */
-      crccapr_value = (((uint32_t)pConfig->HandOffDelay << I3C_CRCAPR_CAPDHOFF_Pos) | \
+      crccapr_value = (((uint32_t)pConfig->HandOffDelay << I3C_CRCAPR_CAPDHOFF_Pos) |
                        ((uint32_t)pConfig->GroupAddrCapability << I3C_CRCAPR_CAPGRP_Pos));
 
       /* Set hand off dealy and group address capability in CRCCAPR register */
@@ -1807,16 +1810,16 @@ HAL_StatusTypeDef HAL_I3C_Tgt_Config(I3C_HandleTypeDef *hi3c, const I3C_TgtConfT
       LL_I3C_SetPendingReadMDB(hi3c->Instance, ((uint32_t)pConfig->PendingReadMDB << I3C_GETCAPR_CAPPEND_Pos));
 
       /* Calculate value to be written in BCR register */
-      bcr_value = (((uint32_t)pConfig->MaxSpeedLimitation << I3C_BCR_BCR0_Pos) | \
-                   ((uint32_t)pConfig->IBIPayload << I3C_BCR_BCR2_Pos)         | \
+      bcr_value = (((uint32_t)pConfig->MaxSpeedLimitation << I3C_BCR_BCR0_Pos) |
+                   ((uint32_t)pConfig->IBIPayload << I3C_BCR_BCR2_Pos)         |
                    ((uint32_t)pConfig->CtrlCapability << I3C_BCR_BCR6_Pos));
 
       /* Set control capability, IBI payload support and max speed limitation in BCR register */
       WRITE_REG(hi3c->Instance->BCR, bcr_value);
 
       /* Calculate value to be written in CFGR register */
-      devr0_value = (((uint32_t)pConfig->IBIRequest << I3C_DEVR0_IBIEN_Pos)     | \
-                     ((uint32_t)pConfig->CtrlRoleRequest << I3C_DEVR0_CREN_Pos) | \
+      devr0_value = (((uint32_t)pConfig->IBIRequest << I3C_DEVR0_IBIEN_Pos)     |
+                     ((uint32_t)pConfig->CtrlRoleRequest << I3C_DEVR0_CREN_Pos) |
                      ((uint32_t)pConfig->HotJoinRequest << I3C_DEVR0_HJEN_Pos));
 
       /* Set IBI request, control role request and hot join request in DEVR0 register */
@@ -1888,10 +1891,10 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_ConfigBusDevices(I3C_HandleTypeDef           *hi3
         assert_param(IS_I3C_FUNCTIONALSTATE_VALUE(pDesc[index].IBIPayload));
 
         /* Set value to be written */
-        write_value = (((uint32_t)pDesc[index].TargetDynamicAddr << I3C_DEVRX_DA_Pos)     | \
-                       ((uint32_t)pDesc[index].IBIAck            << I3C_DEVRX_IBIACK_Pos) | \
-                       ((uint32_t)pDesc[index].CtrlRoleReqAck    << I3C_DEVRX_CRACK_Pos)  | \
-                       ((uint32_t)pDesc[index].CtrlStopTransfer  << I3C_DEVRX_SUSP_Pos)   | \
+        write_value = (((uint32_t)pDesc[index].TargetDynamicAddr << I3C_DEVRX_DA_Pos)     |
+                       ((uint32_t)pDesc[index].IBIAck            << I3C_DEVRX_IBIACK_Pos) |
+                       ((uint32_t)pDesc[index].CtrlRoleReqAck    << I3C_DEVRX_CRACK_Pos)  |
+                       ((uint32_t)pDesc[index].CtrlStopTransfer  << I3C_DEVRX_SUSP_Pos)   |
                        ((uint32_t)pDesc[index].IBIPayload        << I3C_DEVRX_IBIDEN_Pos));
 
         /* Write configuration in the DEVRx register */
@@ -1946,8 +1949,8 @@ HAL_StatusTypeDef HAL_I3C_AddDescToFrame(I3C_HandleTypeDef         *hi3c,
     hi3c->pXferData     = pXferData;
 
     /* Prepare Direction, and Check on user parameters */
-    if (((option & I3C_OPERATION_TYPE_MASK) == LL_I3C_CONTROLLER_MTYPE_CCC) || \
-      ((option & I3C_OPERATION_TYPE_MASK) == LL_I3C_CONTROLLER_MTYPE_DIRECT))
+    if (((option & I3C_OPERATION_TYPE_MASK) == LL_I3C_CONTROLLER_MTYPE_CCC) ||
+        ((option & I3C_OPERATION_TYPE_MASK) == LL_I3C_CONTROLLER_MTYPE_DIRECT))
     {
       /* Check on user parameters */
       if ((pCCCDesc == NULL) || (pXferData == NULL) || (nbFrame < 1U))
@@ -1989,8 +1992,8 @@ HAL_StatusTypeDef HAL_I3C_AddDescToFrame(I3C_HandleTypeDef         *hi3c,
         }
 
         /* Compute TxBuffer if CCC defining byte or direction Write */
-        if (((direction == HAL_I3C_DIRECTION_WRITE) && (pXferData->TxBuf.pBuffer != NULL)) || \
-          (((option & I3C_DEFINE_BYTE_MASK) != 0U) && (direction == HAL_I3C_DIRECTION_READ)))
+        if (((direction == HAL_I3C_DIRECTION_WRITE) && (pXferData->TxBuf.pBuffer != NULL)) ||
+            (((option & I3C_DEFINE_BYTE_MASK) != 0U) && (direction == HAL_I3C_DIRECTION_READ)))
         {
           /* I3C Tx Buffer prior preparation */
           if (I3C_TxBuffer_PriorPreparation(hi3c, nbFrame, option) != HAL_OK)
@@ -3685,7 +3688,7 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_Transmit_DMA(I3C_HandleTypeDef   *hi3c,
 
       /* Enable the control data DMA channel */
       control_dma_status = HAL_DMA_Start_IT(hi3c->hdmacr, (uint32_t)hi3c->pXferData->CtrlBuf.pBuffer,
-                                            (uint32_t)&hi3c->Instance->CR, (hi3c->ControlXferCount *4U));
+                                            (uint32_t)&hi3c->Instance->CR, (hi3c->ControlXferCount * 4U));
 
       /*------------------------------------ I3C DMA channel for the Tx Data -----------------------------------------*/
       /* Check if Tx counter different from zero */
@@ -4223,7 +4226,7 @@ HAL_StatusTypeDef HAL_I3C_Ctrl_Receive_DMA(I3C_HandleTypeDef   *hi3c,
         /* Update handle state parameter */
         I3C_StateUpdate(hi3c);
       }
-      
+
     }
   }
 
@@ -6234,6 +6237,16 @@ static HAL_StatusTypeDef I3C_Tgt_Event_ISR(struct __I3C_HandleTypeDef *hi3c, uin
     tmpevent |= EVENT_ID_DEFGRPA;
   }
 
+  /* I3C target wakeup event management ----------------------------------*/
+  if ((I3C_CHECK_FLAG(itFlags, I3C_EVR_WKPF) != RESET) && (I3C_CHECK_IT_SOURCE(itSources, I3C_IER_WKPIE) != RESET))
+  {
+    /* Clear WKP flag */
+    LL_I3C_ClearFlag_WKP(hi3c->Instance);
+
+    /* Set Identifier EVENT_ID_WKP */
+    tmpevent |= EVENT_ID_WKP;
+  }
+
   if (tmpevent != 0U)
   {
 #if (USE_HAL_I3C_REGISTER_CALLBACKS == 1U)
@@ -6485,7 +6498,23 @@ static HAL_StatusTypeDef I3C_Tgt_Tx_ISR(struct __I3C_HandleTypeDef *hi3c, uint32
         I3C_ErrorTreatment(hi3c);
       }
     }
+
+    /* I3C target wakeup event management ----------------------------------*/
+    if ((I3C_CHECK_FLAG(itFlags, I3C_EVR_WKPF) != RESET) && (I3C_CHECK_IT_SOURCE(itSources, I3C_IER_WKPIE) != RESET))
+    {
+      /* Clear WKP flag */
+      LL_I3C_ClearFlag_WKP(hi3c->Instance);
+
+#if (USE_HAL_I3C_REGISTER_CALLBACKS == 1U)
+      /* Call registered callback */
+      hi3c->NotifyCallback(hi3c, EVENT_ID_WKP);
+#else
+      /* Asynchronous receive CCC event Callback */
+      HAL_I3C_NotifyCallback(hi3c, EVENT_ID_WKP);
+#endif /* USE_HAL_I3C_REGISTER_CALLBACKS == 1U */
+    }
   }
+
   return HAL_OK;
 }
 
@@ -6545,7 +6574,23 @@ static HAL_StatusTypeDef I3C_Tgt_Rx_ISR(struct __I3C_HandleTypeDef *hi3c, uint32
         I3C_ErrorTreatment(hi3c);
       }
     }
+
+    /* I3C target wakeup event management ----------------------------------*/
+    if ((I3C_CHECK_FLAG(itFlags, I3C_EVR_WKPF) != RESET) && (I3C_CHECK_IT_SOURCE(itSources, I3C_IER_WKPIE) != RESET))
+    {
+      /* Clear WKP flag */
+      LL_I3C_ClearFlag_WKP(hi3c->Instance);
+
+#if (USE_HAL_I3C_REGISTER_CALLBACKS == 1U)
+      /* Call registered callback */
+      hi3c->NotifyCallback(hi3c, EVENT_ID_WKP);
+#else
+      /* Asynchronous receive CCC event Callback */
+      HAL_I3C_NotifyCallback(hi3c, EVENT_ID_WKP);
+#endif /* USE_HAL_I3C_REGISTER_CALLBACKS == 1U */
+    }
   }
+
   return HAL_OK;
 }
 
@@ -6598,7 +6643,23 @@ static HAL_StatusTypeDef I3C_Tgt_Tx_DMA_ISR(struct __I3C_HandleTypeDef *hi3c, ui
         I3C_ErrorTreatment(hi3c);
       }
     }
+
+    /* I3C target wakeup event management ----------------------------------*/
+    if ((I3C_CHECK_FLAG(itFlags, I3C_EVR_WKPF) != RESET) && (I3C_CHECK_IT_SOURCE(itSources, I3C_IER_WKPIE) != RESET))
+    {
+      /* Clear WKP flag */
+      LL_I3C_ClearFlag_WKP(hi3c->Instance);
+
+#if (USE_HAL_I3C_REGISTER_CALLBACKS == 1U)
+      /* Call registered callback */
+      hi3c->NotifyCallback(hi3c, EVENT_ID_WKP);
+#else
+      /* Asynchronous receive CCC event Callback */
+      HAL_I3C_NotifyCallback(hi3c, EVENT_ID_WKP);
+#endif /* USE_HAL_I3C_REGISTER_CALLBACKS == 1U */
+    }
   }
+
   return HAL_OK;
 }
 
@@ -6650,7 +6711,23 @@ static HAL_StatusTypeDef I3C_Tgt_Rx_DMA_ISR(struct __I3C_HandleTypeDef *hi3c, ui
         I3C_ErrorTreatment(hi3c);
       }
     }
+
+    /* I3C target wakeup event management ----------------------------------*/
+    if ((I3C_CHECK_FLAG(itFlags, I3C_EVR_WKPF) != RESET) && (I3C_CHECK_IT_SOURCE(itSources, I3C_IER_WKPIE) != RESET))
+    {
+      /* Clear WKP flag */
+      LL_I3C_ClearFlag_WKP(hi3c->Instance);
+
+#if (USE_HAL_I3C_REGISTER_CALLBACKS == 1U)
+      /* Call registered callback */
+      hi3c->NotifyCallback(hi3c, EVENT_ID_WKP);
+#else
+      /* Asynchronous receive CCC event Callback */
+      HAL_I3C_NotifyCallback(hi3c, EVENT_ID_WKP);
+#endif /* USE_HAL_I3C_REGISTER_CALLBACKS == 1U */
+    }
   }
+
   return HAL_OK;
 }
 #endif /* HAL_DMA_MODULE_ENABLED */
@@ -7138,12 +7215,6 @@ static void I3C_DMAError(DMA_HandleTypeDef *hdma)
   I3C_HandleTypeDef *hi3c = (I3C_HandleTypeDef *)(((DMA_HandleTypeDef *)hdma)->Parent);
 
   hi3c->ErrorCode |= HAL_I3C_ERROR_DMA;
-
-  I3C_ErrorTreatment(hi3c);
-
-  /* Reset the peripheral state machine, to prevent pending error */
-  LL_I3C_Disable(hi3c->Instance);
-  LL_I3C_Enable(hi3c->Instance);
 }
 
 /**
@@ -7279,7 +7350,7 @@ static HAL_StatusTypeDef I3C_WaitOnDAAUntilTimeout(I3C_HandleTypeDef *hi3c, uint
 static void I3C_TransmitByteTreatment(I3C_HandleTypeDef *hi3c)
 {
   /* Check TX FIFO not full flag */
-  
+
   while ((__HAL_I3C_GET_FLAG(hi3c, HAL_I3C_FLAG_TXFNFF) == SET) && (hi3c->TxXferCount > 0U))
   {
     /* Write Tx buffer data to transmit register */
@@ -7305,7 +7376,7 @@ static void I3C_TransmitWordTreatment(I3C_HandleTypeDef *hi3c)
   if (__HAL_I3C_GET_FLAG(hi3c, HAL_I3C_FLAG_TXFNFF) == SET)
   {
     /* Write Tx buffer data to transmit register */
-    LL_I3C_TransmitData32(hi3c->Instance, *((uint32_t*)hi3c->pXferData->TxBuf.pBuffer));
+    LL_I3C_TransmitData32(hi3c->Instance, *((uint32_t *)hi3c->pXferData->TxBuf.pBuffer));
 
     /* Increment Buffer pointer */
     hi3c->pXferData->TxBuf.pBuffer += sizeof(uint32_t);
@@ -7643,14 +7714,14 @@ static HAL_StatusTypeDef I3C_ControlBuffer_PriorPreparation(I3C_HandleTypeDef *h
         for (index = 0U; index < ((uint32_t)counter - 1U); index++)
         {
           /* Update control buffer value */
-          hi3c->pXferData->CtrlBuf.pBuffer[index] = ((uint32_t)hi3c->pCCCDesc[index].CCCBuf.Size             | \
-                                                     ((uint32_t)hi3c->pCCCDesc[index].CCC  << I3C_CR_CCC_Pos) | \
+          hi3c->pXferData->CtrlBuf.pBuffer[index] = ((uint32_t)hi3c->pCCCDesc[index].CCCBuf.Size              |
+                                                     ((uint32_t)hi3c->pCCCDesc[index].CCC  << I3C_CR_CCC_Pos) |
                                                      LL_I3C_CONTROLLER_MTYPE_CCC | stop_condition);
         }
 
         /* At the last device we should generate a stop condition */
-        hi3c->pXferData->CtrlBuf.pBuffer[index] = ((uint32_t)hi3c->pCCCDesc[index].CCCBuf.Size             | \
-                                                   ((uint32_t)hi3c->pCCCDesc[index].CCC  << I3C_CR_CCC_Pos) | \
+        hi3c->pXferData->CtrlBuf.pBuffer[index] = ((uint32_t)hi3c->pCCCDesc[index].CCCBuf.Size              |
+                                                   ((uint32_t)hi3c->pCCCDesc[index].CCC  << I3C_CR_CCC_Pos) |
                                                    LL_I3C_CONTROLLER_MTYPE_CCC | LL_I3C_GENERATE_STOP);
       }
     }
@@ -7672,28 +7743,28 @@ static HAL_StatusTypeDef I3C_ControlBuffer_PriorPreparation(I3C_HandleTypeDef *h
         for (index = 0U; index < (((uint32_t)counter * 2U) - 2U); index += 2U)
         {
           /* Step 1 : update control buffer value for the CCC command */
-          hi3c->pXferData->CtrlBuf.pBuffer[index] = (nb_define_bytes                                               | \
-                                                     ((uint32_t)hi3c->pCCCDesc[index / 2U].CCC  << I3C_CR_CCC_Pos) | \
+          hi3c->pXferData->CtrlBuf.pBuffer[index] = (nb_define_bytes                                               |
+                                                     ((uint32_t)hi3c->pCCCDesc[index / 2U].CCC  << I3C_CR_CCC_Pos) |
                                                      LL_I3C_CONTROLLER_MTYPE_CCC | LL_I3C_GENERATE_RESTART);
 
           /* Step 2 : update control buffer value for target address */
-          hi3c->pXferData->CtrlBuf.pBuffer[index + 1U] = \
-            (((uint32_t)hi3c->pCCCDesc[index / 2U].CCCBuf.Size - nb_define_bytes) | \
-             hi3c->pCCCDesc->Direction                                             | \
-             ((uint32_t)hi3c->pCCCDesc[index / 2U].TargetAddr << I3C_CR_ADD_Pos)   | \
+          hi3c->pXferData->CtrlBuf.pBuffer[index + 1U] =
+            (((uint32_t)hi3c->pCCCDesc[index / 2U].CCCBuf.Size - nb_define_bytes) |
+             hi3c->pCCCDesc->Direction                                            |
+             ((uint32_t)hi3c->pCCCDesc[index / 2U].TargetAddr << I3C_CR_ADD_Pos)  |
              LL_I3C_CONTROLLER_MTYPE_DIRECT | stop_condition);
         }
 
         /* Update control buffer value for the last CCC command */
-        hi3c->pXferData->CtrlBuf.pBuffer[index] = (nb_define_bytes                                               | \
-                                                   ((uint32_t)hi3c->pCCCDesc[index / 2U].CCC  << I3C_CR_CCC_Pos) | \
+        hi3c->pXferData->CtrlBuf.pBuffer[index] = (nb_define_bytes                                               |
+                                                   ((uint32_t)hi3c->pCCCDesc[index / 2U].CCC  << I3C_CR_CCC_Pos) |
                                                    LL_I3C_CONTROLLER_MTYPE_CCC | LL_I3C_GENERATE_RESTART);
 
         /* At the last device we should generate a stop condition */
-        hi3c->pXferData->CtrlBuf.pBuffer[index + 1U] = \
-          (((uint32_t)hi3c->pCCCDesc[index / 2U].CCCBuf.Size - nb_define_bytes) | \
-           hi3c->pCCCDesc->Direction                                             | \
-           ((uint32_t)hi3c->pCCCDesc[index / 2U].TargetAddr << I3C_CR_ADD_Pos)   | \
+        hi3c->pXferData->CtrlBuf.pBuffer[index + 1U] =
+          (((uint32_t)hi3c->pCCCDesc[index / 2U].CCCBuf.Size - nb_define_bytes) |
+           hi3c->pCCCDesc->Direction                                            |
+           ((uint32_t)hi3c->pCCCDesc[index / 2U].TargetAddr << I3C_CR_ADD_Pos)  |
            LL_I3C_CONTROLLER_MTYPE_DIRECT | LL_I3C_GENERATE_STOP);
       }
     }
@@ -7725,16 +7796,16 @@ static HAL_StatusTypeDef I3C_ControlBuffer_PriorPreparation(I3C_HandleTypeDef *h
         for (index = 0U; index < ((uint32_t)counter - 1U); index++)
         {
           /* Update control buffer value */
-          hi3c->pXferData->CtrlBuf.pBuffer[index] = \
-            (nb_data_bytes | hi3c->pPrivateDesc->Direction                      | \
-             ((uint32_t)hi3c->pPrivateDesc[index].TargetAddr << I3C_CR_ADD_Pos) | \
+          hi3c->pXferData->CtrlBuf.pBuffer[index] =
+            (nb_data_bytes | hi3c->pPrivateDesc->Direction                      |
+             ((uint32_t)hi3c->pPrivateDesc[index].TargetAddr << I3C_CR_ADD_Pos) |
              (option & I3C_OPERATION_TYPE_MASK) | stop_condition);
         }
 
         /* At the last device we should generate a stop condition */
-        hi3c->pXferData->CtrlBuf.pBuffer[index] = \
-          (nb_data_bytes | hi3c->pPrivateDesc->Direction                      | \
-           ((uint32_t)hi3c->pPrivateDesc[index].TargetAddr << I3C_CR_ADD_Pos) | \
+        hi3c->pXferData->CtrlBuf.pBuffer[index] =
+          (nb_data_bytes | hi3c->pPrivateDesc->Direction                      |
+           ((uint32_t)hi3c->pPrivateDesc[index].TargetAddr << I3C_CR_ADD_Pos) |
            (option & I3C_OPERATION_TYPE_MASK) | LL_I3C_GENERATE_STOP);
       }
     }
@@ -7959,6 +8030,11 @@ static void I3C_ErrorTreatment(I3C_HandleTypeDef *hi3c)
 
     /* Reset Rx function pointer */
     hi3c->ptrRxFunc = NULL;
+
+    /* Reset Context pointer */
+    hi3c->pXferData = NULL;
+    hi3c->pCCCDesc = NULL;
+    hi3c->pPrivateDesc = NULL;
 
     /* Flush all FIFOs */
     /* Flush the content of Tx Fifo */

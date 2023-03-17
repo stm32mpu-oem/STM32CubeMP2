@@ -559,7 +559,7 @@ typedef struct
   */
 #define LL_I3C_CR_CAPABILITY               I3C_DEVRX_CRACK
 /*!< Controller acknowledge Target Controller Role capable */
-#define LL_I3C_CR_NO_CAPABILITY            0x00000000U 
+#define LL_I3C_CR_NO_CAPABILITY            0x00000000U
 /*!< Controller no acknowledge Target Controller Role capable */
 /**
   * @}
@@ -584,7 +584,7 @@ typedef struct
   * @retval The value of BCR Return value between Min_Data=0x00 and Max_Data=0xFF.
   */
 #define LL_I3C_GET_BCR(__PAYLOAD__) (((uint32_t)((uint64_t)(__PAYLOAD__) >> LL_I3C_BCR_IN_PAYLOAD_SHIFT)) & \
-                                        I3C_BCR_BCR)
+                                     I3C_BCR_BCR)
 
 /** @brief  Check IBI request capabilities.
   * @param  __BCR__ specifies the Bus Characteristics capabilities retrieve during ENTDAA procedure.
@@ -592,7 +592,7 @@ typedef struct
   * @retval Value of @ref I3C_LL_EC_IBI_CAPABILITY.
   */
 #define LL_I3C_GET_IBI_CAPABLE(__BCR__) (((((__BCR__) & I3C_BCR_BCR1_Msk) >> I3C_BCR_BCR1_Pos) == 1U) \
-                                                ? LL_I3C_IBI_CAPABILITY : LL_I3C_IBI_NO_CAPABILITY)
+                                         ? LL_I3C_IBI_CAPABILITY : LL_I3C_IBI_NO_CAPABILITY)
 
 /** @brief  Check IBI additional data byte capabilities.
   * @param  __BCR__ specifies the Bus Characteristics capabilities retrieve during ENTDAA procedure.
@@ -600,7 +600,7 @@ typedef struct
   * @retval Value of @ref I3C_LL_EC_IBI_ADDITIONAL_DATA.
   */
 #define LL_I3C_GET_IBI_PAYLOAD(__BCR__) (((((__BCR__) & I3C_BCR_BCR2_Msk) >> I3C_BCR_BCR2_Pos) == 1U) \
-                                                ? LL_I3C_IBI_DATA_ENABLE : LL_I3C_IBI_DATA_DISABLE)
+                                         ? LL_I3C_IBI_DATA_ENABLE : LL_I3C_IBI_DATA_DISABLE)
 
 /** @brief  Check Controller role request capabilities.
   * @param  __BCR__ specifies the Bus Characteristics capabilities retrieve during ENTDAA procedure.
@@ -608,7 +608,7 @@ typedef struct
   * @retval Value of @ref I3C_LL_EC_CR_CAPABILITY.
   */
 #define LL_I3C_GET_CR_CAPABLE(__BCR__) (((((__BCR__) & I3C_BCR_BCR6_Msk) >> I3C_BCR_BCR6_Pos) == 1U) \
-                                                ? LL_I3C_CR_CAPABILITY : LL_I3C_CR_NO_CAPABILITY)
+                                        ? LL_I3C_CR_CAPABILITY : LL_I3C_CR_NO_CAPABILITY)
 
 /**
   * @brief  Write a value in I3C register
@@ -2927,7 +2927,7 @@ __STATIC_INLINE void LL_I3C_ConfigDeviceCapabilities(I3C_TypeDef *I3Cx,
 {
   MODIFY_REG(I3Cx->DEVRX[TargetId - 1U], \
              (I3C_DEVRX_DA | I3C_DEVRX_IBIACK | I3C_DEVRX_CRACK | I3C_DEVRX_IBIDEN), \
-             ((DynamicAddr << I3C_DEVRX_DA_Pos)| IBIAck | IBIAddData | CRAck));
+             ((DynamicAddr << I3C_DEVRX_DA_Pos) | IBIAck | IBIAddData | CRAck));
 }
 /**
   * @}
@@ -4379,7 +4379,6 @@ __STATIC_INLINE void LL_I3C_ClearFlag_GRP(I3C_TypeDef *I3Cx)
 ErrorStatus LL_I3C_Init(I3C_TypeDef *I3Cx, LL_I3C_InitTypeDef *I3C_InitStruct, uint32_t Mode);
 ErrorStatus LL_I3C_DeInit(I3C_TypeDef *I3Cx);
 void LL_I3C_StructInit(LL_I3C_InitTypeDef *I3C_InitStruct);
-
 
 /**
   * @}

@@ -258,7 +258,11 @@
 
 #define IS_LL_DMA_TRIGGER_SELECTION(__VALUE__)             ((__VALUE__) <= LL_HPDMA_TRIGGER_DCMIPP_P2_FEND)
 
+#if ! defined(STM32MP25XX_SI_CUT1_X)
+#define IS_LL_DMA_REQUEST_SELECTION(__VALUE__)             ((__VALUE__) <= LL_HPDMA_REQUEST_I3C4_STAT)
+#else /* ! STM32MP25XX_SI_CUT1_X */
 #define IS_LL_DMA_REQUEST_SELECTION(__VALUE__)             ((__VALUE__) <= LL_HPDMA_REQUEST_I3C3_STAT)
+#endif /* ! STM32MP25XX_SI_CUT1_X */
 
 #define IS_LL_DMA_TRANSFER_EVENT_MODE(__VALUE__)          (((__VALUE__) == LL_DMA_TCEM_BLK_TRANSFER)         || \
                                                            ((__VALUE__) == LL_DMA_TCEM_RPT_BLK_TRANSFER)     || \

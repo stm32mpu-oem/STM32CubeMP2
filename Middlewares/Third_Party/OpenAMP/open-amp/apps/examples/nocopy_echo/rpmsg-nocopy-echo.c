@@ -7,7 +7,7 @@
 /*
  * This is a sample demonstration application that showcases usage of rpmsg
  * This application is meant to run on the remote CPU running baremetal code.
- * This application echoes back data that was sent to it by the master core.
+ * This application echoes back data that was sent to it by the host core.
  */
 
 #include <stdio.h>
@@ -111,7 +111,7 @@ int app(struct rpmsg_device *rdev, void *priv)
 			break;
 		}
 		while (rpmsg_list) {
-			/* Send data back to master */
+			/* Send data back to host */
 			ret = rpmsg_send(rpmsg_list->ept, rpmsg_list->data,
 					 rpmsg_list->len);
 			if (ret < 0) {
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 		ret = -1;
 	} else {
 		rpdev = platform_create_rpmsg_vdev(platform, 0,
-						   VIRTIO_DEV_SLAVE,
+						   VIRTIO_DEV_DEVICE,
 						   NULL, NULL);
 		if (!rpdev) {
 			LPERROR("Failed to create rpmsg virtio device.\r\n");

@@ -306,6 +306,175 @@ void ddrphy_phyinit_usercustom_customposttrain(void)
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | R8 | TDBYTE |
 						      CSR_TXDQDLYTG0_ADDR)), 0x5EU);
 
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | U0 | TDBYTE |
+						      CSR_RXENDLYTG1_ADDR)), 0x2C0U);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | U1 | TDBYTE |
+						      CSR_RXENDLYTG1_ADDR)), 0x2C0U);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | U0 | TDBYTE |
+						      CSR_RXENDLYTG1_ADDR)), 0x2C0U);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | U1 | TDBYTE |
+						      CSR_RXENDLYTG1_ADDR)), 0x2C0U);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | U0 | TDBYTE |
+						      CSR_RXENDLYTG1_ADDR)), 0x2C0U);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | U1 | TDBYTE |
+						      CSR_RXENDLYTG1_ADDR)), 0x2C0U);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | U0 | TDBYTE |
+						      CSR_RXENDLYTG1_ADDR)), 0x2C0U);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | U1 | TDBYTE |
+						      CSR_RXENDLYTG1_ADDR)), 0x2C0U);
+
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | U0 | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | U1 | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | (U1 * 2) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | (U1 * 3) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | (U1 * 4) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | (U1 * 5) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | (U1 * 6) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | (U1 * 7) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | (U1 * 8) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | U0 | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | U1 | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | (U1 * 2) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | (U1 * 3) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | (U1 * 4) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | (U1 * 5) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | (U1 * 6) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | (U1 * 7) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | (U1 * 8) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | U0 | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | U1 | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | (U1 * 2) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | (U1 * 3) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | (U1 * 4) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | (U1 * 5) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | (U1 * 6) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | (U1 * 7) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | (U1 * 8) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | U0 | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | U1 | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | (U1 * 2) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | (U1 * 3) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | (U1 * 4) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | (U1 * 5) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | (U1 * 6) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | (U1 * 7) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | (U1 * 8) | TDBYTE |
+						      CSR_RXPBDLYTG1_ADDR)), 0x7FU);
+
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | R0 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | R1 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | R2 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | R3 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | R4 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | R5 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | R6 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | R7 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB0 | P0 | R8 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | R0 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | R1 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | R2 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | R3 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | R4 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | R5 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | R6 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | R7 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB1 | P0 | R8 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | R0 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | R1 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | R2 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | R3 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | R4 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | R5 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | R6 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | R7 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB2 | P0 | R8 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | R0 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | R1 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | R2 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | R3 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | R4 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | R5 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | R6 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | R7 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (BB3 | P0 | R8 | TDBYTE |
+						      CSR_TXDQDLYTG1_ADDR)), 0x5EU);
+
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TAPBONLY | CSR_MICROCONTMUXSEL_ADDR)), 0x1U);
 #endif /* STM32MP_LPDDR4_TYPE */
 #endif /* USE_STM32MP257CXX_EMU */

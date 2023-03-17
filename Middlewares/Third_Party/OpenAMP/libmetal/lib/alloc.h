@@ -44,5 +44,4 @@ static inline void metal_free_memory(void *ptr);
 
 #include <metal/system/@PROJECT_SYSTEM@/alloc.h>
 
-
 #endif /* __METAL_ALLOC__H__ */

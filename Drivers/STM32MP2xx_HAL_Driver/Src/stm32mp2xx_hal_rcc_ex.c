@@ -391,7 +391,7 @@ HAL_StatusTypeDef HAL_RCCEx_CA35SS_PLL1Config(const RCC_PLLInitTypeDef *pll_conf
     /* When A35ss source clock is PLL1, */
     if (source_value == A35_SOURCE_PLL1)
     {
-    /* switch it to external ck_cpu1_ext2f (during PLL1 reconfiguration) */
+      /* switch it to external ck_cpu1_ext2f (during PLL1 reconfiguration) */
       HAL_RCCEx_CA35SS_SetCA35SSClockSource(A35_SOURCE_EXT);
     }
 
@@ -441,7 +441,7 @@ HAL_StatusTypeDef HAL_RCCEx_CA35SS_PLL1Config(const RCC_PLLInitTypeDef *pll_conf
     /* When A35ss source clock was PLL1, */
     if (source_value == A35_SOURCE_PLL1)
     {
-    /* set it back to internal PLL */
+      /* set it back to internal PLL */
       HAL_RCCEx_CA35SS_SetCA35SSClockSource(A35_SOURCE_PLL1);
     }
   }
@@ -450,7 +450,7 @@ HAL_StatusTypeDef HAL_RCCEx_CA35SS_PLL1Config(const RCC_PLLInitTypeDef *pll_conf
     /* When A35ss source clock is PLL1, */
     if (source_value == A35_SOURCE_PLL1)
     {
-    /* switch it to external ck_cpu1_ext2f */
+      /* switch it to external ck_cpu1_ext2f */
       HAL_RCCEx_CA35SS_SetCA35SSClockSource(A35_SOURCE_EXT);
     }
 
@@ -520,9 +520,10 @@ HAL_StatusTypeDef HAL_RCCEx_PLL2Config(RCC_PLLInitTypeDef *pll_config)
     }
   }
 
+  LL_RCC_PLL2_SetFRACIN(pll_config->FRACIN);
+
   if (pll_config->FRACIN != 0)
   {
-    LL_RCC_PLL2_SetFRACIN(pll_config->FRACIN);
     LL_RCC_PLL2_CSG_Disable();
     LL_RCC_PLL2_DSMEN_Enable();
   }
@@ -612,6 +613,8 @@ HAL_StatusTypeDef HAL_RCCEx_PLL3Config(RCC_PLLInitTypeDef *pll_config)
   if ((pll_config->PLLMode & RCC_PLL_SPREAD_SPECTRUM) == RCC_PLL_SPREAD_SPECTRUM)
   {
     LL_RCC_PLL3_ConfigCSG(pll_config->SSM_DIVVAL, pll_config->SSM_SPREAD);
+    LL_RCC_PLL3_CSG_Enable();
+    LL_RCC_PLL3_DSMEN_Disable();
 
     if (pll_config->SSM_Mode == RCC_PLL_CENTERSPREAD)
     {
@@ -624,6 +627,12 @@ HAL_StatusTypeDef HAL_RCCEx_PLL3Config(RCC_PLLInitTypeDef *pll_config)
   }
 
   LL_RCC_PLL3_SetFRACIN(pll_config->FRACIN);
+
+  if (pll_config->FRACIN != 0)
+  {
+    LL_RCC_PLL3_CSG_Disable();
+    LL_RCC_PLL3_DSMEN_Enable();
+  }
 
   /* Handle state (on/off) - if state is on, wait for lock bit */
   if (pll_config->PLLState == RCC_PLL_ON)
@@ -708,9 +717,10 @@ HAL_StatusTypeDef HAL_RCCEx_PLL4Config(RCC_PLLInitTypeDef *pll_config)
     }
   }
 
+  LL_RCC_PLL4_SetFRACIN(pll_config->FRACIN);
+
   if (pll_config->FRACIN != 0)
   {
-    LL_RCC_PLL4_SetFRACIN(pll_config->FRACIN);
     LL_RCC_PLL4_CSG_Disable();
     LL_RCC_PLL4_DSMEN_Enable();
   }
@@ -797,9 +807,10 @@ HAL_StatusTypeDef HAL_RCCEx_PLL5Config(RCC_PLLInitTypeDef *pll_config)
     }
   }
 
+  LL_RCC_PLL5_SetFRACIN(pll_config->FRACIN);
+
   if (pll_config->FRACIN != 0)
   {
-    LL_RCC_PLL5_SetFRACIN(pll_config->FRACIN);
     LL_RCC_PLL5_CSG_Disable();
     LL_RCC_PLL5_DSMEN_Enable();
   }
@@ -886,9 +897,10 @@ HAL_StatusTypeDef HAL_RCCEx_PLL6Config(RCC_PLLInitTypeDef *pll_config)
     }
   }
 
+  LL_RCC_PLL6_SetFRACIN(pll_config->FRACIN);
+
   if (pll_config->FRACIN != 0)
   {
-    LL_RCC_PLL6_SetFRACIN(pll_config->FRACIN);
     LL_RCC_PLL6_CSG_Disable();
     LL_RCC_PLL6_DSMEN_Enable();
   }
@@ -974,9 +986,10 @@ HAL_StatusTypeDef HAL_RCCEx_PLL7Config(RCC_PLLInitTypeDef *pll_config)
     }
   }
 
+  LL_RCC_PLL7_SetFRACIN(pll_config->FRACIN);
+
   if (pll_config->FRACIN != 0)
   {
-    LL_RCC_PLL7_SetFRACIN(pll_config->FRACIN);
     LL_RCC_PLL7_CSG_Disable();
     LL_RCC_PLL7_DSMEN_Enable();
   }
@@ -1004,11 +1017,12 @@ HAL_StatusTypeDef HAL_RCCEx_PLL7Config(RCC_PLLInitTypeDef *pll_config)
     if ((pll_config->PLLMode & RCC_PLL_SPREAD_SPECTRUM) == RCC_PLL_SPREAD_SPECTRUM)
     {
       LL_RCC_PLL7_CSG_Enable();
+      LL_RCC_PLL7_SSMODRST_Release();
     }
     else
     {
       LL_RCC_PLL7_CSG_Disable();
-      LL_RCC_PLL7_SSMODRST_Release();
+      LL_RCC_PLL7_SSMODRST_Assert();
     }
 
     LL_RCC_PLL7_FOUTPOSTDIV_Enable();
@@ -1063,9 +1077,10 @@ HAL_StatusTypeDef HAL_RCCEx_PLL8Config(RCC_PLLInitTypeDef *pll_config)
     }
   }
 
+  LL_RCC_PLL8_SetFRACIN(pll_config->FRACIN);
+
   if (pll_config->FRACIN != 0)
   {
-    LL_RCC_PLL8_SetFRACIN(pll_config->FRACIN);
     LL_RCC_PLL8_CSG_Disable();
     LL_RCC_PLL8_DSMEN_Enable();
   }
@@ -1154,6 +1169,9 @@ void HAL_RCCEx_GetPLL2Config(RCC_PLLInitTypeDef  *pll_config)
   if (LL_RCC_PLL2_CSG_IsEnabled())
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
+    pll_config->SSM_DIVVAL = (RCC->PLL2CFGR5 & RCC_PLL2CFGR5_DIVVAL_Msk) >> RCC_PLL2CFGR5_DIVVAL_Pos;
+    pll_config->SSM_SPREAD = (RCC->PLL2CFGR5 & RCC_PLL2CFGR5_SPREAD_Msk) >> RCC_PLL2CFGR5_SPREAD_Pos;
+
   }
 }
 
@@ -1177,6 +1195,8 @@ void HAL_RCCEx_GetPLL3Config(RCC_PLLInitTypeDef  *pll_config)
   if (LL_RCC_PLL3_CSG_IsEnabled())
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
+    pll_config->SSM_DIVVAL = (RCC->PLL3CFGR5 & RCC_PLL3CFGR5_DIVVAL_Msk) >> RCC_PLL3CFGR5_DIVVAL_Pos;
+    pll_config->SSM_SPREAD = (RCC->PLL3CFGR5 & RCC_PLL3CFGR5_SPREAD_Msk) >> RCC_PLL3CFGR5_SPREAD_Pos;
   }
 }
 
@@ -1200,6 +1220,8 @@ void HAL_RCCEx_GetPLL4Config(RCC_PLLInitTypeDef  *pll_config)
   if (LL_RCC_PLL4_CSG_IsEnabled())
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
+    pll_config->SSM_DIVVAL = (RCC->PLL4CFGR5 & RCC_PLL4CFGR5_DIVVAL_Msk) >> RCC_PLL4CFGR5_DIVVAL_Pos;
+    pll_config->SSM_SPREAD = (RCC->PLL4CFGR5 & RCC_PLL4CFGR5_SPREAD_Msk) >> RCC_PLL4CFGR5_SPREAD_Pos;
   }
 }
 
@@ -1223,6 +1245,8 @@ void HAL_RCCEx_GetPLL5Config(RCC_PLLInitTypeDef  *pll_config)
   if (LL_RCC_PLL5_CSG_IsEnabled())
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
+    pll_config->SSM_DIVVAL = (RCC->PLL5CFGR5 & RCC_PLL5CFGR5_DIVVAL_Msk) >> RCC_PLL5CFGR5_DIVVAL_Pos;
+    pll_config->SSM_SPREAD = (RCC->PLL5CFGR5 & RCC_PLL5CFGR5_SPREAD_Msk) >> RCC_PLL5CFGR5_SPREAD_Pos;
   }
 }
 
@@ -1246,6 +1270,8 @@ void HAL_RCCEx_GetPLL6Config(RCC_PLLInitTypeDef  *pll_config)
   if (LL_RCC_PLL6_CSG_IsEnabled())
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
+    pll_config->SSM_DIVVAL = (RCC->PLL6CFGR5 & RCC_PLL6CFGR5_DIVVAL_Msk) >> RCC_PLL6CFGR5_DIVVAL_Pos;
+    pll_config->SSM_SPREAD = (RCC->PLL6CFGR5 & RCC_PLL6CFGR5_SPREAD_Msk) >> RCC_PLL6CFGR5_SPREAD_Pos;
   }
 }
 
@@ -1269,6 +1295,8 @@ void HAL_RCCEx_GetPLL7Config(RCC_PLLInitTypeDef  *pll_config)
   if (LL_RCC_PLL7_CSG_IsEnabled())
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
+    pll_config->SSM_DIVVAL = (RCC->PLL7CFGR5 & RCC_PLL7CFGR5_DIVVAL_Msk) >> RCC_PLL7CFGR5_DIVVAL_Pos;
+    pll_config->SSM_SPREAD = (RCC->PLL7CFGR5 & RCC_PLL7CFGR5_SPREAD_Msk) >> RCC_PLL7CFGR5_SPREAD_Pos;
   }
 }
 
@@ -1292,6 +1320,8 @@ void HAL_RCCEx_GetPLL8Config(RCC_PLLInitTypeDef  *pll_config)
   if (LL_RCC_PLL8_CSG_IsEnabled())
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
+    pll_config->SSM_DIVVAL = (RCC->PLL8CFGR5 & RCC_PLL8CFGR5_DIVVAL_Msk) >> RCC_PLL8CFGR5_DIVVAL_Pos;
+    pll_config->SSM_SPREAD = (RCC->PLL8CFGR5 & RCC_PLL8CFGR5_SPREAD_Msk) >> RCC_PLL8CFGR5_SPREAD_Pos;
   }
 }
 
@@ -1517,7 +1547,14 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk)
       break;
     case RCC_XBAR_CLKSRC_MSI:
     case RCC_XBAR_CLKSRC_MSI_KER:
-      xbar_source_freq = MSI_VALUE;
+      if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0)
+      {
+        xbar_source_freq = RCC_MSI_4MHZ;
+      }
+      else
+      {
+        xbar_source_freq = RCC_MSI_16MHZ;
+      }
       break;
     case RCC_XBAR_CLKSRC_SPDIF:
       xbar_source_freq = 0;
@@ -1807,22 +1844,26 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
 
   /* check values of input parameters */
   if ((clk_id > RCC_FCALC_EXTOBSCLK_DSIPHYPLL)
-   || (ref_id > RCC_FCALC_PLL8REFCLOCK))
+      || (ref_id > RCC_FCALC_PLL8REFCLOCK))
+  {
     return 1;
+  }
 
   /* check presence of functional & accessible STGEN */
   /* (mandatory to handle timeout within measurement algorithm) */
   /* Take into account that STGENC is not visible from M33 */
   /* . by assuming it runs at 64MHz on validation platforms and 32MHz on FPGA */
 #if defined(USE_STM32MP257CXX_VALID1) || defined(USE_STM32MP257CXX_VALID2) || defined(USE_STM32MP257CXX_VALID3)
-   #define STGEN_FREQ_IN_HZ 64000000
+#define STGEN_FREQ_IN_HZ 64000000
 #else
-   #define STGEN_FREQ_IN_HZ 32000000
+#define STGEN_FREQ_IN_HZ 32000000
 #endif /* defined(USE_STM32MP257CXX_VALID1) || defined(USE_STM32MP257CXX_VALID2) || defined(USE_STM32MP257CXX_VALID3) */
   /* . by checking STGENC clock is enabled and STGENR value low is changing */
   if ((0 == (RCC->STGENCFGR & RCC_STGENCFGR_STGENEN))
-   || (regval == STGENR->CNTCVL))
+      || (regval == STGENR->CNTCVL))
+  {
     return 2;
+  }
 
   /* Find reference clock frequency */
   gfg = RCC->MUXSELCFGR;
@@ -1919,10 +1960,10 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
      * (i.e. ckin).
      */
     regval = RCC->FCALCOBS0CFGR;
-    regval &= ~(RCC_FCALCOBS0CFGR_CKINTSEL_Msk|RCC_FCALCOBS0CFGR_CKEXTSEL_Msk|RCC_FCALCOBS0CFGR_FCALCCKEXTSEL_Msk);
+    regval &= ~(RCC_FCALCOBS0CFGR_CKINTSEL_Msk | RCC_FCALCOBS0CFGR_CKEXTSEL_Msk | RCC_FCALCOBS0CFGR_FCALCCKEXTSEL_Msk);
     regval |= ckintsel;
-    regval |= ckextsel<<RCC_FCALCOBS0CFGR_CKEXTSEL_Pos;
-    regval |= fcalcckextsel<<RCC_FCALCOBS0CFGR_FCALCCKEXTSEL_Pos;
+    regval |= ckextsel << RCC_FCALCOBS0CFGR_CKEXTSEL_Pos;
+    regval |= fcalcckextsel << RCC_FCALCOBS0CFGR_FCALCCKEXTSEL_Pos;
     WRITE_REG(RCC->FCALCOBS0CFGR, regval);
 
     /* set the FCALCCKEN field in the RCC Clock Frequency Calculator and Observation 0
@@ -1991,14 +2032,14 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
 
     /* Timeout value (in ms) to be tuned according to the longest */
     /* measurement duration (65535 LSI/LSE cycles ~2 seconds)     */
-    timeout_duration = 2*(uint64_t)STGEN_FREQ_IN_HZ;
+    timeout_duration = 2 * (uint64_t)STGEN_FREQ_IN_HZ;
     start_time = (uint64_t)STGENR->CNTCVL + ((uint64_t)STGENR->CNTCVU << 32);
     end_time = start_time + timeout_duration;
     current_time = start_time;
 
     while ((fcalcsts_bit == 0)
-        && (overflow_flag==0)
-        && (timeout_flag == 0))
+           && (overflow_flag == 0)
+           && (timeout_flag == 0))
     {
       regval = RCC->FCALCSR;
       fcalcsts_bit = (regval & RCC_FCALCSR_FCALCSTS) >> RCC_FCALCSR_FCALCSTS_Pos;
@@ -2009,7 +2050,7 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
         timeout_flag = 1;
       }
       /* detect overflow */
-      if ((1<<16) == (regval&(1<<16)))
+      if ((1 << 16) == (regval & (1 << 16)))
       {
         overflow_flag = 1;
       }
@@ -2199,6 +2240,142 @@ void HAL_RCCEx_EnableHSECSS(void)
 }
 
 /**
+  * @brief  Configure the clock observer.
+  * @note
+  * @param  PeriphClk  Peripheral clock identifier
+  *         This parameter can be one of the following values and needs to be
+  *         a single selection of one the following defines:
+  *            @arg @ref RCC_FLEXGEN0
+  *            @arg @ref RCC_FLEXGEN1
+  *            @arg @ref RCC_FLEXGEN2
+  *            @arg @ref RCC_FLEXGEN3
+  *            @arg @ref RCC_FLEXGEN4
+  *            @arg @ref RCC_FLEXGEN5
+  *            @arg @ref RCC_FLEXGEN6
+  *            @arg @ref RCC_PERIPHCLK_LPTIM1_2
+  *            @arg @ref RCC_PERIPHCLK_UART2_4
+  *            @arg @ref RCC_PERIPHCLK_UART3_5
+  *            @arg @ref RCC_PERIPHCLK_SPI2_3
+  *            @arg @ref RCC_PERIPHCLK_SPDIFRX
+  *            @arg @ref RCC_PERIPHCLK_I2C1_2
+  *            @arg @ref RCC_PERIPHCLK_I3C1_2
+  *            @arg @ref RCC_PERIPHCLK_I2C3_5
+  *            @arg @ref RCC_PERIPHCLK_I3C3
+  *            @arg @ref RCC_PERIPHCLK_I2C4_6
+  *            @arg @ref RCC_PERIPHCLK_I2C7
+  *            @arg @ref RCC_PERIPHCLK_SPI1
+  *            @arg @ref RCC_PERIPHCLK_SPI4_5
+  *            @arg @ref RCC_PERIPHCLK_SPI6_7
+  *            @arg @ref RCC_PERIPHCLK_USART1
+  *            @arg @ref RCC_PERIPHCLK_USART6
+  *            @arg @ref RCC_PERIPHCLK_USART7_8
+  *            @arg @ref RCC_PERIPHCLK_UART9
+  *            @arg @ref RCC_PERIPHCLK_SAI1_MDF1
+  *            @arg @ref RCC_PERIPHCLK_SAI2
+  *            @arg @ref RCC_PERIPHCLK_SAI3_4
+  *            @arg @ref RCC_PERIPHCLK_FDCAN
+  *            @arg @ref RCC_PERIPHCLK_LTDC
+  *            @arg @ref RCC_PERIPHCLK_DSIPHY
+  *            @arg @ref RCC_PERIPHCLK_DCMIPP
+  *            @arg @ref RCC_PERIPHCLK_CSITXESC
+  *            @arg @ref RCC_PERIPHCLK_CSIPHY
+  *            @arg @ref RCC_PERIPHCLK_LVDSPHY
+  *            @arg @ref RCC_PERIPHCLK_STGEN
+  *            @arg @ref RCC_PERIPHCLK_USB3PCIEPHY
+  *            @arg @ref RCC_PERIPHCLK_USBTC
+  *            @arg @ref RCC_PERIPHCLK_I3C4
+  *            @arg @ref RCC_PERIPHCLK_SPI8
+  *            @arg @ref RCC_PERIPHCLK_I2C8
+  *            @arg @ref RCC_PERIPHCLK_LPUART1
+  *            @arg @ref RCC_PERIPHCLK_LPTIM3
+  *            @arg @ref RCC_PERIPHCLK_LPTIM4_5
+  *            @arg @ref RCC_PERIPHCLK_ADF1
+  *            @arg @ref RCC_PERIPHCLK_TSDBG
+  *            @arg @ref RCC_PERIPHCLK_TPIU
+  *            @arg @ref RCC_PERIPHCLK_ATB
+  *            @arg @ref RCC_PERIPHCLK_ADC12
+  *            @arg @ref RCC_PERIPHCLK_ADC3
+  *            @arg @ref RCC_PERIPHCLK_OSPI1
+  *            @arg @ref RCC_PERIPHCLK_OSPI2
+  *            @arg @ref RCC_PERIPHCLK_FMC
+  *            @arg @ref RCC_PERIPHCLK_SDMMC1
+  *            @arg @ref RCC_PERIPHCLK_SDMMC2
+  *            @arg @ref RCC_PERIPHCLK_SDMMC3
+  *            @arg @ref RCC_PERIPHCLK_ETH1_ETHSW
+  *            @arg @ref RCC_PERIPHCLK_ETH2
+  *            @arg @ref RCC_PERIPHCLK_ETH1PTP_ETH2PTP
+  *            @arg @ref RCC_PERIPHCLK_USB2PHY1
+  *            @arg @ref RCC_PERIPHCLK_USB2PHY2
+  *            @arg @ref RCC_PERIPHCLK_ICN_M_GPU
+  *            @arg @ref RCC_PERIPHCLK_ETHSWREF
+  *            @arg @ref RCC_PERIPHCLK_MCO1
+  *            @arg @ref RCC_PERIPHCLK_MCO2
+  *            @arg @ref RCC_PERIPHCLK_CPU1_EXT2F
+  * @param     OBSConf Structure describing the clock oberver resource:
+  *            - Enable: RCC_CLOCKOBS_ON or RCC_CLOCKOBS_OFF
+  *            - ObsType: RCC_FLEXGEN_OBS or RCC_OSC_OBS
+  *            - ObsInv: RCC_CLOCKOBS_NOT_INV or RCC_CLOCKOBS_INV
+  *            - ObsDiv:
+  *                 RCC_OBS_DIV1
+  *                 RCC_OBS_DIV2
+  *                 RCC_OBS_DIV4
+  *                 RCC_OBS_DIV8
+  *                 RCC_OBS_DIV16
+  *                 RCC_OBS_DIV32
+  *                 RCC_OBS_DIV64
+  *                 RCC_OBS_DIV128
+  *            - ClockType: RCC_INTERNAL_OBS or RCC_EXTERNAL_OBS
+  *            - RCC_MCOx: parameter defined in HAL_RCC_MCOConfig function
+  *            - RCC_MCOSource: parameter defined in HAL_RCC_MCOConfig function
+  *            - RCC_MCODiv: : parameter defined in HAL_RCC_MCOConfig function
+  * @retval None
+  */
+void HAL_RCCEx_ConfigureClockObserver(uint32_t PeriphClk, RCC_ObserverTypeDef *OBSConf)
+{
+  uint32_t tmpreg = 0;
+
+  /* Asserts can be added here for parameters check */
+
+
+  /* flexgen outputs */
+  /* Build mask in case of flexgen observation */
+  if (OBSConf->ObsType == RCC_FLEXGEN_OBS)
+  {
+    PeriphClk = (PeriphClk | 0xC0);
+  }
+
+  if (OBSConf->ClockType == RCC_INTERNAL_OBS)
+  {
+    tmpreg = (PeriphClk << RCC_FCALCOBS0CFGR_CKINTSEL_Pos);
+  }
+  else
+  {
+    tmpreg = (PeriphClk << RCC_FCALCOBS0CFGR_CKEXTSEL_Pos);
+    tmpreg |= RCC_FCALCOBS0CFGR_CKOBSEXTSEL;
+  }
+
+  if (((OBSConf->RCC_MCOx) & RCC_MCO2_INDEX) != RCC_MCO2_INDEX)
+  {
+    tmpreg |= ((OBSConf->ObsDiv) << RCC_FCALCOBS0CFGR_CKOBSDIV_Pos);
+    tmpreg |= ((OBSConf->ObsInv) << RCC_FCALCOBS0CFGR_CKOBSINV_Pos);
+    tmpreg |= ((OBSConf->Enable) << RCC_FCALCOBS0CFGR_CKOBSEN_Pos);
+
+    WRITE_REG(RCC->FCALCOBS0CFGR, tmpreg);
+  }
+  else
+  {
+    tmpreg |= ((OBSConf->ObsDiv) << RCC_FCALCOBS1CFGR_CKOBSDIV_Pos);
+    tmpreg |= ((OBSConf->ObsInv) << RCC_FCALCOBS1CFGR_CKOBSINV_Pos);
+    tmpreg |= ((OBSConf->Enable) << RCC_FCALCOBS1CFGR_CKOBSEN_Pos);
+
+    WRITE_REG(RCC->FCALCOBS1CFGR, tmpreg);
+  }
+
+  /* Setup the corresponding MCO */
+  HAL_RCC_MCOConfig(OBSConf->RCC_MCOx, OBSConf->RCC_MCOSource, OBSConf->RCC_MCODiv);
+}
+
+/**
   * @brief Handle the RCC LSE Clock Security System interrupt request.
   * @retval None
   */
@@ -2250,7 +2427,14 @@ static uint32_t RCCEx_ComputePLLClockFreq(RCC_PLLInitTypeDef *pll)
       source_freq = HSE_VALUE;
       break;
     case RCC_PLLSOURCE_MSI:
-      source_freq = MSI_VALUE;
+      if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0)
+      {
+        source_freq = RCC_MSI_4MHZ;
+      }
+      else
+      {
+        source_freq = RCC_MSI_16MHZ;
+      }
       break;
     default:
       source_freq = 0;
@@ -2262,11 +2446,13 @@ static uint32_t RCCEx_ComputePLLClockFreq(RCC_PLLInitTypeDef *pll)
   /* Note : keep maximum computing precision by doubling integer resolution */
   /*        and process numerator before applying dividers */
   if (0 == pll->FRACIN)
+  {
     pll_output = (uint64_t)source_freq * (uint64_t)pll->FBDIV;
+  }
   else
   {
-    pll_output = (uint64_t)source_freq * ((1<<24)*(uint64_t)pll->FBDIV + (uint64_t)pll->FRACIN);
-    pll_output /= (1<<24);
+    pll_output = (uint64_t)source_freq * ((1 << 24) * (uint64_t)pll->FBDIV + (uint64_t)pll->FRACIN);
+    pll_output /= (1 << 24);
   }
   pll_output /= (uint64_t)(pll->FREFDIV * pll->POSTDIV1 * pll->POSTDIV2);
 

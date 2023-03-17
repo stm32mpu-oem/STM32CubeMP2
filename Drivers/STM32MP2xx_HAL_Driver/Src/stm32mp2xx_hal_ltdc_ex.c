@@ -117,6 +117,7 @@ HAL_StatusTypeDef HAL_LTDCEx_StructInitFromAdaptedCommandConfig(LTDC_HandleTypeD
   hltdc->Init.VSPolarity = (CmdCfg->VSPolarity == DSI_VSYNC_ACTIVE_HIGH) ? LTDC_VSPOLARITY_AL : LTDC_VSPOLARITY_AH;
   hltdc->Init.HSPolarity = (CmdCfg->HSPolarity == DSI_HSYNC_ACTIVE_HIGH) ? LTDC_HSPOLARITY_AL : LTDC_HSPOLARITY_AH;
   hltdc->Init.SFTrig = LTDC_GCR_SFEN;
+  hltdc->Init.SFExtTrig = LTDC_GCR_SFEXEN;
 
   /* Note 2: Code to be used in case LTDC polarities inversion updated in the specification */
   /* hltdc->Init.DEPolarity = CmdCfg->DEPolarity << 29;

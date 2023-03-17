@@ -510,7 +510,7 @@ __weak HAL_StatusTypeDef MX_USART_Init(UART_HandleTypeDef *huart, MX_UART_InitTy
 
   /* USART configuration */
   huart->Init.BaudRate     = (uint32_t)COM_Init->BaudRate;
-#if defined(USE_STM32MP257CXX_UNIBOARD)
+#if defined(USE_STM32MP257CXX_UNIBOARD) && ! defined(COM_UNIBOARD_WITH_UART5_RX)
   /* DON'T use UART RX on UNIBOARD because this config is dedicated for Autoboard
    * and we try to keep as many IOs available as possible
    */
@@ -686,8 +686,9 @@ static void USART_MspInit(UART_HandleTypeDef *huart)
     gpio_init_structure.Alternate = COM_COMMON_TX_AF;
     HAL_GPIO_Init(COM_COMMON_TX_GPIO_PORT, &gpio_init_structure);
 
-#if 0
-    /* DON'T use UART RX on UNIBOARD because this config is dedicated for Autoboard
+#if defined(COM_UNIBOARD_WITH_UART5_RX)
+    /* Use UART RX on UNIBOARD only if explicitly enabled
+     * because this config is dedicated for Autoboard
      * and we try to keep as many IOs available as possible
      */
      COM_COMMON_RX_GPIO_CLK_ENABLE();
@@ -695,7 +696,7 @@ static void USART_MspInit(UART_HandleTypeDef *huart)
     gpio_init_structure.Pin = COM_COMMON_RX_PIN;
     gpio_init_structure.Alternate = COM_COMMON_RX_AF;
     HAL_GPIO_Init(COM_COMMON_RX_GPIO_PORT, &gpio_init_structure);
-#endif /* 0 */
+#endif /* COM_UNIBOARD_WITH_UART5_RX */
   }
 #else /* USE_STM32MP257CXX_UNIBOARD */
   if (huart->Instance == COM_CA35_UART)
@@ -814,13 +815,14 @@ static void USART_MspDeInit(UART_HandleTypeDef *huart)
     gpio_init_structure.Pin  = COM_COMMON_TX_PIN;
     HAL_GPIO_DeInit(COM_COMMON_TX_GPIO_PORT, gpio_init_structure.Pin);
 
-#if 0
-    /* DON'T use UART RX on UNIBOARD because this config is dedicated for Autoboard
+#if defined(COM_UNIBOARD_WITH_UART5_RX)
+    /* Use UART RX on UNIBOARD only if explicitly enabled
+     * because this config is dedicated for Autoboard
      * and we try to keep as many IOs available as possible
      */
     gpio_init_structure.Pin  = COM_COMMON_RX_PIN;
     HAL_GPIO_DeInit(COM_COMMON_RX_GPIO_PORT, gpio_init_structure.Pin);
-#endif /* 0 */
+#endif /* COM_UNIBOARD_WITH_UART5_RX */
     /* Disable USART clock */
     COM_COMMON_CLK_DISABLE();
   }

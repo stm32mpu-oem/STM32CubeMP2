@@ -149,11 +149,13 @@ static const I2C_Charac_t I2C_Charac[] =
 static uint32_t IsI2c2MspCbValid = 0;
 static uint32_t IsI2c3MspCbValid = 0;
 static uint32_t IsI2c6MspCbValid = 0;
+static uint32_t IsI2c8MspCbValid = 0;
 #endif /* USE_HAL_I2C_REGISTER_CALLBACKS */
 
 static uint32_t      I2c2InitCounter = 0;
 static uint32_t      I2c3InitCounter = 0;
 static uint32_t      I2c6InitCounter = 0;
+static uint32_t      I2c8InitCounter = 0;
 static I2C_Timings_t I2c_valid_timing[I2C_VALID_TIMING_NBR];
 static uint32_t      I2c_valid_timing_nbr = 0;
 #if defined(BSP_USE_CMSIS_OS)
@@ -170,6 +172,7 @@ static osSemaphoreId BspI2cSemaphore = 0;
 I2C_HandleTypeDef hbus_i2c2;
 I2C_HandleTypeDef hbus_i2c3;
 I2C_HandleTypeDef hbus_i2c6;
+I2C_HandleTypeDef hbus_i2c8;
 /**
   * @}
   */
@@ -198,6 +201,13 @@ static int32_t  I2C6_WriteReg(uint16_t DevAddr, uint16_t MemAddSize, uint16_t Re
 static int32_t  I2C6_ReadReg(uint16_t DevAddr, uint16_t MemAddSize, uint16_t Reg, uint8_t *pData, uint16_t Length);
 static int32_t  I2C6_Recv(uint16_t DevAddr, uint8_t *pData, uint16_t Length);
 static int32_t  I2C6_Send(uint16_t DevAddr, uint8_t *pData, uint16_t Length);
+
+static void     I2C8_MspInit(I2C_HandleTypeDef *hI2c);
+static void     I2C8_MspDeInit(I2C_HandleTypeDef *hI2c);
+static int32_t  I2C8_WriteReg(uint16_t DevAddr, uint16_t MemAddSize, uint16_t Reg, uint8_t *pData, uint16_t Length);
+static int32_t  I2C8_ReadReg(uint16_t DevAddr, uint16_t MemAddSize, uint16_t Reg, uint8_t *pData, uint16_t Length);
+static int32_t  I2C8_Recv(uint16_t DevAddr, uint8_t *pData, uint16_t Length);
+static int32_t  I2C8_Send(uint16_t DevAddr, uint8_t *pData, uint16_t Length);
 
 static uint32_t I2C_GetTiming(uint32_t clock_src_freq, uint32_t i2c_freq);
 static uint32_t I2C_Compute_SCLL_SCLH(uint32_t clock_src_freq, uint32_t I2C_speed);
@@ -1350,6 +1360,385 @@ int32_t BSP_I2C6_IsReady(uint16_t DevAddr, uint32_t Trials)
 }
 
 /**
+  * @brief  Initializes I2C HAL.
+  * @retval BSP status
+  */
+int32_t BSP_I2C8_Init(void)
+{
+  int32_t ret = BSP_ERROR_NONE;
+
+  hbus_i2c8.Instance = BUS_I2C8;
+
+  if (I2c8InitCounter == 0U)
+  {
+	  I2c8InitCounter++;
+
+    if (HAL_I2C_GetState(&hbus_i2c8) == HAL_I2C_STATE_RESET)
+    {
+#if defined(BSP_USE_CMSIS_OS)
+      if (BspI2cSemaphore == NULL)
+      {
+        /* Create semaphore to prevent multiple I2C access */
+        osSemaphoreDef(BSP_I2C_SEM);
+        BspI2cSemaphore = osSemaphoreCreate(osSemaphore(BSP_I2C_SEM), 1);
+      }
+#endif /* BSP_USE_CMSIS_OS */
+#if (USE_HAL_I2C_REGISTER_CALLBACKS == 0)
+      /* Init the I2C8 Msp */
+      I2C8_MspInit(&hbus_i2c8);
+#else
+      if (IsI2c8MspCbValid == 0U)
+      {
+        if (BSP_I2C8_RegisterDefaultMspCallbacks() != BSP_ERROR_NONE)
+        {
+          ret = BSP_ERROR_MSP_FAILURE;
+        }
+      }
+      if (ret == BSP_ERROR_NONE)
+      {
+#endif /* USE_HAL_I2C_REGISTER_CALLBACKS */
+      if (MX_I2C8_Init(&hbus_i2c8, I2C_GetTiming(HAL_RCC_GetFreq(RCC_CLOCKTYPE_ICN_HS_MCU), BUS_I2C8_FREQUENCY)) != HAL_OK)
+      {
+        ret = BSP_ERROR_BUS_FAILURE;
+      }
+#if (USE_HAL_I2C_REGISTER_CALLBACKS > 0)
+    }
+#endif /* USE_HAL_I2C_REGISTER_CALLBACKS */
+  }
+}
+return ret;
+}
+
+/**
+  * @brief  DeInitializes I2C HAL.
+  * @retval BSP status
+  */
+int32_t BSP_I2C8_DeInit(void)
+{
+  int32_t ret  = BSP_ERROR_NONE;
+
+  I2c8InitCounter--;
+
+  if (I2c8InitCounter == 0U)
+  {
+#if (USE_HAL_I2C_REGISTER_CALLBACKS == 0)
+    I2C8_MspDeInit(&hbus_i2c8);
+#endif /* (USE_HAL_I2C_REGISTER_CALLBACKS == 0) */
+
+    /* Init the I2C */
+    if (HAL_I2C_DeInit(&hbus_i2c8) != HAL_OK)
+    {
+      ret = BSP_ERROR_BUS_FAILURE;
+    }
+  }
+
+  return ret;
+}
+
+/**
+  * @brief  MX I2C8 initialization.
+  * @param  hI2c I2C handle
+  * @param  timing I2C timing
+  * @retval HAL status
+  */
+__weak HAL_StatusTypeDef MX_I2C8_Init(I2C_HandleTypeDef *hI2c, uint32_t timing)
+{
+  HAL_StatusTypeDef status = HAL_OK;
+
+  hI2c->Init.Timing           = timing;
+  hI2c->Init.OwnAddress1      = 0;
+  hI2c->Init.AddressingMode   = I2C_ADDRESSINGMODE_7BIT;
+  hI2c->Init.DualAddressMode  = I2C_DUALADDRESS_DISABLE;
+  hI2c->Init.OwnAddress2      = 0;
+  hI2c->Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hI2c->Init.GeneralCallMode  = I2C_GENERALCALL_DISABLE;
+  hI2c->Init.NoStretchMode    = I2C_NOSTRETCH_DISABLE;
+
+  if (HAL_I2C_Init(hI2c) != HAL_OK)
+  {
+    status = HAL_ERROR;
+  }
+  else
+  {
+    uint32_t analog_filter;
+
+    analog_filter = I2C_ANALOGFILTER_ENABLE;
+    if (HAL_I2CEx_ConfigAnalogFilter(hI2c, analog_filter) != HAL_OK)
+    {
+      status = HAL_ERROR;
+    }
+    else
+    {
+      if (HAL_I2CEx_ConfigDigitalFilter(hI2c, I2C_DIGITAL_FILTER_COEF) != HAL_OK)
+      {
+        status = HAL_ERROR;
+      }
+    }
+  }
+
+  return status;
+}
+
+/**
+  * @brief  Write a 8bit value in a register of the device through BUS.
+  * @param  DevAddr Device address on Bus.
+  * @param  Reg    The target register address to write
+  * @param  pData  The target register value to be written
+  * @param  Length buffer size to be written
+  * @retval BSP status
+  */
+int32_t BSP_I2C8_WriteReg(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint16_t Length)
+{
+  int32_t ret;
+
+#if defined(BSP_USE_CMSIS_OS)
+  /* Get semaphore to prevent multiple I2C access */
+  osSemaphoreWait(BspI2cSemaphore, osWaitForever);
+#endif /* BSP_USE_CMSIS_OS */
+  if (I2C8_WriteReg(DevAddr, Reg, I2C_MEMADD_SIZE_8BIT, pData, Length) == 0)
+  {
+    ret = BSP_ERROR_NONE;
+  }
+  else
+  {
+    if (HAL_I2C_GetError(&hbus_i2c8) == HAL_I2C_ERROR_AF)
+    {
+      ret = BSP_ERROR_BUS_ACKNOWLEDGE_FAILURE;
+    }
+    else
+    {
+      ret =  BSP_ERROR_PERIPH_FAILURE;
+    }
+  }
+#if defined(BSP_USE_CMSIS_OS)
+  /* Release semaphore to prevent multiple I2C access */
+  osSemaphoreRelease(BspI2cSemaphore);
+#endif /* BSP_USE_CMSIS_OS */
+
+  return ret;
+}
+
+/**
+  * @brief  Read a 8bit register of the device through BUS
+  * @param  DevAddr Device address on BUS
+  * @param  Reg     The target register address to read
+  * @param  pData   Pointer to data buffer
+  * @param  Length  Length of the data
+  * @retval BSP status
+  */
+int32_t BSP_I2C8_ReadReg(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint16_t Length)
+{
+  int32_t ret;
+
+#if defined(BSP_USE_CMSIS_OS)
+  /* Get semaphore to prevent multiple I2C access */
+  osSemaphoreWait(BspI2cSemaphore, osWaitForever);
+#endif /* BSP_USE_CMSIS_OS */
+  if (I2C8_ReadReg(DevAddr, Reg, I2C_MEMADD_SIZE_8BIT, pData, Length) == 0)
+  {
+    ret = BSP_ERROR_NONE;
+  }
+  else
+  {
+    if (HAL_I2C_GetError(&hbus_i2c8) == HAL_I2C_ERROR_AF)
+    {
+      ret = BSP_ERROR_BUS_ACKNOWLEDGE_FAILURE;
+    }
+    else
+    {
+      ret =  BSP_ERROR_PERIPH_FAILURE;
+    }
+  }
+#if defined(BSP_USE_CMSIS_OS)
+  /* Release semaphore to prevent multiple I2C access */
+  osSemaphoreRelease(BspI2cSemaphore);
+#endif /* BSP_USE_CMSIS_OS */
+
+  return ret;
+}
+
+/**
+  * @brief  Write a 16bit value in a register of the device through BUS.
+  * @param  DevAddr Device address on Bus.
+  * @param  Reg    The target register address to write
+  * @param  pData  The target register value to be written
+  * @param  Length buffer size to be written
+  * @retval BSP status
+  */
+int32_t BSP_I2C8_WriteReg16(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint16_t Length)
+{
+  int32_t ret;
+
+#if defined(BSP_USE_CMSIS_OS)
+  /* Get semaphore to prevent multiple I2C access */
+  osSemaphoreWait(BspI2cSemaphore, osWaitForever);
+#endif /* BSP_USE_CMSIS_OS */
+  if (I2C8_WriteReg(DevAddr, Reg, I2C_MEMADD_SIZE_16BIT, pData, Length) == 0)
+  {
+    ret = BSP_ERROR_NONE;
+  }
+  else
+  {
+    if (HAL_I2C_GetError(&hbus_i2c8) == HAL_I2C_ERROR_AF)
+    {
+      ret = BSP_ERROR_BUS_ACKNOWLEDGE_FAILURE;
+    }
+    else
+    {
+      ret =  BSP_ERROR_PERIPH_FAILURE;
+    }
+  }
+#if defined(BSP_USE_CMSIS_OS)
+  /* Release semaphore to prevent multiple I2C access */
+  osSemaphoreRelease(BspI2cSemaphore);
+#endif /* BSP_USE_CMSIS_OS */
+
+  return ret;
+}
+
+/**
+  * @brief  Read a 16bit register of the device through BUS
+  * @param  DevAddr Device address on BUS
+  * @param  Reg     The target register address to read
+  * @param  pData   Pointer to data buffer
+  * @param  Length  Length of the data
+  * @retval BSP status
+  */
+int32_t BSP_I2C8_ReadReg16(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint16_t Length)
+{
+  int32_t ret;
+
+#if defined(BSP_USE_CMSIS_OS)
+  /* Get semaphore to prevent multiple I2C access */
+  osSemaphoreWait(BspI2cSemaphore, osWaitForever);
+#endif /* BSP_USE_CMSIS_OS */
+  if (I2C8_ReadReg(DevAddr, Reg, I2C_MEMADD_SIZE_16BIT, pData, Length) == 0)
+  {
+    ret = BSP_ERROR_NONE;
+  }
+  else
+  {
+    if (HAL_I2C_GetError(&hbus_i2c8) == HAL_I2C_ERROR_AF)
+    {
+      ret = BSP_ERROR_BUS_ACKNOWLEDGE_FAILURE;
+    }
+    else
+    {
+      ret =  BSP_ERROR_PERIPH_FAILURE;
+    }
+  }
+#if defined(BSP_USE_CMSIS_OS)
+  /* Release semaphore to prevent multiple I2C access */
+  osSemaphoreRelease(BspI2cSemaphore);
+#endif /* BSP_USE_CMSIS_OS */
+
+  return ret;
+}
+
+/**
+  * @brief  Read data
+  * @param  DevAddr Device address on BUS
+  * @param  pData   Pointer to data buffer
+  * @param  Length  Length of the data
+  * @retval BSP status
+  */
+int32_t BSP_I2C8_Recv(uint16_t DevAddr, uint8_t *pData, uint16_t Length)
+{
+  int32_t ret;
+
+#if defined(BSP_USE_CMSIS_OS)
+  /* Get semaphore to prevent multiple I2C access */
+  osSemaphoreWait(BspI2cSemaphore, osWaitForever);
+#endif /* BSP_USE_CMSIS_OS */
+  if (I2C8_Recv(DevAddr, pData, Length) == 0)
+  {
+    ret = BSP_ERROR_NONE;
+  }
+  else
+  {
+    if (HAL_I2C_GetError(&hbus_i2c8) == HAL_I2C_ERROR_AF)
+    {
+      ret = BSP_ERROR_BUS_ACKNOWLEDGE_FAILURE;
+    }
+    else
+    {
+      ret =  BSP_ERROR_PERIPH_FAILURE;
+    }
+  }
+#if defined(BSP_USE_CMSIS_OS)
+  /* Release semaphore to prevent multiple I2C access */
+  osSemaphoreRelease(BspI2cSemaphore);
+#endif /* BSP_USE_CMSIS_OS */
+
+  return ret;
+}
+
+/**
+  * @brief  Send data
+  * @param  DevAddr Device address on BUS
+  * @param  pData   Pointer to data buffer
+  * @param  Length  Length of the data
+  * @retval BSP status
+  */
+int32_t BSP_I2C8_Send(uint16_t DevAddr, uint8_t *pData, uint16_t Length)
+{
+  int32_t ret;
+
+#if defined(BSP_USE_CMSIS_OS)
+  /* Get semaphore to prevent multiple I2C access */
+  osSemaphoreWait(BspI2cSemaphore, osWaitForever);
+#endif /* BSP_USE_CMSIS_OS */
+  if (I2C8_Send(DevAddr, pData, Length) == 0)
+  {
+    ret = BSP_ERROR_NONE;
+  }
+  else
+  {
+    if (HAL_I2C_GetError(&hbus_i2c8) == HAL_I2C_ERROR_AF)
+    {
+      ret = BSP_ERROR_BUS_ACKNOWLEDGE_FAILURE;
+    }
+    else
+    {
+      ret =  BSP_ERROR_PERIPH_FAILURE;
+    }
+  }
+#if defined(BSP_USE_CMSIS_OS)
+  /* Release semaphore to prevent multiple I2C access */
+  osSemaphoreRelease(BspI2cSemaphore);
+#endif /* BSP_USE_CMSIS_OS */
+
+  return ret;
+}
+
+/**
+  * @brief  Checks if target device is ready for communication.
+  * @note   This function is used with Memory devices
+  * @param  DevAddr  Target device address
+  * @param  Trials      Number of trials
+  * @retval BSP status
+  */
+int32_t BSP_I2C8_IsReady(uint16_t DevAddr, uint32_t Trials)
+{
+  int32_t ret = BSP_ERROR_NONE;
+
+#if defined(BSP_USE_CMSIS_OS)
+  /* Get semaphore to prevent multiple I2C access */
+  osSemaphoreWait(BspI2cSemaphore, osWaitForever);
+#endif /* BSP_USE_CMSIS_OS */
+  if (HAL_I2C_IsDeviceReady(&hbus_i2c8, DevAddr, Trials, 1000) != HAL_OK)
+  {
+    ret = BSP_ERROR_BUSY;
+  }
+#if defined(BSP_USE_CMSIS_OS)
+  /* Release semaphore to prevent multiple I2C access */
+  osSemaphoreRelease(BspI2cSemaphore);
+#endif /* BSP_USE_CMSIS_OS */
+
+  return ret;
+}
+
+/**
   * @brief  Delay function
   * @retval Tick value
   */
@@ -2137,6 +2526,150 @@ static int32_t I2C6_Recv(uint16_t DevAddr, uint8_t *pData, uint16_t Length)
 static int32_t I2C6_Send(uint16_t DevAddr, uint8_t *pData, uint16_t Length)
 {
   if (HAL_I2C_Master_Transmit(&hbus_i2c6, DevAddr, pData, Length, 10000) == HAL_OK)
+  {
+    return BSP_ERROR_NONE;
+  }
+
+  return BSP_ERROR_BUS_FAILURE;
+}
+
+/**
+  * @brief  Initializes I2C8 MSP.
+  * @param  hI2c  I2C handler
+  * @retval None
+  */
+static void I2C8_MspInit(I2C_HandleTypeDef *hI2c)
+{
+  GPIO_InitTypeDef  gpio_init_structure;
+
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hI2c);
+
+  /*** Configure the GPIOs ***/
+  /* Enable VddIO2 for Port K */
+//  __HAL_RCC_PWR_CLK_ENABLE();
+//  HAL_PWREx_EnableVddIO2();
+//  __HAL_RCC_PWR_CLK_DISABLE();
+
+  /* Enable SCL GPIO clock */
+  BUS_I2C8_SCL_GPIO_CLK_ENABLE();
+  /* Enable SDA GPIO clock */
+  BUS_I2C8_SDA_GPIO_CLK_ENABLE();
+
+  /* Configure I2C Tx as alternate function */
+  gpio_init_structure.Pin     = BUS_I2C8_SCL_PIN;
+  gpio_init_structure.Mode    = GPIO_MODE_AF_OD;
+  gpio_init_structure.Pull    = GPIO_PULLUP;
+  gpio_init_structure.Speed             = GPIO_SPEED_FREQ_HIGH;
+  gpio_init_structure.Alternate         = BUS_I2C8_SCL_AF;
+  HAL_GPIO_Init(BUS_I2C8_SCL_GPIO_PORT, &gpio_init_structure);
+
+  /* Configure I2C Rx as alternate function */
+  gpio_init_structure.Pin     = BUS_I2C8_SDA_PIN;
+  gpio_init_structure.Mode    = GPIO_MODE_AF_OD;
+  gpio_init_structure.Pull    = GPIO_PULLUP;
+  gpio_init_structure.Speed             = GPIO_SPEED_FREQ_HIGH;
+  gpio_init_structure.Alternate         = BUS_I2C8_SDA_AF;
+  HAL_GPIO_Init(BUS_I2C8_SDA_GPIO_PORT, &gpio_init_structure);
+
+  /*** Configure the I2C peripheral ***/
+  /* Enable I2C clock */
+  BUS_I2C8_CLK_ENABLE();
+
+  /* Force the I2C peripheral clock reset */
+  BUS_I2C8_FORCE_RESET();
+
+  /* Release the I2C peripheral clock reset */
+  BUS_I2C8_RELEASE_RESET();
+}
+
+/**
+  * @brief  DeInitializes I2C8 MSP.
+  * @param  hI2c  I2C handler
+  * @retval None
+  */
+static void I2C8_MspDeInit(I2C_HandleTypeDef *hI2c)
+{
+  GPIO_InitTypeDef  gpio_init_structure;
+
+  /* Prevent unused argument(s) compilation warning */
+  UNUSED(hI2c);
+
+  /* Configure I2C Tx, Rx as alternate function */
+  gpio_init_structure.Pin = BUS_I2C8_SCL_PIN;
+  HAL_GPIO_DeInit(BUS_I2C8_SCL_GPIO_PORT, gpio_init_structure.Pin);
+  gpio_init_structure.Pin = BUS_I2C8_SDA_PIN;
+  HAL_GPIO_DeInit(BUS_I2C8_SDA_GPIO_PORT, gpio_init_structure.Pin);
+
+  /* Disable I2C clock */
+  BUS_I2C8_CLK_DISABLE();
+}
+
+/**
+  * @brief  Write a value in a register of the device through BUS.
+  * @param  DevAddr    Device address on Bus.
+  * @param  Reg        The target register address to write
+  * @param  MemAddSize Size of internal memory address
+  * @param  pData      The target register value to be written
+  * @param  Length     data length in bytes
+  * @retval BSP status
+  */
+static int32_t I2C8_WriteReg(uint16_t DevAddr, uint16_t Reg, uint16_t MemAddSize, uint8_t *pData, uint16_t Length)
+{
+  if (HAL_I2C_Mem_Write(&hbus_i2c8, DevAddr, Reg, MemAddSize, pData, Length, 10000) == HAL_OK)
+  {
+    return BSP_ERROR_NONE;
+  }
+
+  return BSP_ERROR_BUS_FAILURE;
+}
+
+/**
+  * @brief  Read a register of the device through BUS
+  * @param  DevAddr    Device address on BUS
+  * @param  Reg        The target register address to read
+  * @param  MemAddSize Size of internal memory address
+  * @param  pData      The target register value to be written
+  * @param  Length     data length in bytes
+  * @retval BSP status
+  */
+static int32_t I2C8_ReadReg(uint16_t DevAddr, uint16_t Reg, uint16_t MemAddSize, uint8_t *pData, uint16_t Length)
+{
+  if (HAL_I2C_Mem_Read(&hbus_i2c8, DevAddr, Reg, MemAddSize, pData, Length, 10000) == HAL_OK)
+  {
+    return BSP_ERROR_NONE;
+  }
+
+  return BSP_ERROR_BUS_FAILURE;
+}
+
+/**
+  * @brief  Receive data from the device through BUS
+  * @param  DevAddr    Device address on BUS
+  * @param  pData      The target register value to be received
+  * @param  Length     data length in bytes
+  * @retval BSP status
+  */
+static int32_t I2C8_Recv(uint16_t DevAddr, uint8_t *pData, uint16_t Length)
+{
+  if (HAL_I2C_Master_Receive(&hbus_i2c8, DevAddr, pData, Length, 10000) == HAL_OK)
+  {
+    return BSP_ERROR_NONE;
+  }
+
+  return BSP_ERROR_BUS_FAILURE;
+}
+
+/**
+  * @brief  Send data to the device through BUS
+  * @param  DevAddr    Device address on BUS
+  * @param  pData      The target register value to be sent
+  * @param  Length     data length in bytes
+  * @retval BSP status
+  */
+static int32_t I2C8_Send(uint16_t DevAddr, uint8_t *pData, uint16_t Length)
+{
+  if (HAL_I2C_Master_Transmit(&hbus_i2c8, DevAddr, pData, Length, 10000) == HAL_OK)
   {
     return BSP_ERROR_NONE;
   }

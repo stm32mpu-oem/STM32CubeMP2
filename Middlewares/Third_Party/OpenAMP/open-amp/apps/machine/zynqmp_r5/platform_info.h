@@ -26,14 +26,34 @@ extern "C" {
 
 /* Interrupt vectors */
 #ifdef versal
+
+#ifndef IPI_IRQ_VECT_ID
 #define IPI_IRQ_VECT_ID     63
+#endif /* !IPI_IRQ_VECT_ID */
+
+#ifndef POLL_BASE_ADDR
 #define POLL_BASE_ADDR       0xFF340000 /* IPI base address*/
+#endif /* !POLL_BASE_ADDR */
+
+#ifndef IPI_CHN_BITMASK
 #define IPI_CHN_BITMASK     0x0000020 /* IPI channel bit mask for IPI from/to
 					   APU */
+#endif /* !IPI_CHN_BITMASK */
+
 #else
+
+#ifndef IPI_IRQ_VECT_ID
 #define IPI_IRQ_VECT_ID     XPAR_XIPIPSU_0_INT_ID
+#endif /* !IPI_IRQ_VECT_ID */
+
+#ifndef POLL_BASE_ADDR
 #define POLL_BASE_ADDR      XPAR_XIPIPSU_0_BASE_ADDRESS
+#endif /* !POLL_BASE_ADDR */
+
+#ifndef IPI_CHN_BITMASK
 #define IPI_CHN_BITMASK     0x01000000
+#endif /* !IPI_CHN_BITMASK */
+
 #endif /* versal */
 
 #ifdef RPMSG_NO_IPI
@@ -59,7 +79,7 @@ struct remoteproc_priv {
  * It will initialize the platform.
  *
  * @argc: number of arguments
- * @argv: array of the input arguements
+ * @argv: array of the input arguments
  * @platform: pointer to store the platform data pointer
  *
  * return 0 for success or negative value for failure
@@ -75,7 +95,7 @@ int platform_init(int argc, char *argv[], void **platform);
  * @platform: pointer to the private data
  * @vdev_index: index of the virtio device, there can more than one vdev
  *              on the platform.
- * @role: virtio master or virtio slave of the vdev
+ * @role: virtio driver or virtio device of the vdev
  * @rst_cb: virtio device reset callback
  * @ns_bind_cb: rpmsg name service bind callback
  *

@@ -315,6 +315,11 @@ int ddrphy_phyinit_usercustom_saveretregs(void)
 		if (ret != 0) {
 			return ret;
 		}
+
+		ret = ddrphy_phyinit_trackreg(p_addr | TINITENG | CSR_SEQ0BDISABLEFLAG6_ADDR);
+		if (ret != 0) {
+			return ret;
+		}
 #endif /* STM32MP_LPDDR4_TYPE */
 	} /* p_addr */
 
@@ -391,7 +396,7 @@ int ddrphy_phyinit_usercustom_saveretregs(void)
 	 * --------------------------------------------------------------------------
 	 */
 
-#if STM32MP_DDR4_TYPE
+#if STM32MP_DDR3_TYPE || STM32MP_DDR4_TYPE
 	/* Disabling Ucclk (PMU) and Hclk (training hardware) */
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TDRTUB | CSR_UCCLKHCLKENABLES_ADDR)), 0x0U);
 #elif STM32MP_LPDDR4_TYPE

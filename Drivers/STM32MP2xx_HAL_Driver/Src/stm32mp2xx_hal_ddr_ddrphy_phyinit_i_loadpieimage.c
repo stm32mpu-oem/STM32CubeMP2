@@ -383,7 +383,11 @@ void ddrphy_phyinit_i_loadpieimage(bool skip_training)
 	seq0bdisableflag_program(skip_training);
 
 #if STM32MP_LPDDR4_TYPE
-	if (!skip_training) {
+#if defined(USE_STM32MP257CXX_EMU)
+     if (skip_training) {
+#else /* USE_STM32MP257CXX_EMU */
+     if (!skip_training) {
+#endif /* USE_STM32MP257CXX_EMU */
 		ppttrainsetup_program();
 	}
 

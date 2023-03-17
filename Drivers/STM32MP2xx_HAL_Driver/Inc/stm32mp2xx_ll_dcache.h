@@ -17,8 +17,8 @@
   */
 
 /* Define to prevent recursive inclusion ------------------------------------*/
-#ifndef __STM32MP2xx_LL_DCACHE_H
-#define __STM32MP2xx_LL_DCACHE_H
+#ifndef STM32MP2xx_LL_DCACHE_H
+#define STM32MP2xx_LL_DCACHE_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,6 +41,9 @@ extern "C" {
 /* Private variables ---------------------------------------------------------*/
 /* Private constants ---------------------------------------------------------*/
 /** @addtogroup DCACHE_Private_Constants DCACHE Private Constants
+  * @{
+  */
+/** @defgroup DCACHE_Command_Operation Command Operation
   * @{
   */
 #define LL_DCACHE_COMMAND_NO_OPERATION                    (0x00000000)
@@ -104,6 +107,10 @@ extern "C" {
 #define LL_DCACHE_MONITOR_WRITE_MISS      DCACHE_CR_WMISSMEN  /*!< Write Miss monitoring */
 #define LL_DCACHE_MONITOR_ALL             (DCACHE_CR_RHITMEN | DCACHE_CR_RMISSMEN \
                                            | DCACHE_CR_WHITMEN | DCACHE_CR_WMISSMEN)
+/**
+  * @}
+  */
+
 /**
   * @}
   */
@@ -652,6 +659,4 @@ __STATIC_INLINE uint32_t LL_DCACHE_IsActiveFlag_CMDEND(DCACHE_TypeDef *DCACHEx)
 }
 #endif
 
-#endif /* __STM32MP2xx_LL_DCACHE_H */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+#endif /* STM32MP2xx_LL_DCACHE_H */

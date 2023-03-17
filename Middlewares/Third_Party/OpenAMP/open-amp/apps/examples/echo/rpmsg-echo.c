@@ -2,9 +2,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-/* This is a sample demonstration application that showcases usage of rpmsg
-This application is meant to run on the remote CPU running baremetal code.
-This application echoes back data that was sent to it by the master core. */
+/*
+ * This is a sample demonstration application that showcases usage of rpmsg
+ * This application is meant to run on the remote CPU running baremetal code.
+ * This application echoes back data that was sent to it by the host core.
+ */
 
 #include <stdio.h>
 #include <openamp/open_amp.h>
@@ -39,7 +41,7 @@ static int rpmsg_endpoint_cb(struct rpmsg_endpoint *ept, void *data, size_t len,
 		return RPMSG_SUCCESS;
 	}
 
-	/* Send data back to master */
+	/* Send data back to host */
 	if (rpmsg_send(ept, data, len) < 0) {
 		LPERROR("rpmsg_send failed\r\n");
 	}
@@ -113,7 +115,7 @@ int main(int argc, char *argv[])
 		ret = -1;
 	} else {
 		rpdev = platform_create_rpmsg_vdev(platform, 0,
-						   VIRTIO_DEV_SLAVE,
+						   VIRTIO_DEV_DEVICE,
 						   NULL, NULL);
 		if (!rpdev) {
 			LPERROR("Failed to create rpmsg virtio device.\r\n");

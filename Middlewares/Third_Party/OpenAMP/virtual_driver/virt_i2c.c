@@ -64,7 +64,7 @@ static int VIRT_I2C_read_cb(struct rpmsg_endpoint *ept, void *data,
   memcpy(i2c_dev->msg,data,len);
 
   if (i2c_dev->RxCpltCallback != NULL) {
-    i2c_dev->RxCpltCallback(i2c_dev,len);
+    i2c_dev->RxCpltCallback(i2c_dev, i2c_dev->msg->len);
   }
 
   return 0;

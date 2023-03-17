@@ -162,6 +162,34 @@ typedef struct
 #ifndef BUS_I2C6_FREQUENCY
 #define BUS_I2C6_FREQUENCY  400000U /* Frequency of I2C2 = 400 KHz*/
 #endif /* BUS_I2C6_FREQUENCY */
+
+/* Definition for I2C8 clock resources */
+#define BUS_I2C8                              I2C8
+
+#define BUS_I2C8_CLK_ENABLE()                  __HAL_RCC_I2C8_CLK_ENABLE()
+#define BUS_I2C8_CLK_DISABLE()                 __HAL_RCC_I2C8_CLK_DISABLE()
+
+#define BUS_I2C8_SCL_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOZ_CLK_ENABLE()
+#define BUS_I2C8_SCL_GPIO_CLK_DISABLE()        __HAL_RCC_GPIOZ_CLK_DISABLE()
+
+#define BUS_I2C8_SDA_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOZ_CLK_ENABLE()
+#define BUS_I2C8_SDA_GPIO_CLK_DISABLE()        __HAL_RCC_GPIOZ_CLK_DISABLE()
+
+#define BUS_I2C8_FORCE_RESET()                 __HAL_RCC_I2C8_FORCE_RESET()
+#define BUS_I2C8_RELEASE_RESET()               __HAL_RCC_I2C8_RELEASE_RESET()
+
+/* Definition for I2C8 Pins */
+#define BUS_I2C8_SCL_PIN                       GPIO_PIN_4
+#define BUS_I2C8_SCL_GPIO_PORT                 GPIOZ
+#define BUS_I2C8_SCL_AF                        GPIO_AF8_I2C8
+
+#define BUS_I2C8_SDA_PIN                       GPIO_PIN_3
+#define BUS_I2C8_SDA_GPIO_PORT                 GPIOZ
+#define BUS_I2C8_SDA_AF                        GPIO_AF8_I2C8
+
+#ifndef BUS_I2C8_FREQUENCY
+#define BUS_I2C8_FREQUENCY  400000U /* Frequency of I2C8 = 400 KHz*/
+#endif /* BUS_I2C8_FREQUENCY */
 /**
   * @}
   */
@@ -172,6 +200,7 @@ typedef struct
 extern I2C_HandleTypeDef hbus_i2c2;
 extern I2C_HandleTypeDef hbus_i2c3;
 extern I2C_HandleTypeDef hbus_i2c6;
+extern I2C_HandleTypeDef hbus_i2c8;
 /**
   * @}
   */
@@ -231,6 +260,23 @@ int32_t BSP_I2C6_RegisterDefaultMspCallbacks(void);
 int32_t BSP_I2C6_RegisterMspCallbacks(BSP_I2C_Cb_t *Callback);
 #endif /* USE_HAL_I2C_REGISTER_CALLBACKS */
 __weak HAL_StatusTypeDef MX_I2C6_Init(I2C_HandleTypeDef *hI2c, uint32_t timing);
+
+/* Function prototypes for I2C8 */
+int32_t BSP_I2C8_Init(void);
+int32_t BSP_I2C8_DeInit(void);
+int32_t BSP_I2C8_WriteReg(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint16_t Length);
+int32_t BSP_I2C8_ReadReg(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint16_t Length);
+int32_t BSP_I2C8_WriteReg16(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint16_t Length);
+int32_t BSP_I2C8_ReadReg16(uint16_t DevAddr, uint16_t Reg, uint8_t *pData, uint16_t Length);
+int32_t BSP_I2C8_Recv(uint16_t DevAddr, uint8_t *pData, uint16_t Length);
+int32_t BSP_I2C8_Send(uint16_t DevAddr, uint8_t *pData, uint16_t Length);
+int32_t BSP_I2C8_IsReady(uint16_t DevAddr, uint32_t Trials);
+
+#if (USE_HAL_I2C_REGISTER_CALLBACKS > 0)
+int32_t BSP_I2C8_RegisterDefaultMspCallbacks(void);
+int32_t BSP_I2C8_RegisterMspCallbacks(BSP_I2C_Cb_t *Callback);
+#endif /* USE_HAL_I2C_REGISTER_CALLBACKS */
+__weak HAL_StatusTypeDef MX_I2C8_Init(I2C_HandleTypeDef *hI2c, uint32_t timing);
 #endif /* CORE_CA35 || CORE_CM33 */
 /**
   * @}

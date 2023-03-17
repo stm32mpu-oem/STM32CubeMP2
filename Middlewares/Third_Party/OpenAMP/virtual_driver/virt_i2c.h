@@ -38,11 +38,12 @@
 /*rpmsg_i2c_msg - client specific data*/
 typedef struct __VIRT_I2C_rpmsg_i2c_msg
 {
-  uint8_t addr;                      /*!< i2c slave addr                             */
   uint32_t len;                      /*!< Data Buffer size                           */
+  uint8_t addr;                      /*!< i2c slave addr                             */
   uint8_t result;                    /*!< return value for the master                */
+  uint8_t reserved[2];               /*!< header padding for 32-bit alignment        */
   uint8_t buf[0];                    /*!< i2c Data buffer                            */
-}rpmsg_i2c_msg;
+} __attribute__((__packed__)) rpmsg_i2c_msg;
 
 typedef struct __VIRT_I2C_HandleTypeDef
 {

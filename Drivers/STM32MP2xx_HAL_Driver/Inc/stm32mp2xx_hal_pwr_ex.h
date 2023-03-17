@@ -343,15 +343,74 @@ do { \
 
 
 /**
-  * @brief  Generates a Software interrupt on PVM EXTI line ( which is same than PVD line !!)
+  * @brief  Generates a Software interrupt on PVM EXTI line
   * @retval None
   */
 /*PVM Event in Bank1 */
 #define __HAL_PWR_PVM_EXTI_GENERATE_SWIT() SET_BIT(EXTI1->SWIER1, PWR_EXTI_LINE_PVM )
 
 
+
 /**
-  * @brief Enable/Disable  VDDcpuD  Extented interruption from EXTI2 to current CPU (VDDcpuD line connected to EXT2)
+  * @brief Enable/Disable  VDDgpuD  Extented interruption from EXTI1 to current CPU (VDDgpuD line connected to EXTI1)
+  * @retval None.
+  */
+#define __HAL_PWR_VDDgpuD_EXTI_ENABLE_IT()  __HAL_PWR_EXTI_ENABLE_IT(EXTI_CONNECTOR1,PWR_EXTI_LINE_VDDgpuD)
+#define __HAL_PWR_VDDgpuD_EXTI_DISABLE_IT()  __HAL_PWR_EXTI_DISABLE_IT(EXTI_CONNECTOR1,PWR_EXTI_LINE_VDDgpuD)
+
+
+/**
+  * @brief Enable/Disable the VDDgpuD  Extended Interrupt Rising Trigger from EXTI1 (VDDgpuD line connected to EXTI1)
+  * @retval None.
+  */
+#define __HAL_PWR_VDDgpuD_EXTI_ENABLE_RISING_EDGE()  __HAL_PWR_EXTI_ENABLE_RISING_EDGE(EXTI1, PWR_EXTI_LINE_VDDgpuD)
+#define __HAL_PWR_VDDgpuD_EXTI_DISABLE_RISING_EDGE()  __HAL_PWR_EXTI_DISABLE_RISING_EDGE(EXTI1, PWR_EXTI_LINE_VDDgpuD)
+
+/**
+  * @brief Enable/Disable the VDDgpuD  Extended Interrupt Falling Trigger from EXTI1 (VDDgpuD line connected to EXTI1)
+  * @retval None.
+  */
+#define __HAL_PWR_VDDgpuD_EXTI_ENABLE_FALLING_EDGE()  __HAL_PWR_EXTI_ENABLE_FALLING_EDGE(EXTI1, PWR_EXTI_LINE_VDDgpuD)
+#define __HAL_PWR_VDDgpuD_EXTI_DISABLE_FALLING_EDGE()  __HAL_PWR_EXTI_DISABLE_FALLING_EDGE(EXTI1, PWR_EXTI_LINE_VDDgpuD)
+
+/**
+  * @brief Enable/Disable the VDDgpuD  Extended Interrupt Falling and Rising Trigger from EXTI1 (VDDgpuD line connected to EXTI1)
+  * @retval None.
+  */
+#define __HAL_PWR_VDDgpuD_EXTI_ENABLE_RISING_FALLING_EDGE()  __HAL_PWR_EXTI_ENABLE_RISING_FALLING_EDGE(EXTI1, PWR_EXTI_LINE_VDDgpuD)
+#define __HAL_PWR_VDDgpuD_EXTI_DISABLE_RISING_FALLING_EDGE()  __HAL_PWR_EXTI_DISABLE_RISING_FALLING_EDGE(EXTI1, PWR_EXTI_LINE_VDDgpuD)
+
+/**
+  * @brief Check whether the specified VDDgpuD EXTI interrupt flag is set or not from EXTI1 (VDDgpuD line connected to EXTI1)
+  * @retval EXTI VDDgpuD Line Status.
+  */
+#define __HAL_PWR_VDDgpuD_EXTI_GET_FLAG()  __HAL_PWR_EXTI_GET_FLAG(EXTI1, PWR_EXTI_LINE_VDDgpuD)
+
+/**
+  * @brief Clear the VDDgpuD Exti flag on EXTI1 (VDDgpuD line connected to EXTI1)
+  * @retval None.
+  */
+#define __HAL_PWR_VDDgpuD_EXTI_CLEAR_FLAG()  __HAL_PWR_EXTI_CLEAR_FLAG(EXTI1, PWR_EXTI_LINE_VDDgpuD)
+
+/**
+  * @brief  Generates VDDgpuD Software interrupt  on EXTI1 (VDDgpuD line connected to EXTI1)
+  * @retval None
+  */
+#define __HAL_PWR_VDDgpuD_EXTI_GENERATE_SWIT() __HAL_PWR_EXTI_GENERATE_SWIT(EXTI1, PWR_EXTI_LINE_VDDgpuD)
+
+/**
+  * @brief  indicate voltage range where VDDGPU is
+  * @retval None
+  */
+#define PWR_VDDGPU_BELOW_LOW_THRESHOLD                0U
+#define PWR_VDDGPU_BELOW_HIGH_THRESHOLD               1U
+#define PWR_VDDGPU_ABOVE_EQUAL_LOW_THRESHOLD          2U
+#define PWR_VDDGPU_ABOVE_EQUAL_HIGH_THRESHOLD         3U
+#define PWR_NO_VDDGPU_MEASUREMENT_AVAILABLE          15U
+
+
+/**
+  * @brief Enable/Disable  VDDcpuD  Extented interruption from EXTI2 to current CPU (VDDcpuD line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_VDDcpuD_EXTI_ENABLE_IT()  __HAL_PWR_EXTI_ENABLE_IT(EXTI_CONNECTOR2,PWR_EXTI_LINE_VDDcpuD)
@@ -359,40 +418,40 @@ do { \
 
 
 /**
-  * @brief Enable/Disable the VDDcpuD  Extended Interrupt Rising Trigger from EXTI2 (VDDcpuD line connected to EXT2)
+  * @brief Enable/Disable the VDDcpuD  Extended Interrupt Rising Trigger from EXTI2 (VDDcpuD line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_VDDcpuD_EXTI_ENABLE_RISING_EDGE()  __HAL_PWR_EXTI_ENABLE_RISING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcpuD)
 #define __HAL_PWR_VDDcpuD_EXTI_DISABLE_RISING_EDGE()  __HAL_PWR_EXTI_DISABLE_RISING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcpuD)
 
 /**
-  * @brief Enable/Disable the VDDcpuD  Extended Interrupt Falling Trigger from EXTI2 (VDDcpuD line connected to EXT2)
+  * @brief Enable/Disable the VDDcpuD  Extended Interrupt Falling Trigger from EXTI2 (VDDcpuD line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_VDDcpuD_EXTI_ENABLE_FALLING_EDGE()  __HAL_PWR_EXTI_ENABLE_FALLING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcpuD)
 #define __HAL_PWR_VDDcpuD_EXTI_DISABLE_FALLING_EDGE()  __HAL_PWR_EXTI_DISABLE_FALLING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcpuD)
 
 /**
-  * @brief Enable/Disable the VDDcpuD  Extended Interrupt Falling and Rising Trigger from EXTI2 (VDDcpuD line connected to EXT2)
+  * @brief Enable/Disable the VDDcpuD  Extended Interrupt Falling and Rising Trigger from EXTI2 (VDDcpuD line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_VDDcpuD_EXTI_ENABLE_RISING_FALLING_EDGE()  __HAL_PWR_EXTI_ENABLE_RISING_FALLING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcpuD)
 #define __HAL_PWR_VDDcpuD_EXTI_DISABLE_RISING_FALLING_EDGE()  __HAL_PWR_EXTI_DISABLE_RISING_FALLING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcpuD)
 
 /**
-  * @brief Check whether the specified VDDcpuD EXTI interrupt flag is set or not from EXTI2 (VDDcpuD line connected to EXT2)
+  * @brief Check whether the specified VDDcpuD EXTI interrupt flag is set or not from EXTI2 (VDDcpuD line connected to EXTI2)
   * @retval EXTI VDDcpuD Line Status.
   */
 #define __HAL_PWR_VDDcpuD_EXTI_GET_FLAG()  __HAL_PWR_EXTI_GET_FLAG(EXTI2, PWR_EXTI_LINE_VDDcpuD)
 
 /**
-  * @brief Clear the VDDcpuD Exti flag on EXTI2 (VDDcpuD line connected to EXT2)
+  * @brief Clear the VDDcpuD Exti flag on EXTI2 (VDDcpuD line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_VDDcpuD_EXTI_CLEAR_FLAG()  __HAL_PWR_EXTI_CLEAR_FLAG(EXTI2, PWR_EXTI_LINE_VDDcpuD)
 
 /**
-  * @brief  Generates VDDcpuD Software interrupt  on EXTI2 (VDDcpuD line connected to EXT2)
+  * @brief  Generates VDDcpuD Software interrupt  on EXTI2 (VDDcpuD line connected to EXTI2)
   * @retval None
   */
 #define __HAL_PWR_VDDcpuD_EXTI_GENERATE_SWIT() __HAL_PWR_EXTI_GENERATE_SWIT(EXTI2, PWR_EXTI_LINE_VDDcpuD)
@@ -407,7 +466,7 @@ do { \
 #define PWR_NO_VDDCPU_MEASUREMENT_AVAILABLE    15U
 
 /**
-  * @brief Enable/Disable  VDDcoreD Extented interruption from EXTI2 to current CPU (VDDcoreD line connected to EXT2)
+  * @brief Enable/Disable  VDDcoreD Extented interruption from EXTI2 to current CPU (VDDcoreD line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_VDDcoreD_EXTI_ENABLE_IT()  __HAL_PWR_EXTI_ENABLE_IT(EXTI_CONNECTOR2,PWR_EXTI_LINE_VDDcoreD)
@@ -415,40 +474,40 @@ do { \
 
 
 /**
-  * @brief Enable/Disable the VDDcoreD  Extended Interrupt Rising Trigger on EXTI2 (VDDcoreD line connected to EXT2)
+  * @brief Enable/Disable the VDDcoreD  Extended Interrupt Rising Trigger on EXTI2 (VDDcoreD line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_VDDcoreD_EXTI_ENABLE_RISING_EDGE()  __HAL_PWR_EXTI_ENABLE_RISING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcoreD)
 #define __HAL_PWR_VDDcoreD_EXTI_DISABLE_RISING_EDGE()  __HAL_PWR_EXTI_DISABLE_RISING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcoreD)
 
 /**
-  * @brief Enable/Disable the VDDcoreD  Extended Interrupt Falling Trigger on EXTI2 (VDDcoreD line connected to EXT2)
+  * @brief Enable/Disable the VDDcoreD  Extended Interrupt Falling Trigger on EXTI2 (VDDcoreD line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_VDDcoreD_EXTI_ENABLE_FALLING_EDGE()  __HAL_PWR_EXTI_ENABLE_FALLING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcoreD)
 #define __HAL_PWR_VDDcoreD_EXTI_DISABLE_FALLING_EDGE()  __HAL_PWR_EXTI_DISABLE_FALLING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcoreD)
 
 /**
-  * @brief Enable/Disable the VDDcoreD  Extended Interrupt Falling and Rising Trigger on EXTI2 (VDDcoreD line connected to EXT2)
+  * @brief Enable/Disable the VDDcoreD  Extended Interrupt Falling and Rising Trigger on EXTI2 (VDDcoreD line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_VDDcoreD_EXTI_ENABLE_RISING_FALLING_EDGE()  __HAL_PWR_EXTI_ENABLE_RISING_FALLING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcoreD)
 #define __HAL_PWR_VDDcoreD_EXTI_DISABLE_RISING_FALLING_EDGE()  __HAL_PWR_EXTI_DISABLE_RISING_FALLING_EDGE(EXTI2, PWR_EXTI_LINE_VDDcoreD)
 
 /**
-  * @brief Check whether the specified VDDcoreD EXTI interrupt flag is set or not on EXTI2 (VDDcoreD line connected to EXT2)
+  * @brief Check whether the specified VDDcoreD EXTI interrupt flag is set or not on EXTI2 (VDDcoreD line connected to EXTI2)
   * @retval EXTI VDDcoreD Line Status.
   */
 #define __HAL_PWR_VDDcoreD_EXTI_GET_FLAG()  __HAL_PWR_EXTI_GET_FLAG(EXTI2, PWR_EXTI_LINE_VDDcoreD)
 
 /**
-  * @brief Clear the VDDcoreD Exti flag on EXTI2 (VDDcoreD line connected to EXT2)
+  * @brief Clear the VDDcoreD Exti flag on EXTI2 (VDDcoreD line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_VDDcoreD_EXTI_CLEAR_FLAG()  __HAL_PWR_EXTI_CLEAR_FLAG(EXTI2, PWR_EXTI_LINE_VDDcoreD)
 
 /**
-  * @brief  Generates VDDcoreD Software interrupt  on EXTI2 (VDDcoreD line connected to EXT2)
+  * @brief  Generates VDDcoreD Software interrupt  on EXTI2 (VDDcoreD line connected to EXTI2)
   * @retval None
   */
 #define __HAL_PWR_VDDcoreD_EXTI_GENERATE_SWIT() __HAL_PWR_EXTI_GENERATE_SWIT(EXTI2, PWR_EXTI_LINE_VDDcoreD)
@@ -463,7 +522,7 @@ do { \
 #define PWR_NO_VDDCORE_MEASUREMENT_AVAILABLE    15U
 
 /**
-  * @brief Enable/Disable  NS TAMPER Extented interruption from EXTI2 to current CPU (TAMPER line connected to EXT2)
+  * @brief Enable/Disable  NS TAMPER Extented interruption from EXTI2 to current CPU (TAMPER line connected to EXTI2)
   * @retval None.
   */
 #define __HAL_PWR_NS_TAMPER_EXTI_ENABLE_IT()   __HAL_PWR_EXTI_ENABLE_IT (EXTI_CONNECTOR2,PWR_EXTI_LINE_NS_TAMPER)
@@ -559,11 +618,10 @@ void HAL_PWREx_DisableLpsram1ContentStandby2Retention(void);
   * @{
   */
 /* Power VBAT/Temperature monitoring functions */
-#if defined (HAL_RTC_MODULE_ENABLED)
-/*API exposed only if RTC enabled (implementation requests call to RTC)*/
+#if defined(CORE_CM33)||defined(CORE_CA35)
 void HAL_PWREx_EnableVbatTempMonitoring(void);
 void HAL_PWREx_DisableVbatTempMonitoring(void);
-#endif /*defined (HAL_RTC_MODULE_ENABLED)*/
+#endif /* defined(CORE_CM33)||defined(CORE_CA35)) */
 uint32_t HAL_PWREx_GetTemperatureLevel(void);
 uint32_t HAL_PWREx_GetVbatLevel(void);
 void HAL_PWREx_TEMP_VBAT_IRQHandler(void);
@@ -576,10 +634,18 @@ void HAL_PWREx_VBAT_INRANGECallback(void);
 
 
 /* GPU supply functions */
+#if defined(CORE_CM33)||defined(CORE_CA35)
 HAL_StatusTypeDef HAL_PWREx_EnableGPUSupply(void);
 void HAL_PWREx_DisableGPUSupply(void);
 HAL_StatusTypeDef HAL_PWREx_EnableGPUSupplyMonitoring(void);
 void HAL_PWREx_DisableGPUSupplyMonitoring(void);
+HAL_StatusTypeDef HAL_PWREx_EnableGPULowThreshold(void);
+void HAL_PWREx_DisableGPULowThreshold(void);
+uint32_t HAL_PWREx_GetVDDgpuRange(void);
+void HAL_PWREx_GPU_IRQHandler(void);
+void HAL_PWREx_GPU_EqualHigherCallback(void);
+void HAL_PWREx_GPU_LowerCallback(void);
+#endif /* defined(CORE_CM33)||defined(CORE_CA35) */
 
 
 /* Power PVM configuration functions */
@@ -599,9 +665,11 @@ void HAL_PWREx_PVM_LowerCallback(void);
 
 
 /* Power VDDcpu detection functions */
+#if defined(CORE_CM33)||defined(CORE_CA35)
 void HAL_PWREx_ConfigVDDcpuD(PWREx_DetectionTypeDef *sConfigVDDcpuD);
 void HAL_PWREx_EnableVDDcpuD(void);
 void HAL_PWREx_DisableVDDcpuD(void);
+#endif /* defined(CORE_CM33)||defined(CORE_CA35) */
 uint32_t HAL_PWREx_GetVDDcpuRange(void);
 void HAL_PWREx_VDDcpuD_IRQHandler(void);
 void HAL_PWREx_VDDcpuD_HIGHERCallback(void);
@@ -609,9 +677,11 @@ void HAL_PWREx_VDDcpuD_LowerCallback(void);
 void HAL_PWREx_VDDcpuD_INRANGECallback(void);
 
 /* Power VDDcore detection functions */
+#if defined(CORE_CM33)||defined(CORE_CA35)
 void HAL_PWREx_ConfigVDDcoreD(PWREx_DetectionTypeDef *sConfigVDDcoreD);
 void HAL_PWREx_EnableVDDcoreD(void);
 void HAL_PWREx_DisableVDDcoreD(void);
+#endif /*#if defined(CORE_CM33)||defined(CORE_CA35)*/
 uint32_t HAL_PWREx_GetVDDcoreRange(void);
 void HAL_PWREx_VDDcoreD_IRQHandler(void);
 void HAL_PWREx_VDDcoreD_HIGHERCallback(void);

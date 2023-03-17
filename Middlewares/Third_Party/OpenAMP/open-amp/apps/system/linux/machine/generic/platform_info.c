@@ -224,7 +224,7 @@ static int linux_proc_irq_handler(int vect_id, void *data)
 
 static struct remoteproc *
 linux_proc_init(struct remoteproc *rproc,
-		struct remoteproc_ops *ops, void *arg)
+		const struct remoteproc_ops *ops, void *arg)
 {
 	struct remoteproc_priv *prproc = arg;
 	struct metal_io_region *io;
@@ -353,7 +353,7 @@ static int linux_proc_notify(struct remoteproc *rproc, uint32_t id)
 
 /* processor operations from r5 to a53. It defines
  * notification operation and remote processor managementi operations. */
-static struct remoteproc_ops linux_proc_ops = {
+static const struct remoteproc_ops linux_proc_ops = {
 	.init = linux_proc_init,
 	.remove = linux_proc_remove,
 	.mmap = linux_proc_mmap,
@@ -366,10 +366,10 @@ static struct remoteproc_ops linux_proc_ops = {
 /* RPMsg virtio shared buffer pool */
 static struct rpmsg_virtio_shm_pool shpool;
 
-static int platform_slave_setup_resource_table(const char *shm_file,
-					       int shm_size,
-					       void *rsc_table, int rsc_size,
-					       metal_phys_addr_t rsc_pa)
+static int platform_device_setup_resource_table(const char *shm_file,
+						int shm_size,
+						void *rsc_table, int rsc_size,
+						metal_phys_addr_t rsc_pa)
 {
 	struct metal_io_region *io;
 	void *rsc_shm;
@@ -405,10 +405,10 @@ platform_create_proc(int proc_index, int rsc_index)
 	 * This step can be done out of the application.
 	 * Assumes the unix server side setup resource table. */
 	if (is_sk_unix_server(prproc->ipi.path)) {
-		ret = platform_slave_setup_resource_table(prproc->shm_file,
-							  prproc->shm_size,
-							  rsc_table, rsc_size,
-							  RSC_MEM_PA);
+		ret = platform_device_setup_resource_table(prproc->shm_file,
+							   prproc->shm_size,
+							   rsc_table, rsc_size,
+							   RSC_MEM_PA);
 		if (ret) {
 			printf("Failed to initialize resource table\r\n");
 			return NULL;
@@ -497,11 +497,11 @@ platform_create_rpmsg_vdev(void *platform, unsigned int vdev_index,
 	}
 
 	printf("initializing rpmsg shared buffer pool\r\n");
-	/* Only RPMsg virtio master needs to initialize the shared buffers pool */
+	/* Only RPMsg virtio driver needs to initialize the shared buffers pool */
 	rpmsg_virtio_init_shm_pool(&shpool, shbuf, SHARED_BUF_SIZE);
 
 	printf("initializing rpmsg vdev\r\n");
-	/* RPMsg virtio slave can set shared buffers pool argument to NULL */
+	/* RPMsg virtio device can set shared buffers pool argument to NULL */
 	ret =  rpmsg_init_vdev(rpmsg_vdev, vdev, ns_bind_cb,
 			       shbuf_io,
 			       &shpool);

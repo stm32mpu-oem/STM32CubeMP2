@@ -356,7 +356,14 @@ uint32_t HAL_PWR_GetPVDRange(void)
   */
 void HAL_PWR_PVD_IRQHandler(void)
 {
-  HAL_PWR_PVD_Callback();
+  if (HAL_PWR_GetPVDRange() == PWR_VDD_BELOW_THRESHOLD)
+  {
+    HAL_PWR_PVD_LowerCallback();
+  }
+  else
+  {
+    HAL_PWR_PVD_EqualHigherCallback();
+  }
 
   /* Clear PWR PVD EXTI pending bit */
   __HAL_PWR_PVD_EXTI_CLEAR_FLAG();
@@ -366,13 +373,18 @@ void HAL_PWR_PVD_IRQHandler(void)
   * @brief  PWR PVD interrupt callback
   * @retval None
   */
-__weak void HAL_PWR_PVD_Callback(void)
+__weak void HAL_PWR_PVD_EqualHigherCallback(void)
 {
   /* NOTE : This function Should not be modified, when the callback is needed,
-            the HAL_PWR_PVDCallback could be implemented in the user file
+            the HAL_PWR_PVD_EqualHigherCallback could be implemented in the user file
    */
 }
-
+__weak void HAL_PWR_PVD_LowerCallback(void)
+{
+  /* NOTE : This function Should not be modified, when the callback is needed,
+            the HAL_PWR_PVD_LowerCallback could be implemented in the user file
+   */
+}
 #endif /*#if defined(CORE_CM33)||defined(CORE_CA35)*/
 
 
@@ -826,9 +838,6 @@ void HAL_PWR_EnterSTANDBYMode(uint8_t STANDBYType)
   /*set request to allow system standby*/
   SetStandbyRequest(STANDBYType);
 
-
-  /* Clear Reset Status, AAC check if it is mandatory, specially in case stand is not granted !!!! should be done by RCC  */
-//__HAL_RCC_CLEAR_RESET_FLAGS();
 
   /* This option is used to ensure that store operations are completed */
 #if defined ( __CC_ARM)

@@ -1,15 +1,13 @@
 /*
  * ZynqMP RPU life cycle management remoteproc example implementation
  *
- * Copyright(c) 2019 Xilinx Ltd.
- * All rights reserved.
- *
+ * Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  */
 #include <common.h>
 
 static struct remoteproc *rpu_rproc_init(struct remoteproc *rproc,
-				 struct remoteproc_ops *ops, void *arg)
+				 const struct remoteproc_ops *ops, void *arg)
 {
 	struct rproc_priv *priv;
 	unsigned int cpu_id = *((unsigned int *)arg);
@@ -54,7 +52,7 @@ static void *rpu_rproc_mmap(struct remoteproc *rproc,
 
 	if ((!da || !pa) || (*da == METAL_BAD_PHYS && *pa == METAL_BAD_PHYS))
 		return NULL;
-	LPRINTF("%s: pa=0x%x, da=0x%x, size=0x%x, atrribute=0x%x\n\r",
+	LPRINTF("%s: pa=0x%x, da=0x%x, size=0x%x, attribute=0x%x\n\r",
 		__func__, *pa, *da, size, attribute);
 	lda = *da;
 	lpa = *pa;
@@ -181,7 +179,7 @@ static int rpu_rproc_shutdown(struct remoteproc *rproc)
 					XPm_ReleaseNode(NODE_TCM_1_B);
 			} else {
 				LPERROR("unmap failed: invalid cpu node: %d\r\n", priv->cpu_id);
-				return NULL;
+				return -EINVAL;
 			}
 		}
 
@@ -193,7 +191,7 @@ static int rpu_rproc_shutdown(struct remoteproc *rproc)
 	return 0;
 }
 
-struct remoteproc_ops zynqmp_rpu_rproc_ops = {
+const struct remoteproc_ops zynqmp_rpu_rproc_ops = {
     .init = rpu_rproc_init,
     .remove = rpu_rproc_remove,
     .start = rpu_rproc_start,

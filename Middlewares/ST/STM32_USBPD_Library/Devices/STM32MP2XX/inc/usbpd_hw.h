@@ -29,6 +29,5 @@ void USBPD_HW_DeInit_DMARxInstance(uint8_t PortNum);
 DMA_Channel_TypeDef *USBPD_HW_Init_DMATxInstance(uint8_t PortNum);
 void USBPD_HW_DeInit_DMATxInstance(uint8_t PortNum);
 uint32_t USBPD_HW_GetRpResistorValue(uint8_t Portnum);
-void USBPD_HW_SetFRSSignalling(uint8_t Portnum, uint8_t cc);
 #endif /* USBPD_BSP_HW_H */
 

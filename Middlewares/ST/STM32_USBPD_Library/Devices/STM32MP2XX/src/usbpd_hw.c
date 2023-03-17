@@ -80,20 +80,4 @@ uint32_t USBPD_HW_GetRpResistorValue(uint8_t PortNum)
   return LL_UCPD_RESISTOR_3_0A;
 }
 
-void USBPD_HW_SetFRSSignalling(uint8_t PortNum, uint8_t cc)
-{
-  (void)PortNum;
-
-  /* Configure the GPIO with the AF corresponding to UCPD */
-  if (1u == cc)
-  {
-    /* FRS_TX1 TBD (CC1) */
-    UCPDFRS_INSTANCE0_FRSCC1;
-  }
-  else
-  {
-    /* FRS_TX2 TBD (CC2) */
-    UCPDFRS_INSTANCE0_FRSCC2;
-  }
-}
 

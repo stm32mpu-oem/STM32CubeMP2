@@ -546,11 +546,13 @@ typedef  void (*pI3C_TgtReqDynamicAddrCallbackTypeDef)(I3C_HandleTypeDef *hi3c, 
 /*!< I3C target receive a broadcast DEFTGTS CCC event                                */
 #define EVENT_ID_DEFGRPA    (0x00000800U)
 /*!< I3C target receive a group addressing (broadcast DEFGRPA CCC) event             */
-#define EVENT_ID_IBI        (0x00001000U)
+#define EVENT_ID_WKP        (0x00001000U)
+/*!< I3C target wakeup event                                                         */
+#define EVENT_ID_IBI        (0x00002000U)
 /*!< I3C controller receive IBI event                                                */
-#define EVENT_ID_CR         (0x00002000U)
+#define EVENT_ID_CR         (0x00004000U)
 /*!< I3C controller controller-role request event                                    */
-#define EVENT_ID_HJ         (0x00004000U)
+#define EVENT_ID_HJ         (0x00008000U)
 /*!< I3C controller hot-join event                                                   */
 /**
   * @}
@@ -852,7 +854,7 @@ typedef  void (*pI3C_TgtReqDynamicAddrCallbackTypeDef)(I3C_HandleTypeDef *hi3c, 
 #define HAL_I3C_IT_IBIIE       LL_I3C_IER_IBIIE      /*!< IBI request interrupt enable               */
 #define HAL_I3C_IT_RXTGTENDIE  LL_I3C_IER_RXTGTENDIE /*!< Target-initiated read end interrupt enable */
 #define HAL_I3C_ALL_CTRL_ITS   (uint32_t)(LL_I3C_IER_CFNFIE | LL_I3C_IER_SFNEIE | LL_I3C_IER_HJIE | \
-                                           LL_I3C_IER_CRIE  | LL_I3C_IER_IBIIE  | LL_I3C_IER_RXTGTENDIE)
+                                          LL_I3C_IER_CRIE  | LL_I3C_IER_IBIIE  | LL_I3C_IER_RXTGTENDIE)
 /**
   * @}
   */
@@ -967,7 +969,7 @@ typedef  void (*pI3C_TgtReqDynamicAddrCallbackTypeDef)(I3C_HandleTypeDef *hi3c, 
   * @retval The state of IBI request capabilities (ENABLE or DISABLE).
   */
 #define __HAL_I3C_GET_IBI_CAPABLE(__BCR__) (((((__BCR__) & I3C_BCR_BCR1_Msk) >> I3C_BCR_BCR1_Pos) == 1U) \
-                                                ? ENABLE : DISABLE)
+                                            ? ENABLE : DISABLE)
 
 /** @brief  Check IBI additional data byte capabilities.
   * @param  __BCR__ specifies the Bus Characteristics capabilities retrieve during ENTDAA procedure.
@@ -975,7 +977,7 @@ typedef  void (*pI3C_TgtReqDynamicAddrCallbackTypeDef)(I3C_HandleTypeDef *hi3c, 
   * @retval The state of IBI additional data byte capabilities (ENABLE or DISABLE).
   */
 #define __HAL_I3C_GET_IBI_PAYLOAD(__BCR__) (((((__BCR__) & I3C_BCR_BCR2_Msk) >> I3C_BCR_BCR2_Pos) == 1U) \
-                                                ? ENABLE : DISABLE)
+                                            ? ENABLE : DISABLE)
 
 /** @brief  Check Controller role request capabilities.
   * @param  __BCR__ specifies the Bus Characteristics capabilities retrieve during ENTDAA procedure.
@@ -983,7 +985,7 @@ typedef  void (*pI3C_TgtReqDynamicAddrCallbackTypeDef)(I3C_HandleTypeDef *hi3c, 
   * @retval The state of Controller role request capabilities (ENABLE or DISABLE).
   */
 #define __HAL_I3C_GET_CR_CAPABLE(__BCR__) (((((__BCR__) & I3C_BCR_BCR6_Msk) >> I3C_BCR_BCR6_Pos) == 1U) \
-                                                ? ENABLE : DISABLE)
+                                           ? ENABLE : DISABLE)
 
 /**
   * @}

@@ -1,16 +1,14 @@
 /*
  * Load firmware example
  *
- * Copyright(c) 2018 Xilinx Ltd.
- * All rights reserved.
- *
+ * Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include <platform_info.h>
+#include "platform_info.h"
 #include <common.h>
 
-extern struct image_store_ops mem_image_store_ops;
+extern const struct image_store_ops mem_image_store_ops;
 
 struct mem_file {
 	const void *base;
@@ -21,7 +19,7 @@ static struct mem_file image = {
 };
 
 int load_exectuable_block(struct remoteproc *rproc,
-			  struct image_store_ops *store_ops, void *store,
+			  const struct image_store_ops *store_ops, void *store,
 			  const char *img_path)
 {
 	int ret;
@@ -60,8 +58,8 @@ int load_exectuable_block(struct remoteproc *rproc,
 
 #ifndef RPU_BOOT_LINUX
 int load_exectuable_noblock(struct remoteproc *rproc,
-			     struct image_store_ops *store_ops, void *store,
-			     const char *img_path)
+			     const struct image_store_ops *store_ops,
+			     void *store, const char *img_path)
 {
 	int ret;
 	const void *img_data;
@@ -145,7 +143,7 @@ int main(void)
 	unsigned int cpu_id = LOAD_FW_TARGET;
 	int ret;
 
-	LPRINTF("Loading Exectuable Demo\n");
+	LPRINTF("Loading Executable Demo\n");
 	rproc = app_init(cpu_id);
 	if (!rproc) {
 		LPERROR("app_init failed\r\n");

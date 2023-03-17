@@ -729,7 +729,7 @@ __STATIC_INLINE uint32_t LL_PWR_IsEnabledVDDgpuLowThreshold(void)
 
 /**
   * @brief  Enable/Disable  VDDgpu independant supply valid (present)
-  * @rmtoll PWR_CR12   UCPDR    LL_PWR_EnableVDDgpuSupplyValidation/LL_PWR_DisableVDDgpuSupplyValidation
+  * @rmtoll PWR_CR12_GPUSV  LL_PWR_EnableVDDgpuSupplyValidation/LL_PWR_DisableVDDgpuSupplyValidation
   * @param None
   */
 __STATIC_INLINE void LL_PWR_EnableVDDgpuValidation(void)
@@ -762,47 +762,6 @@ __STATIC_INLINE uint32_t LL_PWR_IsVDDgpuReady(void)
 {
   return ((READ_BIT(PWR->CR12, PWR_CR12_VDDGPURDY) == (PWR_CR12_VDDGPURDY)) ? 1UL : 0UL);
 }
-
-
-/**
-  * @brief  Enable/Disable USB type C  dead battery pull down behavior on UCPDx_CC1/UCPDx_CC2
-  * @rmtoll UCPDR    LL_PWR_IsEnabledDeadBattPullD       LL_PWR_EnableDeadBattPullD/LL_PWR_DisableDeadBattPullD
-  * @param None
-  */
-__STATIC_INLINE void LL_PWR_EnableDeadBattPullD(void)
-{
-  CLEAR_BIT(PWR->UCPDR, PWR_UCPDR_DBDIS);
-}
-__STATIC_INLINE void LL_PWR_DisableDeadBattPullD(void)
-{
-  SET_BIT(PWR->UCPDR, PWR_UCPDR_DBDIS);
-}
-/**
-  * @brief  return true if USB type C  dead battery pull down behavior on UCPDx_CC1/UCPDx_CC2 is enabled
-  * @rmtoll UCPDR   LL_PWR_IsEnabledDeadBattPullD       LL_PWR_IsEnabledDeadBattPullD
-  * @param None
-  * @retval boolean
-  */
-__STATIC_INLINE uint32_t LL_PWR_IsEnabledDeadBattPullD(void)
-{
-  return ((READ_BIT(PWR->UCPDR, PWR_UCPDR_DBDIS) == (PWR_UCPDR_DBDIS)) ? 0UL : 1UL);
-}
-
-/**
-  * @brief  Set/Get  memorization of configuration of UCPD dead battery pull down behavio when in standby
-  * @rmtoll UCPDR           LL_PWR_SetUcpdConfigMemorization/LL_PWR_GetUcpdConfigMemorization
-  * @param  configuration : 1 memorize UCPD configuration in standby / 0 lost UCPD configuration in standby
-  * @retval None
-  */
-__STATIC_INLINE void LL_PWR_SetUcpdConfigMemorization(uint32_t configuration)
-{
-  MODIFY_REG(PWR->UCPDR, PWR_UCPDR_STBY, configuration << PWR_UCPDR_STBY_Pos);
-}
-__STATIC_INLINE uint32_t LL_PWR_GetUcpdConfigMemorization(void)
-{
-  return ( (READ_REG(PWR->UCPDR) & PWR_UCPDR_STBY) >> PWR_UCPDR_STBY_Pos );
-}
-
 
 #if !defined(CORE_CM0PLUS)
 /**

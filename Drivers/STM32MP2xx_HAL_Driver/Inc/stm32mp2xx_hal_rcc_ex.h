@@ -158,9 +158,94 @@ typedef struct
   * @}
   */
 
+/**
+  * @brief Clock observer structure definition.
+  */
+typedef struct
+{
+  uint32_t      Enable;         /*!< To enable or disable the oberver */
+  uint32_t      RCC_MCOx;       /*!< To select the MCO instance */
+  uint32_t      RCC_MCOSource;  /*!< To select the MCO source */
+  uint32_t      RCC_MCODiv;     /*!< To select the MCO division factor */
+  uint32_t      ObsDiv;         /*!< To select the observer division factor */
+  uint32_t      ObsInv;         /*!< To select the observer inversion */
+  uint32_t      ObsType;        /*!< To select oscillator or flexgen observation */
+  uint32_t      ClockType;      /*!< To select the internal or external clock */
+} RCC_ObserverTypeDef;
+
+/**
+  * @}
+  */
+
 /* Exported constants --------------------------------------------------------*/
 /** @defgroup RCCEx_Exported_Constants RCCEx Exported Constants
   * @{
+  */
+
+/** @defgroup RCCEx_ConfigureClockObserver  RCCEx Configure Clock Observer
+  * @{
+  */
+#define RCC_FLEXGEN0                    0U
+#define RCC_FLEXGEN1                    1U
+#define RCC_FLEXGEN2                    2U
+#define RCC_FLEXGEN3                    3U
+#define RCC_FLEXGEN4                    4U
+#define RCC_FLEXGEN5                    5U
+#define RCC_FLEXGEN6                    6U
+#define RCC_HSICK                       0U
+#define RCC_HSECK                       1U
+#define RCC_MSICK                       2U
+#define RCC_PLL4REF                     5U
+#define RCC_PLL5REF                     6U
+#define RCC_PLL6REF                     7U
+#define RCC_PLL7REF                     8U
+#define RCC_PLL8REF                     9U
+#define RCC_PLL1REF                     10U
+#define RCC_PLL2REF                     11U
+#define RCC_PLL3REF                     12U
+#define RCC_PLL4OUT                     64U
+#define RCC_PLL5OUT                     65U
+#define RCC_PLL6OUT                     66U
+#define RCC_PLL7OUT                     67U
+#define RCC_PLL8OUT                     68U
+#define RCC_HSIKER                      128U
+#define RCC_HSEKER                      129U
+#define RCC_MSIKER                      130U
+#define RCC_SPDIF                       131U
+#define RCC_I2S                         132U
+#define RCC_LSICK                       133U
+#define RCC_LSECK                       134U
+#define RCC_XBARFSM                     135U
+#define RCC_ICN_P_RCC                   136U
+
+#define RCC_PLL1DIV42                   0U
+#define RCC_PLL2DIV4                    1U
+#define RCC_PLL3DIV2                    2U
+#define RCC_USB2PHY1                    3U
+#define RCC_USB2PHY2                    4U
+#define RCC_USB3PCIEPHY                 5U
+#define RCC_LVDSPHY                     6U
+#define RCC_DSIPHY                      7U
+
+#define RCC_FLEXGEN_OBS        0x00000000U
+#define RCC_OSC_OBS            0x00000001U
+#define RCC_INTERNAL_OBS       0x00000001U
+#define RCC_EXTERNAL_OBS       0x00000002U
+#define RCC_CLOCKOBS_OFF        0x00000000U
+#define RCC_CLOCKOBS_ON         0x00000001U
+#define RCC_CLOCKOBS_NOT_INV    0x00000000U
+#define RCC_CLOCKOBS_INV        0x00000001U
+
+#define RCC_OBS_DIV1           0x00000000U
+#define RCC_OBS_DIV2           0x00000001U
+#define RCC_OBS_DIV4           0x00000002U
+#define RCC_OBS_DIV8           0x00000003U
+#define RCC_OBS_DIV16          0x00000004U
+#define RCC_OBS_DIV32          0x00000005U
+#define RCC_OBS_DIV64          0x00000006U
+#define RCC_OBS_DIV128         0x00000007U
+/**
+  * @}
   */
 
 /** @defgroup RCCEx_Periph_Clock_Selection  RCCEx Periph Clock Selection
@@ -449,6 +534,7 @@ void              HAL_RCCEx_EnableHSECSS(void);
 void              HAL_RCCEx_DisableHSECSS(void);
 void              HAL_RCCEx_LSECSS_IRQHandler(void);
 void              HAL_RCCEx_LSECSS_Callback(void);
+void              HAL_RCCEx_ConfigureClockObserver(uint32_t PeriphClk, RCC_ObserverTypeDef *OBSConf);
 
 /**
   * @}

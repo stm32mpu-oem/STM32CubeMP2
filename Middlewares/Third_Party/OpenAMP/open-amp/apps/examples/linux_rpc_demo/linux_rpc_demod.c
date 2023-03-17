@@ -8,7 +8,7 @@
 /*This is a sample demonstration application that showcases usage of proxy
  *from the remote core.
  *This application is meant to run on the remote CPU running linux.
- *This application can print to the master console and perform file I/O through
+ *This application can print to the host console and perform file I/O through
  *rpmsg channels.
  */
 
@@ -32,7 +32,7 @@
 #define REDEF_O_ACCMODE 3
 
 #define raw_printf(format, ...) printf(format, ##__VA_ARGS__)
-#define LPRINTF(format, ...) raw_printf("Master> " format, ##__VA_ARGS__)
+#define LPRINTF(format, ...) raw_printf("Host> " format, ##__VA_ARGS__)
 #define LPERROR(format, ...) LPRINTF("ERROR: " format, ##__VA_ARGS__)
 
 static void *platform;
@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
 		ret = -1;
 	} else {
 		rpdev = platform_create_rpmsg_vdev(platform, 0,
-						   VIRTIO_DEV_MASTER,
+						   VIRTIO_DEV_DRIVER,
 						   NULL, NULL);
 		if (!rpdev) {
 			LPERROR("Failed to create rpmsg virtio device.\r\n");

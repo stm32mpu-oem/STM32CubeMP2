@@ -220,6 +220,7 @@ void HAL_PWREx_DisableLpsram1ContentStandby2Retention(void)
 }
 
 
+#if defined(CORE_CM33)||defined(CORE_CA35)
 /**
   * @brief  Valid GPU supply.
   * @retval HAL status
@@ -237,8 +238,9 @@ HAL_StatusTypeDef HAL_PWREx_EnableGPUSupply(void)
   maskRdy = PWR_CR12_GPUPDRDY;
 #endif /* else ! defined(STM32MP2XX_ASSY2_3_2) */
 
-  /* swich on the GPU voltage  */
-  SET_BIT(PWR->CR12, maskEn);
+  /*request monitoring of supply*/
+  HAL_PWREx_EnableGPUSupplyMonitoring();
+
 
   /* Get tick */
   tickstart = HAL_GetTick();
@@ -251,6 +253,9 @@ HAL_StatusTypeDef HAL_PWREx_EnableGPUSupply(void)
       return HAL_TIMEOUT;
     }
   }
+
+  /* remove supply isolation  */
+  SET_BIT(PWR->CR12, maskEn);
   return HAL_OK;
 }
 
@@ -260,13 +265,15 @@ HAL_StatusTypeDef HAL_PWREx_EnableGPUSupply(void)
   */
 void HAL_PWREx_DisableGPUSupply(void)
 {
+/* set supply isolation  */
 #if ! defined(STM32MP2XX_ASSY2_3_2)
-  /* swich off the GPU voltage  */
   CLEAR_BIT(PWR->CR12, PWR_CR12_GPUSV);
 #else /* ! defined(STM32MP2XX_ASSY2_3_2) */
-  /* swich off the GPU voltage  */
   CLEAR_BIT(PWR->CR12, PWR_CR12_GPUPDEN);
 #endif /* else ! defined(STM32MP2XX_ASSY2_3_2) */
+
+/*remove supply monitoring*/
+  HAL_PWREx_DisableGPUSupplyMonitoring();
 }
 
 
@@ -289,7 +296,55 @@ void HAL_PWREx_DisableGPUSupplyMonitoring(void)
   CLEAR_BIT(PWR->CR12, PWR_CR12_GPUVMEN);
 }
 
-#if defined (HAL_RTC_MODULE_ENABLED)
+/**
+  * @brief  Enable low monitoring threshold.
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_PWREx_EnableGPULowThreshold(void)
+{
+  SET_BIT(PWR->CR12, PWR_CR12_GPULVTEN);
+  return HAL_OK;
+}
+
+/**
+  * @brief  Disable low monitoring threshold.
+  * @retval HAL status
+  */
+void HAL_PWREx_DisableGPULowThreshold(void)
+{
+  CLEAR_BIT(PWR->CR12, PWR_CR12_GPULVTEN);
+}
+
+/**
+  * @brief  Indicate whether the VDDgpu voltage level is above or below the threshold.
+  * @retval VDDgpu level.
+  */
+uint32_t HAL_PWREx_GetVDDgpuRange(void)
+{
+  uint32_t regValue = PWR->CR12;
+  uint32_t result   = PWR_NO_VDDGPU_MEASUREMENT_AVAILABLE;
+
+  /* check VDDgpu monitoring is ON */
+  if ((regValue & PWR_CR12_GPUVMEN) != PWR_CR12_GPUVMEN)
+  {
+    result   =  PWR_NO_VDDGPU_MEASUREMENT_AVAILABLE;
+  }
+
+  /* Compare the read value to the VDDCPU threshold */
+  else if ((regValue & PWR_CR12_VDDGPURDY) == PWR_CR12_VDDGPURDY)
+  {
+    result   =  ((PWR->CR12& PWR_CR12_GPULVTEN) == PWR_CR12_GPULVTEN) ? PWR_VDDGPU_ABOVE_EQUAL_LOW_THRESHOLD : PWR_VDDGPU_ABOVE_EQUAL_HIGH_THRESHOLD;
+  }
+  else
+  {
+    result   =  ((PWR->CR12& PWR_CR12_GPULVTEN) == PWR_CR12_GPULVTEN) ? PWR_VDDGPU_BELOW_LOW_THRESHOLD : PWR_VDDGPU_BELOW_HIGH_THRESHOLD;
+  }
+  return result;
+}
+#endif /* defined(CORE_CM33)||defined(CORE_CA35) */
+
+#if defined(CORE_CM33)||defined(CORE_CA35)
+/*CPU3 cannot Write into CR2 register (but READ possible)*/
 /**
   * @brief  Enable the VBAT and temperature monitoring.
   * @note   After reset PWR_CR2/PWR_CR9/PWR_CR10 registers are write-protected, see HAL_PWR_EnableBkUpD3Access/HAL_PWR_DisableBkUpD3Access
@@ -299,21 +354,6 @@ void HAL_PWREx_DisableGPUSupplyMonitoring(void)
   */
 void HAL_PWREx_EnableVbatTempMonitoring(void)
 {
-  RTC_InternalTamperTypeDef sIntTamper = {0};
-  RTC_HandleTypeDef          RTCHandle = {0};
-
-  /* enable  VBAT/TEMPERATURE  internal tamper */
-  sIntTamper.IntTamper = PWREx_VBAT_TEMP_TAMPER_EVENT;
-  sIntTamper.TimeStampOnTamperDetection = RTC_TIMESTAMPONTAMPERDETECTION_DISABLE;
-  HAL_RTCEx_SetInternalTamper_IT(&RTCHandle, &sIntTamper);
-
-  /*activation of NS_TAMPER event on EXTI if not yet done*/
-   __HAL_PWR_NS_TAMPER_EXTI_ENABLE_IT();
-
-  //AAC to do : enable internal tamper ligne2 event for temperature, see RTC doc
-  //AAC to do : issue with Vbat, BATH/BATL available in RTC according to PWR spec, not founded in RTC spec ...
-//  HAL_RTCEx_SetInternalTamper_IT(&RTCHandle, PWREx_VBAT_TEMP_TAMPER_EVENT);
-
 
   /* Enable the VBAT and Temperature monitoring */
   SET_BIT(PWR->CR2, PWR_CR2_MONEN);
@@ -328,20 +368,10 @@ void HAL_PWREx_EnableVbatTempMonitoring(void)
   */
 void HAL_PWREx_DisableVbatTempMonitoring(void)
 {
-  RTC_HandleTypeDef          RTCHandle = {0};
-
-  /*Deactivate VBAT/TEMPERATURE tamper event, should not be done if tamper line yet active before VBAT/TEMP monitoring*/
-//AAC shall be rework as NS internal TAMPER event can be used for other purpose than VBAT/TEMPERATURE
-//AAC so de-activation shall be done only if there is no more usage of this IT
-//AAC check that IT handler of this event parse all possible source for this event
-  __HAL_PWR_NS_TAMPER_EXTI_DISABLE_IT();
-  HAL_RTCEx_DeactivateInternalTamper(&RTCHandle, PWREx_VBAT_TEMP_TAMPER_EVENT);
-
   /* Disable the VBAT and Temperature monitoring */
   CLEAR_BIT(PWR->CR2, PWR_CR2_MONEN);
 }
-
-#endif /*defined (HAL_RTC_MODULE_ENABLED)*/
+#endif /* defined(CORE_CM33)||defined(CORE_CA35)*/
 
 
 /**
@@ -456,10 +486,6 @@ void HAL_PWREx_TEMP_VBAT_IRQHandler(void)
     default :
       break;
   }
-
-    /* Clear TAMPER event */
-//AAC need to clear VBAT/TEMPERATURE internal TAMPER
-
 }
 
 /**
@@ -522,6 +548,7 @@ __weak void HAL_PWREx_TEMP_INRANGECallback(void)
   * @note   choice is to use EXTI interruption for notification and not a tamper event
   * @retval None
   */
+#if defined(CORE_CM33)||defined(CORE_CA35)
 void HAL_PWREx_ConfigVDDcpuD(PWREx_DetectionTypeDef *sConfigVDDcpuD)
 {
   /* Check the parameters */
@@ -577,7 +604,7 @@ void HAL_PWREx_DisableVDDcpuD(void)
 {
   CLEAR_BIT(PWR->CR6, PWR_CR6_VCPUMONEN);
 }
-
+#endif /*defined(CORE_CM33)||defined(CORE_CA35) */
 /**
   * @brief  Indicate whether the VDDcpu voltage level is between, above or below the threshold.
   * @retval VDDcpu level.
@@ -614,8 +641,8 @@ uint32_t HAL_PWREx_GetVDDcpuRange(void)
 
 
 /**
+  * @brief  This function handles the PWR VDDcpu interrupt request.
   * @brief  This API should be called under HAL_EXTI_Handler() when line VDDcpu trigg
-  * @note   //AAC, pas clair l'appellant sous HAL_EXTI, a checker ...
   * @retval None
   */
 void HAL_PWREx_VDDcpuD_IRQHandler(void)
@@ -677,6 +704,7 @@ __weak void HAL_PWREx_VDDcpuD_INRANGECallback(void)
   *         about the voltage threshold corresponding to each detection level.
   * @retval None
   */
+#if defined(CORE_CM33)||defined(CORE_CA35)
 void HAL_PWREx_ConfigVDDcoreD(PWREx_DetectionTypeDef *sConfigVDDcoreD)
 {
   /* Check the parameters, no level threshold parameter for VDDcore */
@@ -726,7 +754,7 @@ void HAL_PWREx_DisableVDDcoreD(void)
 {
   CLEAR_BIT(PWR->CR5, PWR_CR5_VCOREMONEN);
 }
-
+#endif /*defined(CORE_CM33)||defined(CORE_CA35)*/
 /**
   * @brief  Indicate whether the VDDcore voltage level is between, above or below the threshold.
   * @retval VDDcore level.
@@ -762,8 +790,9 @@ uint32_t HAL_PWREx_GetVDDcoreRange(void)
 }
 
 /**
+
+  * @brief  This function handles the PWR VDDcore interrupt request.
   * @brief  This API should be called under HAL_EXTI_Handler() when line VDDcore trigg
-  * @note   //AAC, pas clair l'appellant sous HAL_EXTI, a checker ...
   * @retval None
   */
 void HAL_PWREx_VDDcoreD_IRQHandler(void)
@@ -973,11 +1002,28 @@ void HAL_PWREx_Get_IO_Voltage(uint32_t periph, uint32_t *isLow, uint32_t *isLowS
 HAL_StatusTypeDef HAL_PWREx_EnableSupply(uint32_t periph)
 {
   __IO uint32_t *regPtr;
+  uint32_t tickstart, mskRdy;
   pvmPosType pvmPos = {0,0,0,0,0};
 
   assert_param(IS_PWR_PVM_PERIPH(periph));
+
+  /*set supply monitoring*/
+  HAL_PWREx_EnableSupplyMonitoring(periph);
+
+  /* Wait until regulator ready flag is set */
   pvmPosition( periph, &regPtr, &pvmPos);
-  /* Active regulator Wait until ready flag is set */
+  mskRdy = 1U << pvmPos.ready ;
+  tickstart = HAL_GetTick();
+
+  while ((*regPtr & mskRdy) != mskRdy)
+  {
+    if ((HAL_GetTick() - tickstart) > PWREx_FLAG_SETTING_DELAY_US)
+    {
+      return HAL_TIMEOUT;
+    }
+  }
+
+  /* remove isolation */
   SET_BIT(*regPtr, 1U << (pvmPos.activ));
   return HAL_OK;
 }
@@ -996,7 +1042,10 @@ void HAL_PWREx_DisableSupply(uint32_t periph)
 
   assert_param(IS_PWR_PVM_PERIPH(periph));
   pvmPosition( periph, &regPtr, &pvmPos);
+  /*set supply isolation */
   CLEAR_BIT(*regPtr, 1U << (pvmPos.activ));
+  /*remove supply monitoring*/
+  HAL_PWREx_EnableSupplyMonitoring(periph);
 }
 
 
@@ -1059,15 +1108,15 @@ uint32_t HAL_PWREx_PVM_IsBelowThreshold(uint32_t periph)
   */
 void HAL_PWREx_PVM_IRQHandler(void)
 {
-  if (((EXTI1->RPR1 & PWR_EXTI_LINE_PVM) == PWR_EXTI_LINE_PVM))
-  /*interruption on rising  edge, thus one (or several) supply is lower than PVM threshold*/
+  if (((EXTI1->FPR1 & PWR_EXTI_LINE_PVM) == PWR_EXTI_LINE_PVM))
+  /*interruption on falling  edge, thus one (or several) supply is lower than PVM threshold*/
   {
     HAL_PWREx_PVM_LowerCallback();
   }
 
-  if (((EXTI1->FPR1 & PWR_EXTI_LINE_PVM) == PWR_EXTI_LINE_PVM))
+  if (((EXTI1->RPR1 & PWR_EXTI_LINE_PVM) == PWR_EXTI_LINE_PVM))
   {
-  /*interruption on falling  edge, thus all supplies are equal or greater under PVM threshold*/
+  /*interruption on rising  edge, thus all supplies are equal or greater under PVM threshold*/
     HAL_PWREx_PVM_EqualHigherCallback();
   }
   /* Clear PWR PVD EXTI pending bit */
@@ -1103,6 +1152,46 @@ __weak void HAL_PWREx_PVM_EqualHigherCallback(void)
 {
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_PWREx_PVM_EqualHigherCallback could be implemented in the user file */
+}
+
+
+/**
+  * @brief  This function handles the PWR_VDDGPU_VD interrupt request.
+  * @note   This API should be called under the VDDGPU_VD_IRQHandler().
+  * @retval None
+  */
+void HAL_PWREx_GPU_IRQHandler(void)
+{
+  if (((PWR->CR12) & PWR_CR12_VDDGPURDY) != PWR_CR12_VDDGPURDY)
+  {
+    HAL_PWREx_GPU_LowerCallback();
+  }
+  else
+  {
+    HAL_PWREx_GPU_EqualHigherCallback();
+  }
+  /* Clear PWR GPU EXTI pending bit */
+  __HAL_PWR_VDDgpuD_EXTI_CLEAR_FLAG();
+}
+
+/**
+  *@brief PWR GPU rising interruption callback
+  *@retval None
+  */
+__weak void HAL_PWREx_GPU_LowerCallback(void)
+{
+  /* NOTE : This function Should not be modified, when the callback is needed,
+            the HAL_PWREx_GPU_LowerCallback could be implemented in the user file */
+}
+
+/**
+  *@brief PWR GPU falling interruption callback
+  *@retval None
+  */
+__weak void HAL_PWREx_GPU_EqualHigherCallback(void)
+{
+  /* NOTE : This function Should not be modified, when the callback is needed,
+            the HAL_PWREx_GPU_EqualHigherCallback could be implemented in the user file */
 }
 
 #endif /*defined(CORE_CM33)||defined(CORE_CA35)*/

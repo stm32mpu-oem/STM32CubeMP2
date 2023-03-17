@@ -46,7 +46,10 @@ if (NOT DEFINED PROJECT_SYSTEM)
 endif (NOT DEFINED PROJECT_SYSTEM)
 
 string (TOLOWER ${CMAKE_SYSTEM_PROCESSOR} PROJECT_PROCESSOR)
-string (TOUPPER ${CMAKE_SYSTEM_PROCESSOR} PROJECT_PROCESSOR_UPPER)
+if("${PROJECT_PROCESSOR}" STREQUAL "arm64")
+  set (PROJECT_PROCESSOR "aarch64")
+endif()
+string (TOUPPER ${PROJECT_PROCESSOR}      PROJECT_PROCESSOR_UPPER)
 string (TOLOWER ${MACHINE}                PROJECT_MACHINE)
 string (TOUPPER ${MACHINE}                PROJECT_MACHINE_UPPER)
 
@@ -69,5 +72,5 @@ option (WITH_DEFAULT_LOGGER "Build with default logger" ON)
 
 option (WITH_DOC "Build with documentation" ON)
 
-set (PROJECT_EC_FLAGS "-Wall -Werror -Wextra" CACHE STRING "")
+set (GLOBAL PROPERTY "PROJECT_EC_FLAGS" "-Wall -Werror -Wextra" CACHE STRING "")
 # vim: expandtab:ts=2:sw=2:smartindent

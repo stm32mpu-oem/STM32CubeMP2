@@ -44,10 +44,10 @@ extern "C" {
       usbpd_hw.c
 -------------------------------------------------------------------------------*/
 
-/* defined used to configure function : USBPD_HW_GetUSPDInstance */
+/* Define used to configure function : USBPD_HW_GetUSPDInstance */
 #define UCPD_INSTANCE0 UCPD1
 
-/* defined used to configure function : USBPD_HW_Init_DMARxInstance,USBPD_HW_DeInit_DMARxInstance */
+/* Define used to configure function : USBPD_HW_Init_DMARxInstance,USBPD_HW_DeInit_DMARxInstance */
 #warning "Update for the series"
 
 #define UCPDDMA_INSTANCE0_DMA_RX  HPDMA1
@@ -58,7 +58,7 @@ extern "C" {
 
 #define UCPDDMA_INSTANCE0_CHANNEL_RX   HPDMA1_Channel5
 
-/* defined used to configure function : USBPD_HW_Init_DMATxInstance, USBPD_HW_DeInit_DMATxInstance */
+/* Define used to configure function : USBPD_HW_Init_DMATxInstance, USBPD_HW_DeInit_DMATxInstance */
 #warning "Update for the series"
 
 #define UCPDDMA_INSTANCE0_DMA_TX  HPDMA1
@@ -68,23 +68,6 @@ extern "C" {
 #define UCPDDMA_INSTANCE0_LL_CHANNEL_TX   LL_DMA_CHANNEL_3
 
 #define UCPDDMA_INSTANCE0_CHANNEL_TX   HPDMA1_Channel3
-
-/* Defines used to configure  USBPD_HW_SetFRSSignalling */
-#define UCPDFRS_INSTANCE0_FRSCC1                                                      \
-  do                                                                                  \
-  {                                                                                   \
-    TBD;                                                       \
-    LL_GPIO_SetPinMode(TBD, TBD, LL_GPIO_MODE_ALTERNATE);          \
-    LL_GPIO_SetAFPin_0_7(TBD, TBD, TBD);   \
-  } while(0)
-
-#define UCPDFRS_INSTANCE0_FRSCC2                                                      \
-  do                                                                                  \
-  {                                                                                   \
-    TBD;                                                       \
-    LL_GPIO_SetPinMode(TBD, TBD, LL_GPIO_MODE_ALTERNATE);          \
-    LL_GPIO_SetAFPin_0_7(TBD, TBD, TBD);   \
-  } while(0)
 
 #define UCPD_INSTANCE0_ENABLEIRQ               \
   do                                           \

@@ -19,6 +19,10 @@
 
   @endverbatim
 
+### V1.0.5/04-November-2022 ###
+================================
+   + Integrate official release v2022.10
+
 ### V1.0.4/18-January-2022 ###
 ================================
    + Integrate official release v2021.10

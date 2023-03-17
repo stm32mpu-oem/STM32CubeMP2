@@ -16,7 +16,7 @@
 #ifndef __METAL_ZEPHYR_SLEEP__H__
 #define __METAL_ZEPHYR_SLEEP__H__
 
-#include <metal/utilities.h>
+#include <zephyr/kernel.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,12 +24,9 @@ extern "C" {
 
 static inline int __metal_sleep_usec(unsigned int usec)
 {
-	metal_unused(usec);
-	/* Fix me */
+	k_sleep(K_USEC(usec));
 	return 0;
 }
-
-/** @} */
 
 #ifdef __cplusplus
 }

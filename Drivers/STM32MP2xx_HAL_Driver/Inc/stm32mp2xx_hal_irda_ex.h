@@ -70,39 +70,39 @@ extern "C" {
   * @retval IRDA clocking source, written in __CLOCKSOURCE__.
   */
 
-#define IRDA_GETCLOCK(__HANDLE__,__CLOCK__)       \
-  do {                                                        \
-        if((__HANDLE__)->Instance == USART1)                  \
-        {                                                     \
-          (__CLOCK__) = RCC_PERIPHCLK_USART1;;              \
-        }                                                     \
-        else if(((__HANDLE__)->Instance == USART2) ||         \
-                ((__HANDLE__)->Instance == UART4))            \
-        {                                                     \
-          (__CLOCK__) = RCC_PERIPHCLK_UART2_4;             \
-        }                                                     \
-        else if(((__HANDLE__)->Instance == USART3) ||         \
-                ((__HANDLE__)->Instance == UART5))            \
-        {                                                     \
-          (__CLOCK__) = RCC_PERIPHCLK_UART3_5;             \
-        }                                                     \
-        else if((__HANDLE__)->Instance == USART6)             \
-        {                                                     \
-          (__CLOCK__) = RCC_PERIPHCLK_USART6;              \
-        }                                                     \
-        else if(((__HANDLE__)->Instance == UART7) ||          \
-                ((__HANDLE__)->Instance == UART8))            \
-        {                                                     \
-          (__CLOCK__) = RCC_PERIPHCLK_UART7_8;              \
-        }                                                     \
-        else if((__HANDLE__)->Instance == UART9)              \
-        {                                                     \
-          (__CLOCK__) = RCC_PERIPHCLK_UART9;               \
-        }                                                     \
-        else                                                  \
-        {                                                     \
-          (__CLOCK__) = 0;                              \
-        }                                                     \
+#define IRDA_GETCLOCK(__HANDLE__,__CLOCK__)               \
+  do {                                                    \
+    if((__HANDLE__)->Instance == USART1)                  \
+    {                                                     \
+      (__CLOCK__) = RCC_PERIPHCLK_USART1;                 \
+    }                                                     \
+    else if(((__HANDLE__)->Instance == USART2) ||         \
+            ((__HANDLE__)->Instance == UART4))            \
+    {                                                     \
+      (__CLOCK__) = RCC_PERIPHCLK_UART2_4;                \
+    }                                                     \
+    else if(((__HANDLE__)->Instance == USART3) ||         \
+            ((__HANDLE__)->Instance == UART5))            \
+    {                                                     \
+      (__CLOCK__) = RCC_PERIPHCLK_UART3_5;                \
+    }                                                     \
+    else if((__HANDLE__)->Instance == USART6)             \
+    {                                                     \
+      (__CLOCK__) = RCC_PERIPHCLK_USART6;                 \
+    }                                                     \
+    else if(((__HANDLE__)->Instance == UART7) ||          \
+            ((__HANDLE__)->Instance == UART8))            \
+    {                                                     \
+      (__CLOCK__) = RCC_PERIPHCLK_UART7_8;                \
+    }                                                     \
+    else if((__HANDLE__)->Instance == UART9)              \
+    {                                                     \
+      (__CLOCK__) = RCC_PERIPHCLK_UART9;                  \
+    }                                                     \
+    else                                                  \
+    {                                                     \
+      (__CLOCK__) = 0;                                    \
+    }                                                     \
   } while(0U)
 
 

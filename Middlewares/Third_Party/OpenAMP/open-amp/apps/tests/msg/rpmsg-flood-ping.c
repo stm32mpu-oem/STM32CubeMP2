@@ -2,7 +2,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-/* This is a test application to send rpmsgs in flood mode.
+/*
+ * This is a test application to send rpmsgs in flood mode.
  * That is it will keep sending messages until there is no available
  * buffers.
  */
@@ -117,7 +118,7 @@ int app (struct rpmsg_device *rdev, void *priv)
 	num_pkgs = NUMS_PACKAGES;
 	max_size = rpmsg_virtio_get_buffer_size(rdev);
 	if (max_size < 0) {
-		LPERROR("No avaiable buffer size.\r\n");
+		LPERROR("No available buffer size.\r\n");
 		return -1;
 	}
 	i_payload = (struct _payload *)metal_allocate_memory(max_size);
@@ -203,7 +204,7 @@ int main(int argc, char *argv[])
 		ret = -1;
 	} else {
 		rpdev = platform_create_rpmsg_vdev(platform, 0,
-						  VIRTIO_DEV_MASTER,
+						  VIRTIO_DEV_DRIVER,
 						  NULL,
 						  rpmsg_name_service_bind_cb);
 		if (!rpdev) {

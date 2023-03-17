@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-/* This file populates resource table for BM remote
- * for use by the Linux Master */
+/*
+ * This file populates resource table for BM remote
+ * for use by the Linux host
+ */
 
 #ifndef PLATFORM_INFO_H
 #define PLATFORM_INFO_H
@@ -24,7 +26,7 @@ extern "C" {
  * It will initialize the platform.
  *
  * @argc: number of arguments
- * @argv: array of the input arguements
+ * @argv: array of the input arguments
  * @platform: pointer to store the platform data pointer
  *
  * return 0 for success or negative value for failure
@@ -40,7 +42,7 @@ int platform_init(int argc, char *argv[], void **platform);
  * @platform: pointer to the private data
  * @vdev_index: index of the virtio device, there can more than one vdev
  *              on the platform.
- * @role: virtio master or virtio slave of the vdev
+ * @role: virtio driver or virtio device of the vdev
  * @rst_cb: virtio device reset callback
  * @ns_bind_cb: rpmsg name service bind callback
  *

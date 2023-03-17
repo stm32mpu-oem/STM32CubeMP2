@@ -199,6 +199,7 @@ int ddrphy_phyinit_storeincvfile(char *incv_file_name, int mem[],
 void ddrphy_phyinit_writeoutmem(uint32_t *mem, int mem_offset, int mem_size);
 void ddrphy_phyinit_writeoutmsgblk(uint16_t *mem, int mem_offset, int mem_size);
 int ddrphy_phyinit_isdbytedisabled(int dbytenumber);
+int ddrphy_phyinit_setretreglistbase(uint32_t base);
 int ddrphy_phyinit_trackreg(uint32_t adr);
 int ddrphy_phyinit_reginterface(reginstr myreginstr, uint32_t adr, uint16_t dat);
 

@@ -79,18 +79,11 @@ ErrorStatus LL_I3C_DeInit(I3C_TypeDef *I3Cx)
   /* Check the I3C Instance I3Cx */
   assert_param(IS_I3C_ALL_INSTANCE(I3Cx));
 
-  if (I3Cx == I3C1)
-  {
-    /* Force reset of I3C clock */
-    LL_APB1_GRP1_ForceReset(LL_APB1_GRP1_PERIPH_I3C1);
+  /* Force reset of I3C clock */
+  LL_APB1_GRP1_ForceReset(LL_APB1_GRP1_PERIPH_I3C1);
 
-    /* Release reset of I3C clock */
-    LL_APB1_GRP1_ReleaseReset(LL_APB1_GRP1_PERIPH_I3C1);
-  }
-  else
-  {
-    status = ERROR;
-  }
+  /* Release reset of I3C clock */
+  LL_APB1_GRP1_ReleaseReset(LL_APB1_GRP1_PERIPH_I3C1);
 
   return status;
 }
@@ -128,10 +121,11 @@ ErrorStatus LL_I3C_Init(I3C_TypeDef *I3Cx, LL_I3C_InitTypeDef *I3C_InitStruct, u
 
     /*------------------ SCL signal waveform configuration : I3C timing register 0 (I3C_TIMINGR0) ------------------- */
     /* Set the controller SCL waveform */
-    waveform_value = ((uint32_t)(I3C_InitStruct->CtrlBusCharacteristic.SCLPPLowDuration)                               |
-                     ((uint32_t)I3C_InitStruct->CtrlBusCharacteristic.SCLI3CHighDuration << I3C_TIMINGR0_SCLH_I3C_Pos) |
-                     ((uint32_t)I3C_InitStruct->CtrlBusCharacteristic.SCLODLowDuration << I3C_TIMINGR0_SCLL_OD_Pos)    |
-                     ((uint32_t)I3C_InitStruct->CtrlBusCharacteristic.SCLI2CHighDuration << I3C_TIMINGR0_SCLH_I2C_Pos));
+    waveform_value =
+      ((uint32_t)(I3C_InitStruct->CtrlBusCharacteristic.SCLPPLowDuration)                                |
+       ((uint32_t)I3C_InitStruct->CtrlBusCharacteristic.SCLI3CHighDuration << I3C_TIMINGR0_SCLH_I3C_Pos) |
+       ((uint32_t)I3C_InitStruct->CtrlBusCharacteristic.SCLODLowDuration << I3C_TIMINGR0_SCLL_OD_Pos)    |
+       ((uint32_t)I3C_InitStruct->CtrlBusCharacteristic.SCLI2CHighDuration << I3C_TIMINGR0_SCLH_I2C_Pos));
 
     LL_I3C_ConfigClockWaveForm(I3Cx, waveform_value);
 

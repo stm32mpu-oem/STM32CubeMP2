@@ -1567,12 +1567,23 @@ static int32_t PWR_TCPP0203_BUSConfigInit(uint32_t PortNum, uint16_t Address)
   uint8_t                  tcpp_type;
 
   /* Configure the TCPP0203 I2C driver */
+#if defined (USE_STM32MP257CXX_VALID2)
+  TCPP0203IOCtx.Address     = Address;
+  TCPP0203IOCtx.Init        = BSP_I2C8_Init;
+  TCPP0203IOCtx.DeInit      = BSP_I2C8_DeInit;
+  TCPP0203IOCtx.ReadReg     = BSP_I2C8_ReadReg;
+  TCPP0203IOCtx.WriteReg    = BSP_I2C8_WriteReg;
+  TCPP0203IOCtx.GetTick     = BSP_GetTick;
+#elif defined (USE_STM32MP257CXX_VALID3)
   TCPP0203IOCtx.Address     = Address;
   TCPP0203IOCtx.Init        = BSP_I2C6_Init;
   TCPP0203IOCtx.DeInit      = BSP_I2C6_DeInit;
   TCPP0203IOCtx.ReadReg     = BSP_I2C6_ReadReg;
   TCPP0203IOCtx.WriteReg    = BSP_I2C6_WriteReg;
   TCPP0203IOCtx.GetTick     = BSP_GetTick;
+#else
+  return BSP_ERROR_UNKNOWN_COMPONENT;
+#endif
 
   /* Register the component on BUS IO */
   if (TCPP0203_RegisterBusIO(&USBPD_PWR_PortCompObj[PortNum], &TCPP0203IOCtx) != TCPP0203_OK)

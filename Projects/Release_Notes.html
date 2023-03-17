@@ -4,15 +4,20 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Release Notes for Projects of STM32CubeMP25 Firmware
+  <title>Release Notes for Projects of STM32CubeMP2 Firmware
 Package</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="_htmresc/mini-st_2020.css" />
@@ -25,8 +30,8 @@ Package</title>
 <div class="row">
 <div class="col-sm-12 col-lg-4">
 <center>
-<h1 id="release-notes-for-stm32cubemp25-firmware-projects">Release Notes
-for <mark> STM32CubeMP25 Firmware Projects </mark></h1>
+<h1 id="release-notes-for-stm32cubemp2-firmware-projects">Release Notes
+for <mark> STM32CubeMP2 Firmware Projects </mark></h1>
 <p>Copyright © 2022 STMicroelectronics<br />
 </p>
 <a href="https://www.st.com" class="logo"><img
@@ -37,12 +42,12 @@ src="_htmresc/st_logo_2020.png" alt="ST logo" /></a>
 provide use cases of the different products features based on the
 products hardware (Boards, STM32 Core(s) features, interconnections and
 peripherals) and built around the different firmware components. They
-can be directly used or adapted by the STM32CubeMP25 Firmware Package
+can be directly used or adapted by the STM32CubeMP2 Firmware Package
 users. They provide basic functionalities, show main features or
 demonstrate performance. They are provided with preconfigured projects
 for the main supported toolchains.</p>
-<p>In the STM32CubeMP25 Firmware Package, the projects are organized in
-a sequential scheme based on the following levels:</p>
+<p>In the STM32CubeMP2 Firmware Package, the projects are organized in a
+sequential scheme based on the following levels:</p>
 <ul>
 <li>Boards : Hardware platform</li>
 <li>Project Category:
@@ -60,26 +65,18 @@ href="STM32CubeProjectsList.html">STM32CubeProjectsList</a>.</p>
 <h1>Update History</h1>
 <div class="collapse">
 <input type="checkbox" id="collapse-section0" checked aria-hidden="true">
-<label for="collapse-section0" checked aria-hidden="true"><strong>V0.1.0
-/ 18-November-2022</strong></label>
+<label for="collapse-section0" checked aria-hidden="true"><strong>V0.2.0
+/ 14-April-2023</strong></label>
 <div>
 <h2 id="main-changes">Main Changes</h2>
 <ul>
-<li><strong>Pre-Alpha release of STM32CubeMP25 Projects</strong> for
+<li><strong>Alpha release of STM32CubeMP2 Projects</strong> for
 STM32MP25xx devices</li>
 </ul>
 <h2 id="contents">Contents</h2>
 <p><small>The components flagged by “<span
 class="icon-st-update"></span>” have changed since the previous release.
 “<span class="icon-st-add"></span>” are new.</small></p>
-<ul>
-<li><strong>Application</strong>:
-<ul>
-<li>OpenAMP_TTY_echo example:</li>
-</ul></li>
-<li><strong>Examples</strong>:</li>
-<li><strong>Templates</strong>:</li>
-</ul>
 <h3 id="projects"><strong>Projects</strong></h3>
 <table>
 <caption>Projects <strong>STM32MP257C-VALID3</strong></caption>
@@ -88,28 +85,39 @@ class="icon-st-update"></span>” have changed since the previous release.
 <th style="text-align: left;">Board</th>
 <th style="text-align: left;">Project category</th>
 <th style="text-align: left;">Version</th>
-<th style="text-align: left;">Path</th>
+<th style="text-align: left;">Project Name</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">STM32MP257F-VALID3</td>
+<td style="text-align: left;">STM32MP257F-EV1</td>
 <td style="text-align: left;">Applications</td>
-<td style="text-align: left;">V0.1.0</td>
-<td
-style="text-align: left;">Projects/STM32MP257F-VALID3/Applications</td>
+<td style="text-align: left;">V0.2.0</td>
+<td style="text-align: left;">OpenAMP_TTY_echo</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">STM32MP257F-VALID3</td>
-<td style="text-align: left;">Examples</td>
-<td style="text-align: left;">V0.1.0</td>
-<td style="text-align: left;">Projects/STM32MP257F-VALID3/Examples</td>
+<td style="text-align: left;">STM32MP257F-EV1</td>
+<td style="text-align: left;">Applications</td>
+<td style="text-align: left;">V0.2.0</td>
+<td style="text-align: left;">TFM_Protected_Storage</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">STM32MP257F-EV1</td>
+<td style="text-align: left;">Applications</td>
+<td style="text-align: left;">V0.2.0</td>
+<td style="text-align: left;">USBPD_DRP_UCSI</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">STM32MP257F-EV1</td>
+<td style="text-align: left;">Templates</td>
+<td style="text-align: left;">V0.2.0</td>
+<td style="text-align: left;">Template_CM33_NonSecure</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">STM32MP257F-VALID3</td>
-<td style="text-align: left;">Templates</td>
-<td style="text-align: left;">V0.1.0</td>
-<td style="text-align: left;">Projects/STM32MP257F-VALID3/Templates</td>
+<td style="text-align: left;">Applications</td>
+<td style="text-align: left;">V0.2.0</td>
+<td style="text-align: left;">OpenAMP_TTY_echo</td>
 </tr>
 </tbody>
 </table>
@@ -118,25 +126,20 @@ style="text-align: left;">Projects/STM32MP257F-VALID3/Applications</td>
 <li>The execution of the examples could be done in 1 mode :
 <ul>
 <li>Production boot mode: Firmware is loaded in coprocessor by the
-master processor (Cortex A35 - Flash Memory boot mode) # - Engineering
-boot mode is used for specific needs as to test a Firmware directly on
-coprocessor #- For the exaustive list please refer to this table <a
-href="STM32CubeProjectsList.html">STM32CubeProjectsList</a>.</li>
+master processor (Cortex A35 - Flash Memory boot mode)</li>
 </ul></li>
 </ul>
 <h2 id="supported-devices-and-boards">Supported Devices and boards</h2>
 <ul>
-<li>STM32MP257 devices</li>
-<li>STM32MP257C-VALID3 boards</li>
+<li>STM32MP25xx devices</li>
+<li>STM32MP257F-EV1 boards</li>
+<li>STM32MP257F-VALID3 boards</li>
 </ul>
 <h2 id="dependencies">Dependencies</h2>
 <ul>
 <li>The current default IDE = STM32CubeIDE
 <ul>
-<li>STM32CubeIDE 1.11.0.22_MP2-D2
-<ul>
-<li>Toolchain version (GCC): GNU Tools for STM32 (10.3-2021.10)</li>
-</ul></li>
+<li>STM32CubeIDE 1.12.0_MP2-D3</li>
 </ul></li>
 </ul>
 <h2 id="known-limitations">Known Limitations</h2>

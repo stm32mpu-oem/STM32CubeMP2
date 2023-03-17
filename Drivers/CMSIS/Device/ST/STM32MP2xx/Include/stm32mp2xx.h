@@ -93,7 +93,7 @@
   * @brief CMSIS Device version number
   */
 #define __STM32MP2xx_CMSIS_VERSION_MAIN   (0x00U) /*!< [31:24] main version */
-#define __STM32MP2xx_CMSIS_VERSION_SUB1   (0x01U) /*!< [23:16] sub1 version */
+#define __STM32MP2xx_CMSIS_VERSION_SUB1   (0x02U) /*!< [23:16] sub1 version */
 #define __STM32MP2xx_CMSIS_VERSION_SUB2   (0x00U) /*!< [15:8]  sub2 version */
 #define __STM32MP2xx_CMSIS_VERSION_RC     (0x00U) /*!< [7:0]  release candidate */
 #define __STM32MP2xx_CMSIS_VERSION        ((__CMSIS_DEVICE_VERSION_MAIN     << 24)\
@@ -109,25 +109,55 @@
   * @{
   */
 #if defined(CORE_CA35)
-  #if defined(STM32MP257Axx)
-    #include "stm32mp257axx_ca35.h"
-  #elif defined(STM32MP257Cxx)
+  #if defined(STM32MP257Cxx)
     #include "stm32mp257cxx_ca35.h"
+  #elif defined(STM32MP235Cxx)
+    #include "stm32mp235cxx_ca35.h"
   #else
    #error "Please select first the target STM32MP2xx device used in your application (in stm32mp2xx.h file or IDE preprocessor defines)"
   #endif
 #elif defined(CORE_CM33)
   #if defined(STM32MP257Axx)
-#include "stm32mp257axx_cm33.h"
+    #include "stm32mp257axx_cm33.h"
+  #elif defined(STM32MP257Dxx)
+    #include "stm32mp257dxx_cm33.h"
   #elif defined(STM32MP257Cxx)
     #include "stm32mp257cxx_cm33.h"
+  #elif defined(STM32MP257Fxx)
+    #include "stm32mp257fxx_cm33.h"
+  #elif defined(STM32MP255Axx)
+    #include "stm32mp255axx_cm33.h"
+  #elif defined(STM32MP255Dxx)
+    #include "stm32mp255dxx_cm33.h"
+  #elif defined(STM32MP255Cxx)
+    #include "stm32mp255cxx_cm33.h"
+  #elif defined(STM32MP255Fxx)
+    #include "stm32mp255fxx_cm33.h"
+  #elif defined(STM32MP253Axx)
+    #include "stm32mp253axx_cm33.h"
+  #elif defined(STM32MP253Dxx)
+    #include "stm32mp253dxx_cm33.h"
+  #elif defined(STM32MP255Cxx)
+    #include "stm32mp253cxx_cm33.h"
+  #elif defined(STM32MP253Fxx)
+    #include "stm32mp253fxx_cm33.h"
+  #elif defined(STM32MP251Axx)
+    #include "stm32mp251axx_cm33.h"
+  #elif defined(STM32MP251Dxx)
+    #include "stm32mp251dxx_cm33.h"
+  #elif defined(STM32MP251Cxx)
+    #include "stm32mp251cxx_cm33.h"
+  #elif defined(STM32MP251Fxx)
+    #include "stm32mp251fxx_cm33.h"
+  #elif defined(STM32MP235Axx)
+    #include "stm32mp235axx_cm33.h"
+  #elif defined(STM32MP235Cxx)
+    #include "stm32mp235cxx_cm33.h"
   #else
     #error "Please select first the target STM32MP2xx device used in your application (in stm32mp2xx.h file or IDE preprocessor defines)"
   #endif
 #elif defined(CORE_CM0PLUS)
-  #if defined(STM32MP257Axx)
-    #include "stm32mp257axx_cm0.h"
-  #elif defined(STM32MP257Cxx)
+  #if defined(STM32MP257Cxx)
     #include "stm32mp257cxx_cm0.h"
   #else
     #error "Please select first the target STM32MP2xx device used in your application (in stm32mp2xx.h file or IDE preprocessor defines)"

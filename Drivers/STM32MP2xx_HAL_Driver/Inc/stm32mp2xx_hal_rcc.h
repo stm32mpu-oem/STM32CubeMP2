@@ -72,6 +72,8 @@ typedef struct
   uint32_t MSICalibrationValue;  /*!< The calibration trimming value (default is RCC_MSICALIBRATION_DEFAULT).
                                       This parameter must be a number between Min_Data = 0x00 and Max_Data = 0xFF */
 
+  uint32_t MSIFrequency;         /*!< The MSI frequency can be 4 or 16 MHz. */
+
   uint32_t LSEDriveValue;        /*!< The LSE drive value (default is RCC_LSEDRIVE_MEDIUMHIGH).
                                       This parameter can be a value of @ref RCC_LSEDrive_Config                   */
 
@@ -106,6 +108,9 @@ typedef struct
   uint32_t                      APB3_Div;
   uint32_t                      APB4_Div;
   uint32_t                      APBDBG_Div;
+  uint32_t                      RTC_Div;
+  uint32_t                      RTC_Src;
+  uint32_t                      RTCState;
 } RCC_ClkInitTypeDef;
 
 /**
@@ -133,6 +138,7 @@ typedef struct
 #define RCC_CLOCKTYPE_ICN_APB3          0x00000400U
 #define RCC_CLOCKTYPE_ICN_APB4          0x00000800U
 #define RCC_CLOCKTYPE_ICN_APBDBG        0x00001000U
+#define RCC_CLOCKTYPE_RTC               0x00002000U
 
 #define IS_RCC_CLOCKTYPE(CLOCK)    ((((CLOCK) & RCC_CLOCKTYPE_ICN_HS_MCU)  == RCC_CLOCKTYPE_ICN_HS_MCU)    || \
                                     (((CLOCK) & RCC_CLOCKTYPE_ICN_LS_MCU) == RCC_CLOCKTYPE_ICN_LS_MCU)     || \
@@ -146,7 +152,8 @@ typedef struct
                                     (((CLOCK) & RCC_CLOCKTYPE_ICN_APB2) == RCC_CLOCKTYPE_ICN_APB2)         || \
                                     (((CLOCK) & RCC_CLOCKTYPE_ICN_APB3) == RCC_CLOCKTYPE_ICN_APB3)         || \
                                     (((CLOCK) & RCC_CLOCKTYPE_ICN_APB4) == RCC_CLOCKTYPE_ICN_APB4)         || \
-                                    (((CLOCK) & RCC_CLOCKTYPE_ICN_APBDBG) == RCC_CLOCKTYPE_ICN_APBDBG))
+                                    (((CLOCK) & RCC_CLOCKTYPE_ICN_APBDBG) == RCC_CLOCKTYPE_ICN_APBDBG)     || \
+                                    (((CLOCK) & RCC_CLOCKTYPE_RTC) == RCC_CLOCKTYPE_RTC))
 /**
   * @}
   */
@@ -308,6 +315,17 @@ typedef struct
 #define RCC_MSI_ON                     RCC_D3DCR_MSION         /*!< MSI clock activation */
 #define IS_RCC_MSI(MSI) (((MSI) == RCC_MSI_OFF) || ((MSI) == RCC_MSI_ON))
 #define RCC_MSICALIBRATION_DEFAULT     0x10U                   /*!< Default MSI calibration trimming value */
+#define RCC_MSI_4MHZ                   4000000U
+#define RCC_MSI_16MHZ                  16000000U
+/**
+  * @}
+  */
+
+/** @defgroup RCC_RTC_State  RCC RTC State
+  * @{
+  */
+#define RCC_RTC_OFF                  0x00000000U
+#define RCC_RTC_ON                   0x00000001U
 /**
   * @}
   */
@@ -1748,6 +1766,70 @@ typedef struct
 #define __HAL_RCC_ALLOW_ENHANCED_CSLEEP() SET_BIT(RCC->C1SREQSETR, RCC_C1SREQSETR_ESLPREQ)
 #define __HAL_RCC_PREVENT_ENHANCED_CSLEEP() SET_BIT(RCC->C1SREQCLRR, RCC_C1SREQCLRR_ESLPREQ)
 #endif
+
+/** @defgroup RCC_ADC12_Kernel_Clock_Source RCC_ADC12_Kernel_Clock_Source
+  * @{
+  */
+#define RCC_ADC12KERCLKSOURCE_CK_KER_ADC12     (0x0 << RCC_ADC12CFGR_ADC12KERSEL_Pos)
+#define RCC_ADC12KERCLKSOURCE_CK_ICN_LS_MCU    (0x1 << RCC_ADC12CFGR_ADC12KERSEL_Pos)
+
+#define IS_RCC_ADC12KERCLKSOURCE(SOURCE) (((SOURCE) == RCC_ADC12KERCLKSOURCE_CK_KER_ADC12) || \
+                                          ((SOURCE) == RCC_ADC12KERCLKSOURCE_CK_ICN_LS_MCU))
+
+/**
+  * @brief  Macro to select ADC12 kernel source clock
+  *
+  * @param  __RCC_ADC12KERSOURCE__: specifies the ADC12 entry kernel clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_ADC12KERCLKSOURCE_CK_KER_ADC12:  "ck_ker_adc12"  Flexiclockgen output 46
+  *            @arg RCC_ADC12KERCLKSOURCE_CK_ICN_LS_MCU: "ck_icn_ls_mcu" Flexiclockgen output 0
+  *
+  * @retval None
+  */
+#define __HAL_RCC_ADC12KERCLK_SETSOURCE(__RCC_ADC12KERSOURCE__) \
+  MODIFY_REG( RCC->ADC12CFGR, RCC_ADC12CFGR_ADC12KERSEL,(__RCC_ADC12KERSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as ADC12 kernel source clock.
+  * @retval The clock source used as ADC12 kernel source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_ADC12KERCLKSOURCE_CK_KER_ADC12:  "ck_ker_adc12"  Flexiclockgen output 46
+  *            @arg RCC_ADC12KERCLKSOURCE_CK_ICN_LS_MCU: "ck_icn_ls_mcu" Flexiclockgen output 0
+  */
+#define __HAL_RCC_ADC12KERCLK_GETSOURCE() ( (RCC->ADC12CFGR & RCC_ADC12CFGR_ADC12KERSEL_Msk) )
+
+/** @defgroup RCC_ADC3_Kernel_Clock_Source RCC_ADC3_Kernel_Clock_Source
+  * @{
+  */
+#define RCC_ADC3KERCLKSOURCE_CK_KER_ADC3      (0x0 << RCC_ADC3CFGR_ADC3KERSEL_Pos)
+#define RCC_ADC3KERCLKSOURCE_CK_ICN_LS_MCU    (0x1 << RCC_ADC3CFGR_ADC3KERSEL_Pos)
+#define RCC_ADC3KERCLKSOURCE_CK_KER_ADC12     (0x2 << RCC_ADC3CFGR_ADC3KERSEL_Pos)
+
+#define IS_RCC_ADC3KERCLKSOURCE(SOURCE) (((SOURCE) == RCC_ADC3KERCLKSOURCE_CK_KER_ADC3) || \
+                                         ((SOURCE) == RCC_ADC3KERCLKSOURCE_CK_ICN_LS_MCU) || \
+                                         ((SOURCE) == RCC_ADC3KERCLKSOURCE_CK_KER_ADC12))
+
+/**
+  * @brief  Macro to select ADC3 kernel source clock
+  *
+  * @param  __RCC_ADC3KERSOURCE__: specifies the ADC3 entry kernel clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_ADC3KERCLKSOURCE_CK_KER_ADC3:   "ck_ker_adc3"   Flexiclockgen output 47
+  *            @arg RCC_ADC3KERCLKSOURCE_CK_ICN_LS_MCU: "ck_icn_ls_mcu" Flexiclockgen output 0
+  *            @arg RCC_ADC3KERCLKSOURCE_CK_KER_ADC12:  "ck_ker_adc12"  Flexiclockgen output 46
+  *
+  * @retval None
+  */
+#define __HAL_RCC_ADC3KERCLK_SETSOURCE(__RCC_ADC3KERSOURCE__) \
+  MODIFY_REG( RCC->ADC3CFGR, RCC_ADC3CFGR_ADC3KERSEL, (__RCC_ADC3KERSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as ADC3 kernel source clock.
+  * @retval The clock source used as ADC3 kernel source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_ADC3KERCLKSOURCE_CK_KER_ADC3:   "ck_ker_adc3"   Flexiclockgen output 47
+  *            @arg RCC_ADC3KERCLKSOURCE_CK_ICN_LS_MCU: "ck_icn_ls_mcu" Flexiclockgen output 0
+  *            @arg RCC_ADC3KERCLKSOURCE_CK_KER_ADC12:  "ck_ker_adc12"  Flexiclockgen output 46
+  */
+#define __HAL_RCC_ADC3KERCLK_GETSOURCE() ( (RCC->ADC3CFGR & RCC_ADC3CFGR_ADC3KERSEL_Msk))
 
 /** @brief Enable RCC interrupt (Perform Byte access to RCC_CIR[14:8] bits to enable
   *        the selected interrupts).

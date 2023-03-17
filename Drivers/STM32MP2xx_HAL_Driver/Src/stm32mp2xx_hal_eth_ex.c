@@ -2,23 +2,20 @@
   ******************************************************************************
   * @file    stm32mp2xx_hal_eth_ex.c
   * @author  MCD Application Team
-  * @version V1.0.0
-  * @date    21-April-2017
   * @brief   ETH HAL Extended module driver.
   *
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2020 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
-  */ 
+  */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32mp2xx_hal.h"
@@ -27,12 +24,14 @@
   * @{
   */
 
-/** @defgroup ETHEx ETHEx 
+#ifdef HAL_ETH_MODULE_ENABLED
+
+#if defined(ETH1) || defined(ETH2)
+
+/** @defgroup ETHEx ETHEx
   * @brief ETH HAL Extended module driver
   * @{
   */
-
-#ifdef HAL_ETH_MODULE_ENABLED
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -48,12 +47,13 @@
                               ETH_MACL3L4C0R_L3DAIM0 | ETH_MACL3L4C0R_L3HSBM0 | \
                               ETH_MACL3L4C0R_L3HDBM0)
 
-#define ETH_MACRXVLAN_MASK (ETH_MACVTR_EIVLRXS | ETH_MACVTR_EIVLS | \
-                            ETH_MACVTR_ERIVLT | ETH_MACVTR_EDVLP | \
-                            ETH_MACVTR_VTHM | ETH_MACVTR_EVLRXS | \
-                            ETH_MACVTR_EVLS | ETH_MACVTR_DOVLTC | \
-                            ETH_MACVTR_ERSVLM | ETH_MACVTR_ESVL | \
-                            ETH_MACVTR_VTIM | ETH_MACVTR_ETV)
+
+#define ETH_MACRXVLAN_MASK (ETH_MACVTCR_EIVLRXS | ETH_MACVTCR_EIVLS | \
+                            ETH_MACVTCR_ERIVLT | ETH_MACVTCR_EDVLP | \
+                            ETH_MACVTCR_VTHM | ETH_MACVTCR_EVLRXS | \
+                            ETH_MACVTCR_EVLS | ETH_MACVTCR_DOVLTC | \
+                            ETH_MACVTCR_ERSVLM | ETH_MACVTCR_ESVL | \
+                            ETH_MACVTCR_VTIM | ETH_MACVTCR_ETV)
 
 #define ETH_MACTXVLAN_MASK (ETH_MACVIR_VLTI | ETH_MACVIR_CSVL | \
                             ETH_MACVIR_VLP | ETH_MACVIR_VLC)
@@ -67,10 +67,10 @@
 /** @defgroup ETHEx_Exported_Functions ETH Extended Exported Functions
   * @{
   */
-  
+
 /** @defgroup ETHEx_Exported_Functions_Group1 Extended features functions
   * @brief    Extended features functions
- *
+  *
 @verbatim
  ===============================================================================
                       ##### Extended features functions #####
@@ -84,20 +84,21 @@
 @endverbatim
   * @{
   */
-  
+
 /**
-  * @brief  Enables ARP Offload. 
+  * @brief  Enables ARP Offload.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
   *         the configuration information for ETHERNET module
   * @retval None
   */
+
 void HAL_ETHEx_EnableARPOffload(ETH_HandleTypeDef *heth)
 {
   SET_BIT(heth->Instance->MACCR, ETH_MACCR_ARPEN);
 }
 
 /**
-  * @brief  Disables ARP Offload. 
+  * @brief  Disables ARP Offload.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
   *         the configuration information for ETHERNET module
   * @retval None
@@ -108,10 +109,10 @@ void HAL_ETHEx_DisableARPOffload(ETH_HandleTypeDef *heth)
 }
 
 /**
-  * @brief  Set the ARP Match IP address 
+  * @brief  Set the ARP Match IP address
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
   *         the configuration information for ETHERNET module
-  *  @param IpAddress: IP Address to be matched for incoming ARP requests
+  * @param  IpAddress: IP Address to be matched for incoming ARP requests
   * @retval None
   */
 void HAL_ETHEx_SetARPAddressMatch(ETH_HandleTypeDef *heth, uint32_t IpAddress)
@@ -122,123 +123,112 @@ void HAL_ETHEx_SetARPAddressMatch(ETH_HandleTypeDef *heth, uint32_t IpAddress)
 /**
   * @brief  Configures the L4 Filter, this function allow to:
   *         set the layer 4 protocol to be matched (TCP or UDP)
-  *         enable/disable L4 source/destination port perfect/inverse match.      
+  *         enable/disable L4 source/destination port perfect/inverse match.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
   *         the configuration information for ETHERNET module
   * @param  Filter: L4 filter to configured, this parameter must be one of the following
   *           ETH_L4_FILTER_0
   *           ETH_L4_FILTER_1
-  * @param  pL4FilterConfig: pointer to a ETH_L4FilterConfigTypeDef structure 
-  *         that contains L4 filter configuration. 
+  * @param  pL4FilterConfig: pointer to a ETH_L4FilterConfigTypeDef structure
+  *         that contains L4 filter configuration.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_ETHEx_SetL4FilterConfig(ETH_HandleTypeDef *heth, uint32_t Filter , ETH_L4FilterConfigTypeDef *pL4FilterConfig)
+HAL_StatusTypeDef HAL_ETHEx_SetL4FilterConfig(ETH_HandleTypeDef *heth, uint32_t Filter,
+                                              ETH_L4FilterConfigTypeDef *pL4FilterConfig)
 {
-  uint32_t l4filteraddr;
-  uint32_t l4filterval = 0;
-  
-  if(pL4FilterConfig == NULL)
+  __IO uint32_t *configreg = ((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter));
+
+  if (pL4FilterConfig == NULL)
   {
     return HAL_ERROR;
   }
-  
-  l4filteraddr = (uint32_t)(&(heth->Instance->MACL3L4C0R) + Filter);
-  
-  l4filterval = (pL4FilterConfig->Protocol |
-             pL4FilterConfig->SrcPortFilterMatch |
-             pL4FilterConfig->DestPortFilterMatch);
-  
+
   /* Write configuration to (MACL3L4C0R + filter )register */
-  MODIFY_REG((*(__IO uint32_t *)l4filteraddr), ETH_MACL4CR_MASK ,l4filterval);
-  
-  /* Get address of  (MACL4A0R + filter) register */
-  l4filteraddr = (uint32_t)(&(heth->Instance->MACL4A0R) + Filter);
-  
-  l4filterval = (pL4FilterConfig->SourcePort |
-             (pL4FilterConfig->DestinationPort << 16));
-  
+  MODIFY_REG(*configreg, ETH_MACL4CR_MASK, (pL4FilterConfig->Protocol |
+                                            pL4FilterConfig->SrcPortFilterMatch |
+                                            pL4FilterConfig->DestPortFilterMatch));
+
+  configreg = ((__IO uint32_t *)(&(heth->Instance->MACL4A0R) + Filter));
+
   /* Write configuration to (MACL4A0R + filter )register */
-  MODIFY_REG((*(__IO uint32_t *)l4filteraddr), (ETH_MACL4A0R_L4DP0 | ETH_MACL4A0R_L4SP0) , l4filterval);
-  
+  MODIFY_REG(*configreg, (ETH_MACL4A0R_L4DP0 | ETH_MACL4A0R_L4SP0) , (pL4FilterConfig->SourcePort |
+                                                                      (pL4FilterConfig->DestinationPort << 16)));
+
   /* Enable L4 filter */
   SET_BIT(heth->Instance->MACPFR, ETH_MACPFR_IPFE);
-  
+
   return HAL_OK;
 }
 
 /**
   * @brief  Configures the L4 Filter, this function allow to:
   *         set the layer 4 protocol to be matched (TCP or UDP)
-  *         enable/disable L4 source/destination port perfect/inverse match.      
+  *         enable/disable L4 source/destination port perfect/inverse match.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
   *         the configuration information for ETHERNET module
   * @param  Filter: L4 filter to configured, this parameter must be one of the following
   *           ETH_L4_FILTER_0
   *           ETH_L4_FILTER_1
-  * @param  pL4FilterConfig: pointer to a ETH_L4FilterConfigTypeDef structure 
+  * @param  pL4FilterConfig: pointer to a ETH_L4FilterConfigTypeDef structure
   *         that contains L4 filter configuration.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_ETHEx_GetL4FilterConfig(ETH_HandleTypeDef *heth, uint32_t Filter, ETH_L4FilterConfigTypeDef *pL4FilterConfig)
+HAL_StatusTypeDef HAL_ETHEx_GetL4FilterConfig(ETH_HandleTypeDef *heth, uint32_t Filter,
+                                              ETH_L4FilterConfigTypeDef *pL4FilterConfig)
 {
-  uint32_t l4filterval = *((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter));
-  
-  if(pL4FilterConfig == NULL)
+  if (pL4FilterConfig == NULL)
   {
     return HAL_ERROR;
   }
-  
+
   /* Get configuration to (MACL3L4C0R + filter )register */
-  pL4FilterConfig->Protocol = READ_BIT(l4filterval, ETH_MACL3L4C0R_L4PEN0);
-  pL4FilterConfig->DestPortFilterMatch = READ_BIT(l4filterval, (ETH_MACL3L4C0R_L4DPM0 | ETH_MACL3L4C0R_L4DPIM0));
-  pL4FilterConfig->SrcPortFilterMatch = READ_BIT(l4filterval, (ETH_MACL3L4C0R_L4SPM0 | ETH_MACL3L4C0R_L4SPIM0));
-  
-  /* Get address of  (MACL4A0R + filter) register */
-  l4filterval = *((__IO uint32_t *)(&(heth->Instance->MACL4A0R) + Filter));
-  
+  pL4FilterConfig->Protocol = READ_BIT(*((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter)),
+                                       ETH_MACL3L4C0R_L4PEN0);
+  pL4FilterConfig->DestPortFilterMatch = READ_BIT(*((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter)),
+                                                  (ETH_MACL3L4C0R_L4DPM0 | ETH_MACL3L4C0R_L4DPIM0));
+  pL4FilterConfig->SrcPortFilterMatch = READ_BIT(*((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter)),
+                                                 (ETH_MACL3L4C0R_L4SPM0 | ETH_MACL3L4C0R_L4SPIM0));
+
   /* Get configuration to (MACL3L4C0R + filter )register */
-  pL4FilterConfig->DestinationPort = (READ_BIT(l4filterval, ETH_MACL4A0R_L4DP0) >> 16);
-  pL4FilterConfig->SourcePort = READ_BIT(l4filterval, ETH_MACL4A0R_L4SP0);
-  
+  pL4FilterConfig->DestinationPort = (READ_BIT(*((__IO uint32_t *)(&(heth->Instance->MACL4A0R) + Filter)),
+                                               ETH_MACL4A0R_L4DP0) >> 16);
+  pL4FilterConfig->SourcePort = READ_BIT(*((__IO uint32_t *)(&(heth->Instance->MACL4A0R) + Filter)), ETH_MACL4A0R_L4SP0);
+
   return HAL_OK;
 }
 
 /**
   * @brief  Configures the L3 Filter, this function allow to:
   *         set the layer 3 protocol to be matched (IPv4 or IPv6)
-  *         enable/disable L3 source/destination port perfect/inverse match.      
+  *         enable/disable L3 source/destination port perfect/inverse match.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
   *         the configuration information for ETHERNET module
   * @param  Filter: L3 filter to configured, this parameter must be one of the following
   *           ETH_L3_FILTER_0
-  *           ETH_L3_FILTER_1          
-  * @param  pL3FilterConfig: pointer to a ETH_L3FilterConfigTypeDef structure 
+  *           ETH_L3_FILTER_1
+  * @param  pL3FilterConfig: pointer to a ETH_L3FilterConfigTypeDef structure
   *         that contains L3 filter configuration.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_ETHEx_SetL3FilterConfig(ETH_HandleTypeDef *heth, uint32_t Filter, ETH_L3FilterConfigTypeDef *pL3FilterConfig)
+HAL_StatusTypeDef HAL_ETHEx_SetL3FilterConfig(ETH_HandleTypeDef *heth, uint32_t Filter,
+                                              ETH_L3FilterConfigTypeDef *pL3FilterConfig)
 {
-  __IO uint32_t *l3filteraddr;
-  uint32_t l3filterval = 0;
-  
-  if(pL3FilterConfig == NULL)
+  __IO uint32_t *configreg = ((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter));
+
+  if (pL3FilterConfig == NULL)
   {
     return HAL_ERROR;
   }
-  
-  l3filteraddr = (__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter);
- 
-  l3filterval = (pL3FilterConfig->Protocol | 
-                 pL3FilterConfig->SrcAddrFilterMatch |
-                   pL3FilterConfig->DestAddrFilterMatch |
-                     (pL3FilterConfig->SrcAddrHigherBitsMatch << 6) | 
-                       (pL3FilterConfig->DestAddrHigherBitsMatch << 11));
-  
+
   /* Write configuration to (MACL3L4C0R + filter )register */
-  MODIFY_REG(*l3filteraddr, ETH_MACL3CR_MASK, l3filterval);
-  
+  MODIFY_REG(*configreg, ETH_MACL3CR_MASK, (pL3FilterConfig->Protocol |
+                                            pL3FilterConfig->SrcAddrFilterMatch |
+                                            pL3FilterConfig->DestAddrFilterMatch |
+                                            (pL3FilterConfig->SrcAddrHigherBitsMatch << 6) |
+                                            (pL3FilterConfig->DestAddrHigherBitsMatch << 11)));
+
   /* Check if IPv6 protocol is selected */
-  if(pL3FilterConfig->Protocol)
+  if(pL3FilterConfig->Protocol != ETH_L3_IPV4_MATCH)
   {
     /* Set the IPv6 address match */
     /* Set Bits[31:0] of 128-bit IP addr */
@@ -257,39 +247,43 @@ HAL_StatusTypeDef HAL_ETHEx_SetL3FilterConfig(ETH_HandleTypeDef *heth, uint32_t 
     /* Set the IPv4 destination address match */
     *((__IO uint32_t *)(&(heth->Instance->MACL3A10R) + Filter)) = pL3FilterConfig->Ip4DestAddr;
   }
-  
+
   return HAL_OK;
 }
 
 /**
   * @brief  Configures the L3 Filter, this function allow to:
   *         set the layer 3 protocol to be matched (IPv4 or IPv6)
-  *         enable/disable L3 source/destination port perfect/inverse match.      
+  *         enable/disable L3 source/destination port perfect/inverse match.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
   *         the configuration information for ETHERNET module
   * @param  Filter: L3 filter to configured, this parameter must be one of the following
   *           ETH_L3_FILTER_0
-  *           ETH_L3_FILTER_1          
-  * @param  pL3FilterConfig: pointer to a ETH_L3FilterConfigTypeDef structure 
-  *         that will contain the L3 filter configuration. 
+  *           ETH_L3_FILTER_1
+  * @param  pL3FilterConfig: pointer to a ETH_L3FilterConfigTypeDef structure
+  *         that will contain the L3 filter configuration.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_ETHEx_GetL3FilterConfig(ETH_HandleTypeDef *heth, uint32_t Filter, ETH_L3FilterConfigTypeDef *pL3FilterConfig)
+HAL_StatusTypeDef HAL_ETHEx_GetL3FilterConfig(ETH_HandleTypeDef *heth, uint32_t Filter,
+                                              ETH_L3FilterConfigTypeDef *pL3FilterConfig)
 {
-  uint32_t l3filterval = *((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter));
-  
-  if(pL3FilterConfig == NULL)
+  if (pL3FilterConfig == NULL)
   {
     return HAL_ERROR;
   }
-  
-  pL3FilterConfig->Protocol = READ_BIT(l3filterval, ETH_MACL3L4C0R_L3PEN0);
-  pL3FilterConfig->SrcAddrFilterMatch = READ_BIT(l3filterval, (ETH_MACL3L4C0R_L3SAM0 | ETH_MACL3L4C0R_L3SAIM0));
-  pL3FilterConfig->DestAddrFilterMatch = READ_BIT(l3filterval, (ETH_MACL3L4C0R_L3DAM0 | ETH_MACL3L4C0R_L3DAIM0));
-  pL3FilterConfig->SrcAddrHigherBitsMatch = (READ_BIT(l3filterval, ETH_MACL3L4C0R_L3HSBM0) >> 6);
-  pL3FilterConfig->DestAddrHigherBitsMatch = (READ_BIT(l3filterval, ETH_MACL3L4C0R_L3HDBM0) >> 11);
-  
-  if(pL3FilterConfig->Protocol)
+
+  pL3FilterConfig->Protocol = READ_BIT(*((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter)),
+                                        ETH_MACL3L4C0R_L3PEN0);
+  pL3FilterConfig->SrcAddrFilterMatch = READ_BIT(*((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter)),
+                                                 (ETH_MACL3L4C0R_L3SAM0 | ETH_MACL3L4C0R_L3SAIM0));
+  pL3FilterConfig->DestAddrFilterMatch = READ_BIT(*((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter)),
+                                                  (ETH_MACL3L4C0R_L3DAM0 | ETH_MACL3L4C0R_L3DAIM0));
+  pL3FilterConfig->SrcAddrHigherBitsMatch = (READ_BIT(*((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter)),
+                                                      ETH_MACL3L4C0R_L3HSBM0) >> 6);
+  pL3FilterConfig->DestAddrHigherBitsMatch = (READ_BIT(*((__IO uint32_t *)(&(heth->Instance->MACL3L4C0R) + Filter)),
+                                                       ETH_MACL3L4C0R_L3HDBM0) >> 11);
+
+  if(pL3FilterConfig->Protocol != ETH_L3_IPV4_MATCH)
   {
     pL3FilterConfig->Ip6Addr[0] = *((__IO uint32_t *)(&(heth->Instance->MACL3A00R) + Filter));
     pL3FilterConfig->Ip6Addr[1] = *((__IO uint32_t *)(&(heth->Instance->MACL3A10R) + Filter));
@@ -301,14 +295,15 @@ HAL_StatusTypeDef HAL_ETHEx_GetL3FilterConfig(ETH_HandleTypeDef *heth, uint32_t 
     pL3FilterConfig->Ip4SrcAddr = *((__IO uint32_t *)(&(heth->Instance->MACL3A00R) + Filter));
     pL3FilterConfig->Ip4DestAddr = *((__IO uint32_t *)(&(heth->Instance->MACL3A10R) + Filter));
   }
-  
-  return HAL_OK; 
+
+
+  return HAL_OK;
 }
 
 /**
   * @brief  Enables L3 and L4 filtering process.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
-  *         the configuration information for ETHERNET module       
+  *         the configuration information for ETHERNET module
   * @retval None.
   */
 void HAL_ETHEx_EnableL3L4Filtering(ETH_HandleTypeDef *heth)
@@ -320,191 +315,182 @@ void HAL_ETHEx_EnableL3L4Filtering(ETH_HandleTypeDef *heth)
 /**
   * @brief  Disables L3 and L4 filtering process.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
-  *         the configuration information for ETHERNET module       
+  *         the configuration information for ETHERNET module
   * @retval None.
   */
 void HAL_ETHEx_DisableL3L4Filtering(ETH_HandleTypeDef *heth)
 {
   /* Disable L3/L4 filter */
-  CLEAR_BIT(heth->Instance->MACPFR, ETH_MACPFR_IPFE);  
+  CLEAR_BIT(heth->Instance->MACPFR, ETH_MACPFR_IPFE);
 }
 
 /**
   * @brief  Get the VLAN Configuration for Receive Packets.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
-  *         the configuration information for ETHERNET module 
-  * @param  pVlanConfig: pointer to a ETH_RxVLANConfigTypeDef structure 
+  *         the configuration information for ETHERNET module
+  * @param  pVlanConfig: pointer to a ETH_RxVLANConfigTypeDef structure
   *         that will contain the VLAN filter configuration.
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_ETHEx_GetRxVLANConfig(ETH_HandleTypeDef *heth, ETH_RxVLANConfigTypeDef *pVlanConfig)
 {
-  if(pVlanConfig == NULL)
+  if (pVlanConfig == NULL)
   {
     return HAL_ERROR;
   }
-  
-  pVlanConfig->InnerVLANTagInStatus = (FunctionalState)(READ_BIT(heth->Instance->MACVTR, ETH_MACVTR_EIVLRXS) >> 31);
-  pVlanConfig->StripInnerVLANTag  = READ_BIT(heth->Instance->MACVTR, ETH_MACVTR_EIVLS);
-  pVlanConfig->InnerVLANTag = (FunctionalState)(READ_BIT(heth->Instance->MACVTR, ETH_MACVTR_ERIVLT) >> 27);  
-  pVlanConfig->DoubleVLANProcessing = (FunctionalState)(READ_BIT(heth->Instance->MACVTR, ETH_MACVTR_EDVLP) >> 26);  
-  pVlanConfig->VLANTagHashTableMatch = (FunctionalState)(READ_BIT(heth->Instance->MACVTR, ETH_MACVTR_VTHM) >> 25); 
-  pVlanConfig->VLANTagInStatus = (FunctionalState)(READ_BIT(heth->Instance->MACVTR, ETH_MACVTR_EVLRXS) >> 24);
-  pVlanConfig->StripVLANTag = READ_BIT(heth->Instance->MACVTR, ETH_MACVTR_EVLS); 
-  pVlanConfig->VLANTypeCheck = READ_BIT(heth->Instance->MACVTR, (ETH_MACVTR_DOVLTC | ETH_MACVTR_ERSVLM | ETH_MACVTR_ESVL));
-  pVlanConfig->VLANTagInverceMatch = (FunctionalState)(READ_BIT(heth->Instance->MACVTR, ETH_MACVTR_VTIM) >> 17); 
-               
+
+  pVlanConfig->InnerVLANTagInStatus = ((READ_BIT(heth->Instance->MACVTCR,
+                                                 ETH_MACVTCR_EIVLRXS) >> 31) == 0U) ? DISABLE : ENABLE;
+  pVlanConfig->StripInnerVLANTag  = READ_BIT(heth->Instance->MACVTCR, ETH_MACVTCR_EIVLS);
+  pVlanConfig->InnerVLANTag = ((READ_BIT(heth->Instance->MACVTCR, ETH_MACVTCR_ERIVLT) >> 27) == 0U) ? DISABLE : ENABLE;
+  pVlanConfig->DoubleVLANProcessing = ((READ_BIT(heth->Instance->MACVTCR,
+                                                 ETH_MACVTCR_EDVLP) >> 26) == 0U) ? DISABLE : ENABLE;
+  pVlanConfig->VLANTagHashTableMatch = ((READ_BIT(heth->Instance->MACVTCR,
+                                                  ETH_MACVTCR_VTHM) >> 25) == 0U) ? DISABLE : ENABLE;
+  pVlanConfig->VLANTagInStatus = ((READ_BIT(heth->Instance->MACVTCR, ETH_MACVTCR_EVLRXS) >> 24) == 0U) ? DISABLE : ENABLE;
+  pVlanConfig->StripVLANTag = READ_BIT(heth->Instance->MACVTCR, ETH_MACVTCR_EVLS);
+  pVlanConfig->VLANTypeCheck = READ_BIT(heth->Instance->MACVTCR,
+                                        (ETH_MACVTCR_DOVLTC | ETH_MACVTCR_ERSVLM | ETH_MACVTCR_ESVL));
+  pVlanConfig->VLANTagInverceMatch = ((READ_BIT(heth->Instance->MACVTCR, ETH_MACVTCR_VTIM) >> 17) == 0U)
+                                     ? DISABLE : ENABLE;
+
   return HAL_OK;
 }
 
 /**
-  * @brief  Set the VLAN Configuration for Receive Packets. 
+  * @brief  Set the VLAN Configuration for Receive Packets.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
-  *         the configuration information for ETHERNET module   
-  * @param  pVlanConfig: pointer to a ETH_RxVLANConfigTypeDef structure 
+  *         the configuration information for ETHERNET module
+  * @param  pVlanConfig: pointer to a ETH_RxVLANConfigTypeDef structure
   *         that contains VLAN filter configuration.
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_ETHEx_SetRxVLANConfig(ETH_HandleTypeDef *heth, ETH_RxVLANConfigTypeDef *pVlanConfig)
 {
-  uint32_t rxvlanval = 0;
-  
-  if(pVlanConfig == NULL)
+  if (pVlanConfig == NULL)
   {
     return HAL_ERROR;
   }
- 
-  rxvlanval = ((uint32_t)(pVlanConfig->InnerVLANTagInStatus << 31) |
-               pVlanConfig->StripInnerVLANTag |
-                 (uint32_t)(pVlanConfig->InnerVLANTag << 27) |
-                   (uint32_t)(pVlanConfig->DoubleVLANProcessing << 26) |
-                     (uint32_t)(pVlanConfig->VLANTagHashTableMatch << 25) |
-                       (uint32_t)(pVlanConfig->VLANTagInStatus << 24) |
-                         pVlanConfig->StripVLANTag |
-                           pVlanConfig->VLANTypeCheck |
-                             (uint32_t)(pVlanConfig->VLANTagInverceMatch << 17));
-  
+
   /* Write config to MACVTR */
-  MODIFY_REG(heth->Instance->MACVTR, ETH_MACRXVLAN_MASK, rxvlanval);
+  MODIFY_REG(heth->Instance->MACVTCR, ETH_MACRXVLAN_MASK, (((uint32_t)pVlanConfig->InnerVLANTagInStatus << 31) |
+                                                          pVlanConfig->StripInnerVLANTag |
+                                                          ((uint32_t)pVlanConfig->InnerVLANTag << 27) |
+                                                          ((uint32_t)pVlanConfig->DoubleVLANProcessing << 26) |
+                                                          ((uint32_t)pVlanConfig->VLANTagHashTableMatch << 25) |
+                                                          ((uint32_t)pVlanConfig->VLANTagInStatus << 24) |
+                                                          pVlanConfig->StripVLANTag |
+                                                          pVlanConfig->VLANTypeCheck |
+                                                          ((uint32_t)pVlanConfig->VLANTagInverceMatch << 17)));
 
   return HAL_OK;
 }
 
 /**
-  * @brief  Set the VLAN Hash Table 
+  * @brief  Set the VLAN Hash Table
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
-  *         the configuration information for ETHERNET module    
+  *         the configuration information for ETHERNET module
   * @param  VLANHashTable: VLAN hash table 16 bit value
   * @retval None
   */
 void HAL_ETHEx_SetVLANHashTable(ETH_HandleTypeDef *heth, uint32_t VLANHashTable)
 {
-  MODIFY_REG(heth->Instance->MACVHTR, ETH_MACVHTR_VLHT, VLANHashTable);       
+  MODIFY_REG(heth->Instance->MACVHTR, ETH_MACVHTR_VLHT, VLANHashTable);
 }
 
 /**
   * @brief  Get the VLAN Configuration for Transmit Packets.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
-  *         the configuration information for ETHERNET module  
+  *         the configuration information for ETHERNET module
   * @param  VLANTag: Selects the vlan tag, this parameter must be one of the following
   *                 ETH_OUTER_TX_VLANTAG
   *                 ETH_INNER_TX_VLANTAG
-  * @param  pVlanConfig: pointer to a ETH_TxVLANConfigTypeDef structure 
+  * @param  pVlanConfig: pointer to a ETH_TxVLANConfigTypeDef structure
   *         that will contain the Tx VLAN filter configuration.
   * @retval HAL Status.
   */
-HAL_StatusTypeDef HAL_ETHEx_GetTxVLANConfig(ETH_HandleTypeDef *heth, uint32_t VLANTag ,ETH_TxVLANConfigTypeDef *pVlanConfig)
+HAL_StatusTypeDef HAL_ETHEx_GetTxVLANConfig(ETH_HandleTypeDef *heth, uint32_t VLANTag,
+                                            ETH_TxVLANConfigTypeDef *pVlanConfig)
 {
-  uint32_t vlanreg;
-  
   if (pVlanConfig == NULL)
   {
     return HAL_ERROR;
   }
-  
-  if(VLANTag == ETH_INNER_TX_VLANTAG)
+
+  if (VLANTag == ETH_INNER_TX_VLANTAG)
   {
-    vlanreg = heth->Instance->MACIVIR;
+    pVlanConfig->SourceTxDesc = ((READ_BIT(heth->Instance->MACIVIR, ETH_MACVIR_VLTI) >> 20) == 0U) ? DISABLE : ENABLE;
+    pVlanConfig->SVLANType = ((READ_BIT(heth->Instance->MACIVIR, ETH_MACVIR_CSVL) >> 19) == 0U) ? DISABLE : ENABLE;
+    pVlanConfig->VLANTagControl = READ_BIT(heth->Instance->MACIVIR, (ETH_MACVIR_VLP | ETH_MACVIR_VLC));
   }
   else
   {
-    vlanreg = heth->Instance->MACVIR;
+    pVlanConfig->SourceTxDesc = ((READ_BIT(heth->Instance->MACVIR, ETH_MACVIR_VLTI) >> 20) == 0U) ? DISABLE : ENABLE;
+    pVlanConfig->SVLANType = ((READ_BIT(heth->Instance->MACVIR, ETH_MACVIR_CSVL) >> 19) == 0U) ? DISABLE : ENABLE;
+    pVlanConfig->VLANTagControl = READ_BIT(heth->Instance->MACVIR, (ETH_MACVIR_VLP | ETH_MACVIR_VLC));
   }
-  
-  
-  pVlanConfig->SourceTxDesc = (FunctionalState)(READ_BIT(vlanreg, ETH_MACVIR_VLTI) >> 20);
-  pVlanConfig->SVLANType = (FunctionalState)(READ_BIT(vlanreg, ETH_MACVIR_CSVL) >> 19); 
-  pVlanConfig->VLANTagControl = READ_BIT(vlanreg, (ETH_MACVIR_VLP | ETH_MACVIR_VLC));
-  
+
   return HAL_OK;;
 }
 
 /**
-  * @brief  Set the VLAN Configuration for Transmit Packets. 
+  * @brief  Set the VLAN Configuration for Transmit Packets.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
-  *         the configuration information for ETHERNET module     
+  *         the configuration information for ETHERNET module
   * @param  VLANTag: Selects the vlan tag, this parameter must be one of the following
   *                 ETH_OUTER_TX_VLANTAG
   *                 ETH_INNER_TX_VLANTAG
-  * @param  pVlanConfig: pointer to a ETH_TxVLANConfigTypeDef structure 
+  * @param  pVlanConfig: pointer to a ETH_TxVLANConfigTypeDef structure
   *         that contains Tx VLAN filter configuration.
   * @retval HAL Status
   */
-HAL_StatusTypeDef HAL_ETHEx_SetTxVLANConfig(ETH_HandleTypeDef *heth, uint32_t VLANTag ,ETH_TxVLANConfigTypeDef *pVlanConfig)
+HAL_StatusTypeDef HAL_ETHEx_SetTxVLANConfig(ETH_HandleTypeDef *heth, uint32_t VLANTag,
+                                            ETH_TxVLANConfigTypeDef *pVlanConfig)
 {
-  uint32_t vlanconfigval = 0;
-  uint32_t vlanreg;
-  
-  if(VLANTag == ETH_INNER_TX_VLANTAG)
+  if (VLANTag == ETH_INNER_TX_VLANTAG)
   {
-    vlanreg = (uint32_t)&(heth->Instance->MACIVIR);
+    MODIFY_REG(heth->Instance->MACIVIR, ETH_MACTXVLAN_MASK, (((uint32_t)pVlanConfig->SourceTxDesc << 20) |
+                                                             ((uint32_t)pVlanConfig->SVLANType << 19) |
+                                                             pVlanConfig->VLANTagControl));
     /* Enable Double VLAN processing */
-    SET_BIT(heth->Instance->MACVTR, ETH_MACVTR_EDVLP);
+    SET_BIT(heth->Instance->MACVTCR, ETH_MACVTCR_EDVLP);
   }
   else
   {
-    vlanreg = (uint32_t)&(heth->Instance->MACVIR);
+    MODIFY_REG(heth->Instance->MACVIR, ETH_MACTXVLAN_MASK, (((uint32_t)pVlanConfig->SourceTxDesc << 20) |
+                                                            ((uint32_t)pVlanConfig->SVLANType << 19) |
+                                                            pVlanConfig->VLANTagControl));
   }
-  
-  vlanconfigval = ((uint32_t)(pVlanConfig->SourceTxDesc << 20) |
-                   (uint32_t)(pVlanConfig->SVLANType << 19) |
-                     pVlanConfig->VLANTagControl);
-  
-  MODIFY_REG(*((uint32_t *)vlanreg), ETH_MACTXVLAN_MASK, vlanconfigval);
-  
+
   return HAL_OK;
 }
 
 /**
-  * @brief  Set the VLAN Tag Identifier for Transmit Packets. 
+  * @brief  Set the VLAN Tag Identifier for Transmit Packets.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
-  *         the configuration information for ETHERNET module     
+  *         the configuration information for ETHERNET module
   * @param  VLANTag: Selects the vlan tag, this parameter must be one of the following
   *                 ETH_OUTER_TX_VLANTAG
   *                 ETH_INNER_TX_VLANTAG
   * @param  VLANIdentifier: VLAN Identifier 16 bit value
   * @retval None
   */
-void HAL_ETHEx_SetTxVLANIdentifier(ETH_HandleTypeDef *heth, uint32_t VLANTag ,uint32_t VLANIdentifier)
+void HAL_ETHEx_SetTxVLANIdentifier(ETH_HandleTypeDef *heth, uint32_t VLANTag, uint32_t VLANIdentifier)
 {
-  uint32_t vlanreg;
-  
-  if(VLANTag == ETH_INNER_TX_VLANTAG)
+  if (VLANTag == ETH_INNER_TX_VLANTAG)
   {
-    vlanreg = (uint32_t)&(heth->Instance->MACIVIR);
+    MODIFY_REG(heth->Instance->MACIVIR, ETH_MACVIR_VLT, VLANIdentifier);
   }
   else
   {
-    vlanreg = (uint32_t)&(heth->Instance->MACVIR);
+    MODIFY_REG(heth->Instance->MACVIR, ETH_MACVIR_VLT, VLANIdentifier);
   }
-  
-  MODIFY_REG(*((uint32_t *)vlanreg), ETH_MACVIR_VLT, VLANIdentifier);
 }
 
 /**
   * @brief  Enables the VLAN Tag Filtering process.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
-  *         the configuration information for ETHERNET module       
+  *         the configuration information for ETHERNET module
   * @retval None.
   */
 void HAL_ETHEx_EnableVLANProcessing(ETH_HandleTypeDef *heth)
@@ -516,36 +502,33 @@ void HAL_ETHEx_EnableVLANProcessing(ETH_HandleTypeDef *heth)
 /**
   * @brief  Disables the VLAN Tag Filtering process.
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
-  *         the configuration information for ETHERNET module       
+  *         the configuration information for ETHERNET module
   * @retval None.
   */
 void HAL_ETHEx_DisableVLANProcessing(ETH_HandleTypeDef *heth)
 {
   /* Disable VLAN processing */
-  CLEAR_BIT(heth->Instance->MACPFR, ETH_MACPFR_VTFE);  
+  CLEAR_BIT(heth->Instance->MACPFR, ETH_MACPFR_VTFE);
 }
 
 /**
   * @brief  Enters the Low Power Idle (LPI) mode
   * @param  heth: pointer to a ETH_HandleTypeDef structure that contains
   *         the configuration information for ETHERNET module
-  * @param  TxAutomate: Enable/Disbale automate enter/exit LPI mode.
-  * @param  TxClockStop: Enable/Disbale Tx clock stop in LPI mode.
+  * @param  TxAutomate: Enable/Disable automate enter/exit LPI mode.
+  * @param  TxClockStop: Enable/Disable Tx clock stop in LPI mode.
   * @retval None
   */
 void HAL_ETHEx_EnterLPIMode(ETH_HandleTypeDef *heth, FunctionalState TxAutomate, FunctionalState TxClockStop)
 {
-  uint32_t lpiconfig;
-  
-  lpiconfig = (((uint32_t)TxAutomate << 19) | 
-               ((uint32_t)TxClockStop << 21) |
-                 ETH_MACLCSR_LPIEN);
-
   /* Enable LPI Interrupts */
   __HAL_ETH_MAC_ENABLE_IT(heth, ETH_MACIER_LPIIE);
-  
+
   /* Write to LPI Control register: Enter low power mode */
-  MODIFY_REG(heth->Instance->MACLCSR, (ETH_MACLCSR_LPIEN | ETH_MACLCSR_LPITXA | ETH_MACLCSR_LPITE), lpiconfig);
+  MODIFY_REG(heth->Instance->MACLCSR, (ETH_MACLCSR_LPIEN | ETH_MACLCSR_LPITXA | ETH_MACLCSR_LPITCSE),
+             (((uint32_t)TxAutomate << 19) |
+              ((uint32_t)TxClockStop << 21) |
+              ETH_MACLCSR_LPIEN));
 }
 
 /**
@@ -557,8 +540,8 @@ void HAL_ETHEx_EnterLPIMode(ETH_HandleTypeDef *heth, FunctionalState TxAutomate,
 void HAL_ETHEx_ExitLPIMode(ETH_HandleTypeDef *heth)
 {
   /* Clear the LPI Config and exit low power mode */
-  CLEAR_BIT(heth->Instance->MACLCSR, (ETH_MACLCSR_LPIEN | ETH_MACLCSR_LPITXA | ETH_MACLCSR_LPITE));
-  
+  CLEAR_BIT(heth->Instance->MACLCSR, (ETH_MACLCSR_LPIEN | ETH_MACLCSR_LPITXA | ETH_MACLCSR_LPITCSE));
+
   /* Enable LPI Interrupts */
   __HAL_ETH_MAC_DISABLE_IT(heth, ETH_MACIER_LPIIE);
 }
@@ -583,13 +566,13 @@ uint32_t HAL_ETHEx_GetMACLPIEvent(ETH_HandleTypeDef *heth)
   * @}
   */
 
+/**
+  * @}
+  */
+
+#endif /* ETH1 || ETH2 */
+
 #endif /* HAL_ETH_MODULE_ENABLED */
 /**
   * @}
   */
-
-/**
-  * @}
-  */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

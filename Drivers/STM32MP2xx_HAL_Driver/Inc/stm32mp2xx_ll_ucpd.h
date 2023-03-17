@@ -110,7 +110,6 @@ typedef struct
 #define LL_UCPD_SR_TYPECEVT2        UCPD_SR_TYPECEVT2             /*!< Type C voltage level event on CC2              */
 #define LL_UCPD_SR_TYPEC_VSTATE_CC1 UCPD_SR_TYPEC_VSTATE_CC1      /*!<Status of DC level on CC1 pin                   */
 #define LL_UCPD_SR_TYPEC_VSTATE_CC2 UCPD_SR_TYPEC_VSTATE_CC2      /*!<Status of DC level on CC2 pin                   */
-#define LL_UCPD_SR_FRSEVT           UCPD_SR_FRSEVT                /*!<Fast Role Swap detection event                  */
 
 /**
   * @}
@@ -134,7 +133,6 @@ typedef struct
 #define LL_UCPD_IMR_RXMSGEND         UCPD_IMR_RXMSGENDIE          /*!< Enable Rx message received                           */
 #define LL_UCPD_IMR_TYPECEVT1        UCPD_IMR_TYPECEVT1IE         /*!< Enable Type C voltage level event on CC1             */
 #define LL_UCPD_IMR_TYPECEVT2        UCPD_IMR_TYPECEVT2IE         /*!< Enable Type C voltage level event on CC2             */
-#define LL_UCPD_IMR_FRSEVT           UCPD_IMR_FRSEVTIE            /*!< Enable fast Role Swap detection event                */
 
 /**
   * @}
@@ -619,39 +617,6 @@ __STATIC_INLINE void LL_UCPD_VconnDischargeDisable(UCPD_TypeDef *UCPDx)
 }
 
 /**
-  * @brief  Signal Fast Role Swap request
-  * @rmtoll CR          FRSTX          LL_UCPD_VconnDischargeDisable
-  * @param  UCPDx UCPD Instance
-  * @retval None
-  */
-__STATIC_INLINE void LL_UCPD_SignalFRSTX(UCPD_TypeDef *UCPDx)
-{
-  SET_BIT(UCPDx->CR, UCPD_CR_FRSTX);
-}
-
-/**
-  * @brief  Fast Role swap RX detection enable
-  * @rmtoll CR          FRSRXEN          LL_UCPD_FRSDetectionEnable
-  * @param  UCPDx UCPD Instance
-  * @retval None
-  */
-__STATIC_INLINE void LL_UCPD_FRSDetectionEnable(UCPD_TypeDef *UCPDx)
-{
-  SET_BIT(UCPDx->CR, UCPD_CR_FRSRXEN);
-}
-
-/**
-  * @brief  Fast Role swap RX detection disable
-  * @rmtoll CR          FRSRXEN          LL_UCPD_FRSDetectionDisable
-  * @param  UCPDx UCPD Instance
-  * @retval None
-  */
-__STATIC_INLINE void LL_UCPD_FRSDetectionDisable(UCPD_TypeDef *UCPDx)
-{
-  CLEAR_BIT(UCPDx->CR, UCPD_CR_FRSRXEN);
-}
-
-/**
   * @brief  Set cc enable
   * @rmtoll CR          CC1VCONNEN          LL_UCPD_SetccEnable
   * @param  UCPDx UCPD Instance
@@ -814,17 +779,6 @@ __STATIC_INLINE void LL_UCPD_SetTxMode(UCPD_TypeDef *UCPDx, uint32_t TxMode)
   */
 
 /**
-  * @brief  Enable FRS interrupt
-  * @rmtoll IMR          FRSEVTIE         LL_UCPD_EnableIT_FRS
-  * @param  UCPDx UCPD Instance
-  * @retval None
-  */
-__STATIC_INLINE void LL_UCPD_EnableIT_FRS(UCPD_TypeDef *UCPDx)
-{
-  SET_BIT(UCPDx->IMR, UCPD_IMR_FRSEVTIE);
-}
-
-/**
   * @brief  Enable type c event on CC2
   * @rmtoll IMR          TYPECEVT2IE        LL_UCPD_EnableIT_TypeCEventCC2
   * @param  UCPDx UCPD Instance
@@ -979,17 +933,6 @@ __STATIC_INLINE void LL_UCPD_EnableIT_TxIS(UCPD_TypeDef *UCPDx)
 }
 
 /**
-  * @brief  Disable FRS interrupt
-  * @rmtoll IMR          FRSEVTIE         LL_UCPD_DisableIT_FRS
-  * @param  UCPDx UCPD Instance
-  * @retval None
-  */
-__STATIC_INLINE void LL_UCPD_DisableIT_FRS(UCPD_TypeDef *UCPDx)
-{
-  CLEAR_BIT(UCPDx->IMR, UCPD_IMR_FRSEVTIE);
-}
-
-/**
   * @brief  Disable type c event on CC2
   * @rmtoll IMR          TYPECEVT2IE        LL_UCPD_DisableIT_TypeCEventCC2
   * @param  UCPDx UCPD Instance
@@ -1141,17 +1084,6 @@ __STATIC_INLINE void LL_UCPD_DisableIT_TxMSGDISC(UCPD_TypeDef *UCPDx)
 __STATIC_INLINE void LL_UCPD_DisableIT_TxIS(UCPD_TypeDef *UCPDx)
 {
   CLEAR_BIT(UCPDx->IMR, UCPD_IMR_TXISIE);
-}
-
-/**
-  * @brief  Check if FRS interrupt enabled
-  * @rmtoll IMR          FRSEVTIE         LL_UCPD_DisableIT_FRS
-  * @param  UCPDx UCPD Instance
-  * @retval State of bit (1 or 0).
-  */
-__STATIC_INLINE uint32_t LL_UCPD_IsEnableIT_FRS(UCPD_TypeDef const *const UCPDx)
-{
-  return ((READ_BIT(UCPDx->IMR, UCPD_IMR_FRSEVTIE) == UCPD_IMR_FRSEVTIE) ? 1UL : 0UL);
 }
 
 /**
@@ -1317,17 +1249,6 @@ __STATIC_INLINE uint32_t LL_UCPD_IsEnableIT_TxIS(UCPD_TypeDef const *const UCPDx
   */
 
 /**
-  * @brief  Clear FRS interrupt
-  * @rmtoll ICR          FRSEVTIE         LL_UCPD_ClearFlag_FRS
-  * @param  UCPDx UCPD Instance
-  * @retval None
-  */
-__STATIC_INLINE void LL_UCPD_ClearFlag_FRS(UCPD_TypeDef *UCPDx)
-{
-  SET_BIT(UCPDx->ICR, UCPD_ICR_FRSEVTCF);
-}
-
-/**
   * @brief  Clear type c event on CC2
   * @rmtoll IIMR          TYPECEVT2IE        LL_UCPD_ClearFlag_TypeCEventCC2
   * @param  UCPDx UCPD Instance
@@ -1466,17 +1387,6 @@ __STATIC_INLINE void LL_UCPD_ClearFlag_TxMSGDISC(UCPD_TypeDef *UCPDx)
 /** @defgroup UCPD_LL_EF_FLAG_Management FLAG Management
   * @{
   */
-
-/**
-  * @brief  Check if FRS interrupt
-  * @rmtoll SR          FRSEVT         LL_UCPD_IsActiveFlag_FRS
-  * @param  UCPDx UCPD Instance
-  * @retval None
-  */
-__STATIC_INLINE uint32_t LL_UCPD_IsActiveFlag_FRS(UCPD_TypeDef const *const UCPDx)
-{
-  return ((READ_BIT(UCPDx->SR, UCPD_SR_FRSEVT) == UCPD_SR_FRSEVT) ? 1UL : 0UL);
-}
 
 /**
   * @brief  Check if type c event on CC2

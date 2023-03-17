@@ -2,10 +2,12 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-/* This is a sample demonstration application that showcases usage of remoteproc
-and rpmsg APIs on the remote core. This application is meant to run on the remote CPU 
-running baremetal code. This applicationr receives two matrices from the master, 
-multiplies them and returns the result to the master core. */
+/*
+ * This is a sample demonstration application that showcases usage of remoteproc
+ * and rpmsg APIs on the remote core. This application is meant to run on the remote CPU
+ * running baremetal code. This applicationr receives two matrices from the host,
+ * multiplies them and returns the result to the host core.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -220,7 +222,7 @@ int app (struct rpmsg_device *rdev, void *priv)
 	LPRINTF(" Test Results: Error count = %d \r\n", err_cnt);
 	LPRINTF("**********************************\r\n");
 
-	/* Detroy RPMsg endpoint */
+	/* Destroy RPMsg endpoint */
 	rpmsg_destroy_ept(&lept);
 	LPRINTF("Quitting application .. Matrix multiplication end\r\n");
 
@@ -240,7 +242,7 @@ int main(int argc, char *argv[])
 		ret = -1;
 	} else {
 		rpdev = platform_create_rpmsg_vdev(platform, 0,
-						  VIRTIO_DEV_MASTER,
+						  VIRTIO_DEV_DRIVER,
 						  NULL,
 						  rpmsg_name_service_bind_cb);
 		if (!rpdev) {

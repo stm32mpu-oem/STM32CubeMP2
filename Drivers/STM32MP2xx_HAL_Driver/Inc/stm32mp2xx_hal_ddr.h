@@ -104,6 +104,9 @@ typedef struct {
   uint32_t INIT7;
   uint32_t DIMMCTL;
   uint32_t RANKCTL;
+#ifndef STM32MP25XX_SI_CUT1_X
+  uint32_t RANKCTL1;
+#endif /* !STM32MP25XX_SI_CUT1_X */
   uint32_t ZQCTL0;
   uint32_t ZQCTL1;
   uint32_t ZQCTL2;
@@ -123,6 +126,9 @@ typedef struct {
   uint32_t DBG1;
   uint32_t DBGCMD;
   uint32_t SWCTL;
+#ifndef STM32MP25XX_SI_CUT1_X
+  uint32_t SWCTLSTATIC;
+#endif /* !STM32MP25XX_SI_CUT1_X */
   uint32_t POISONCFG;
   uint32_t PCCFG;
 }HAL_DDR_RegTypeDef;
@@ -171,6 +177,10 @@ typedef struct {
   uint32_t PERFHPR1;
   uint32_t PERFLPR1;
   uint32_t PERFWR1;
+#ifndef STM32MP25XX_SI_CUT1_X
+  uint32_t SCHED3;
+  uint32_t SCHED4;
+#endif /* !STM32MP25XX_SI_CUT1_X */
   uint32_t PCFGR_0;
   uint32_t PCFGW_0;
   uint32_t PCTRL_0;
@@ -347,9 +357,11 @@ typedef struct
 
 HAL_StatusTypeDef HAL_DDR_Init(DDR_InitTypeDef *iddr);
 HAL_StatusTypeDef HAL_DDR_SR_Entry(uint32_t *zq0cr0_zdata);
+HAL_StatusTypeDef HAL_DDR_STDBY_SR_Entry(void);
 HAL_StatusTypeDef HAL_DDR_SR_Exit(void);
 HAL_StatusTypeDef HAL_DDR_SR_SetMode(HAL_DDR_SelfRefreshModeTypeDef mode);
 HAL_DDR_SelfRefreshModeTypeDef HAL_DDR_SR_ReadMode(void);
+HAL_StatusTypeDef HAL_DDR_SetRetentionAreaBase(uint32_t base);
 
 /**
   * @}

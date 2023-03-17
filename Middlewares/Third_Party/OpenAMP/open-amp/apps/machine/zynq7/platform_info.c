@@ -44,7 +44,7 @@
 
 /* processor operations for hil_proc for A9. It defines
  * notification operation and remote processor management. */
-extern struct remoteproc_ops zynq_a9_proc_ops;
+extern const struct remoteproc_ops zynq_a9_proc_ops;
 static metal_phys_addr_t scugic_phys_addr = SCUGIC_DIST_BASE;
 struct metal_device scugic_device = {
 	.name = SCUGIC_DEV_NAME,
@@ -123,7 +123,7 @@ platform_create_proc(int proc_index, int rsc_index)
 	/* parse resource table to remoteproc */
 	ret = remoteproc_set_rsc_table(&rproc_inst, rsc_table, rsc_size);
 	if (ret) {
-		xil_printf("Failed to intialize remoteproc\r\n");
+		xil_printf("Failed to initialize remoteproc\r\n");
 		remoteproc_remove(&rproc_inst);
 		return NULL;
 	}
@@ -197,15 +197,15 @@ platform_create_rpmsg_vdev(void *platform, unsigned int vdev_index,
 	}
 
 	xil_printf("initializing rpmsg vdev\r\n");
-	if (role == VIRTIO_DEV_MASTER) {
-		/* Only RPMsg virtio master needs to initialize the
+	if (role == VIRTIO_DEV_DRIVER) {
+		/* Only RPMsg virtio driver needs to initialize the
 		 * shared buffers pool
 		 */
 		rpmsg_virtio_init_shm_pool(&shpool, shbuf,
 					   (SHARED_MEM_SIZE -
 					    SHARED_BUF_OFFSET));
 
-		/* RPMsg virtio slave can set shared buffers pool
+		/* RPMsg virtio device can set shared buffers pool
 		 * argument to NULL
 		 */
 		ret =  rpmsg_init_vdev(rpmsg_vdev, vdev, ns_bind_cb,

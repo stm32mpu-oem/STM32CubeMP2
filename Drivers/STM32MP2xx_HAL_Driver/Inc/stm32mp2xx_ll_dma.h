@@ -1128,6 +1128,27 @@ typedef struct
 #define LL_HPDMA_REQUEST_I3C3_TX    (163U) /*!< HPDMA HW request is I3C3_TX       */
 #define LL_HPDMA_REQUEST_I3C3_CMD   (164U) /*!< HPDMA HW request is I3C3_CMD      */
 #define LL_HPDMA_REQUEST_I3C3_STAT  (165U) /*!< HPDMA HW request is I3C3_STAT     */
+#if !defined(STM32MP25XX_SI_CUT1_X)
+#define LL_HPDMA_REQUEST_LPUART1_RX (166U) /*!< HPDMA HW request is LPUART1_RX    */
+#define LL_HPDMA_REQUEST_LPUART1_TX (167U) /*!< HPDMA HW request is LPUART1_TX    */
+#define LL_HPDMA_REQUEST_I2C8_RX    (168U) /*!< HPDMA HW request is I2C8_RX       */
+#define LL_HPDMA_REQUEST_I2C8_TX    (169U) /*!< HPDMA HW request is I2C8_TX       */
+#define LL_HPDMA_REQUEST_I2C8_EVC   (170U) /*!< HPDMA HW request is I2C8_EVC      */
+#define LL_HPDMA_REQUEST_SPI8_RX    (171U) /*!< HPDMA HW request is SPI8_RX       */
+#define LL_HPDMA_REQUEST_SPI8_TX    (172U) /*!< HPDMA HW request is SPI8_TX       */
+#define LL_HPDMA_REQUEST_ADF1_FLT0  (173U) /*!< HPDMA HW request is ADF1_FLT0     */
+#define LL_HPDMA_REQUEST_LPTIM3_IC1 (174U) /*!< HPDMA HW request is LPTIM3_IC1    */
+#define LL_HPDMA_REQUEST_LPTIM3_IC2 (175U) /*!< HPDMA HW request is LPTIM3_IC2    */
+#define LL_HPDMA_REQUEST_LPTIM3_UE  (176U) /*!< HPDMA HW request is LPTIM3_UE     */
+#define LL_HPDMA_REQUEST_LPTIM4_IC1 (177U) /*!< HPDMA HW request is LPTIM4_IC1    */
+#define LL_HPDMA_REQUEST_LPTIM4_IC2 (178U) /*!< HPDMA HW request is LPTIM4_IC2    */
+#define LL_HPDMA_REQUEST_LPTIM4_UE  (179U) /*!< HPDMA HW request is LPTIM4_UE     */
+#define LL_HPDMA_REQUEST_I3C4_RX    (180U) /*!< HPDMA HW request is I3C4_RX       */
+#define LL_HPDMA_REQUEST_I3C4_TX    (181U) /*!< HPDMA HW request is I3C4_TX       */
+#define LL_HPDMA_REQUEST_I3C4_CMD   (182U) /*!< HPDMA HW request is I3C4_CMD      */
+#define LL_HPDMA_REQUEST_I3C4_STAT  (183U) /*!< HPDMA HW request is I3C4_STAT     */
+#endif
+
 
 /* LPDMA requests */
 #define LL_LPDMA_REQUEST_LPUART1_RX (0U)   /*!< LPDMA HW request is LPUART1_RX    */
@@ -1144,7 +1165,6 @@ typedef struct
 #define LL_LPDMA_REQUEST_LPTIM4_IC1 (11U)  /*!< LPDMA HW request is LPTIM4_IC1    */
 #define LL_LPDMA_REQUEST_LPTIM4_IC2 (12U)  /*!< LPDMA HW request is LPTIM4_IC2    */
 #define LL_LPDMA_REQUEST_LPTIM4_UE  (13U)  /*!< LPDMA HW request is LPTIM4_UE     */
-#define LL_LPDMA_REQUEST_LPTIM5_UE  (14U)  /*!< LPDMA HW request is LPTIM5_UE     */
 #define LL_LPDMA_REQUEST_I3C4_RX    (15U)  /*!< LPDMA HW request is I3C4_RX       */
 #define LL_LPDMA_REQUEST_I3C4_TX    (16U)  /*!< LPDMA HW request is I3C4_TX       */
 #define LL_LPDMA_REQUEST_I3C4_CMD   (17U)  /*!< LPDMA HW request is I3C4_CMD      */

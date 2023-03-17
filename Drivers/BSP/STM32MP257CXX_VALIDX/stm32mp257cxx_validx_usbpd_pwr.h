@@ -166,6 +166,7 @@ typedef void USBPD_PWR_VBUSDetectCallbackFunc(uint32_t PortNum,
 * @brief TCPP0203_FLGn pin
 * To be defined for each Port, protected by a TCPP0203 component
 */
+#if defined(USE_STM32MP257CXX_VALID3)
 #define TCPP0203_PORT0_FLG_GPIO_CLK_ENABLE()        LL_RCC_GPIOG_EnableClock();
 #define TCPP0203_PORT0_FLG_GPIO_CLK_DISABLE()       LL_RCC_GPIOG_DisableClock();
 #define TCPP0203_PORT0_FLG_GPIO_PORT                GPIOG
@@ -174,6 +175,16 @@ typedef void USBPD_PWR_VBUSDetectCallbackFunc(uint32_t PortNum,
 #define TCPP0203_PORT0_FLG_GPIO_PUPD                LL_GPIO_PULL_UP
 #define TCPP0203_PORT0_FLG_SET_EXTI()               LL_EXTI_SetEXTISource(EXTI2, LL_EXTI_EXTICR_PORTG, LL_EXTI_EXTI_LINE3);
 #define TCPP0203_PORT0_FLG_EXTI_LINE                LL_EXTI2_LINE_3
+#elif defined(USE_STM32MP257CXX_VALID2)
+#define TCPP0203_PORT0_FLG_GPIO_CLK_ENABLE()        LL_RCC_GPIOH_EnableClock();
+#define TCPP0203_PORT0_FLG_GPIO_CLK_DISABLE()       LL_RCC_GPIOH_DisableClock();
+#define TCPP0203_PORT0_FLG_GPIO_PORT                GPIOH
+#define TCPP0203_PORT0_FLG_GPIO_PIN                 LL_GPIO_PIN_5
+#define TCPP0203_PORT0_FLG_GPIO_MODE                LL_GPIO_MODE_INPUT
+#define TCPP0203_PORT0_FLG_GPIO_PUPD                LL_GPIO_PULL_UP
+#define TCPP0203_PORT0_FLG_SET_EXTI()               LL_EXTI_SetEXTISource(EXTI2, LL_EXTI_EXTICR_PORTH, LL_EXTI_EXTI_LINE5);
+#define TCPP0203_PORT0_FLG_EXTI_LINE                LL_EXTI2_LINE_5
+#endif
 #define TCPP0203_PORT0_FLG_EXTI_ENABLE()                                  \
   do                                                                      \
   {                                                                       \
@@ -190,20 +201,25 @@ typedef void USBPD_PWR_VBUSDetectCallbackFunc(uint32_t PortNum,
 #define TCPP0203_PORT0_FLG_TRIG_DISABLE()           LL_EXTI_DisableFallingTrig_0_31(EXTI2, TCPP0203_PORT0_FLG_EXTI_LINE);
 #define TCPP0203_PORT0_FLG_EXTI_IS_ACTIVE_FLAG()    LL_EXTI_IsActiveFlag_0_31(EXTI2, TCPP0203_PORT0_FLG_EXTI_LINE)
 #define TCPP0203_PORT0_FLG_EXTI_CLEAR_FLAG()        LL_EXTI_ClearFlag_0_31(EXTI2, TCPP0203_PORT0_FLG_EXTI_LINE);
+#if defined(USE_STM32MP257CXX_VALID3)
 #define TCPP0203_PORT0_FLG_EXTI_IRQN                EXTI2_3_IRQn
 #define TCPP0203_PORT0_FLG_EXTI_IRQHANDLER          EXTI2_3_IRQHandler
+#elif defined(USE_STM32MP257CXX_VALID2)
+#define TCPP0203_PORT0_FLG_EXTI_IRQN                EXTI2_5_IRQn
+#define TCPP0203_PORT0_FLG_EXTI_IRQHANDLER          EXTI2_5_IRQHandler
+#endif
 #define TCPP0203_PORT0_FLG_IT_PRIORITY              (12U)
 #define TCPP0203_PORT0_FLG_GENERATE_IT()            LL_EXTI_GenerateSWI_0_31(EXTI2, TCPP0203_PORT0_FLG_EXTI_LINE);
 
 /* Definition of ADCx instance */
-#define TCPP0203_PORT0_ADC_INSTANCE                 ADC3
-#define TCPP0203_PORT0_ADC_CLK_ENABLE()            __HAL_RCC_ADC3_CLK_ENABLE()
-#define TCPP0203_PORT0_ADC_CLK_DISABLE()           __HAL_RCC_ADC3_CLK_DISABLE()
-#define TCPP0203_PORT0_ADC_FORCE_RESET()           __HAL_RCC_ADC3_FORCE_RESET()
-#define TCPP0203_PORT0_ADC_RELEASE_RESET()         __HAL_RCC_ADC3_RELEASE_RESET()
+#define TCPP0203_PORT0_ADC_INSTANCE                 ADC1
+#define TCPP0203_PORT0_ADC_CLK_ENABLE()            __HAL_RCC_ADC12_CLK_ENABLE()
+#define TCPP0203_PORT0_ADC_CLK_DISABLE()           __HAL_RCC_ADC12_CLK_DISABLE()
+#define TCPP0203_PORT0_ADC_FORCE_RESET()           __HAL_RCC_ADC12_FORCE_RESET()
+#define TCPP0203_PORT0_ADC_RELEASE_RESET()         __HAL_RCC_ADC12_RELEASE_RESET()
 
 /* Definition of ADCx channels */
-#define TCPP0203_PORT0_VBUSC_ADC_CHANNEL            ADC_CHANNEL_1           /* PB15 : ADC3_INP1 */
+#define TCPP0203_PORT0_VBUSC_ADC_CHANNEL            ADC_CHANNEL_15           /* PB15 : ADC3_INP1 or ADC1_INP15*/
 
 #define TCPP0203_PORT0_VBUSC_GPIO_CLK_ENABLE()      LL_RCC_GPIOB_EnableClock();
 #define TCPP0203_PORT0_VBUSC_GPIO_CLK_DISABLE()     LL_RCC_GPIOB_DisableClock();
@@ -216,8 +232,8 @@ typedef void USBPD_PWR_VBUSDetectCallbackFunc(uint32_t PortNum,
   */
 #define VSENSE_ADC_INSTANCE                         TCPP0203_PORT0_ADC_INSTANCE
 #define VSENSE_ADC_CLOCK_PRESCALER                  ADC_CLOCK_CK_ICN_LS_MCU_DIV4
-#define VSENSE_ADC_RCC_PERIPHCLK                    RCC_PERIPHCLK_ADC3
-#define VSENSE_ADC_COMMON                           ADC3_COMMON
+#define VSENSE_ADC_RCC_PERIPHCLK                    RCC_PERIPHCLK_ADC12
+#define VSENSE_ADC_COMMON                           ADC12_COMMON
 #define VSENSE_ADC_RANK                             LL_ADC_REG_RANK_1
 #define VSENSE_ADC_CHANNEL                          TCPP0203_PORT0_VBUSC_ADC_CHANNEL
 

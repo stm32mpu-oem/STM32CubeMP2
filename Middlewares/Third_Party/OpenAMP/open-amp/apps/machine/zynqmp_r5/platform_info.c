@@ -38,13 +38,21 @@
 #define NORM_SHARED_NCACHE	0x0000000CU /* Non cacheable shareable */
 #define	PRIV_RW_USER_RW		(0x00000003U<<8U) /* Full Access */
 
+#ifndef SHARED_MEM_PA
 #if XPAR_CPU_ID == 0
 #define SHARED_MEM_PA  0x3ED40000UL
 #else
 #define SHARED_MEM_PA  0x3EF40000UL
 #endif /* XPAR_CPU_ID */
+#endif /* !SHARED_MEM_PA */
+
+#ifndef SHARED_MEM_SIZE
 #define SHARED_MEM_SIZE 0x100000UL
+#endif /* !SHARED_MEM_SIZE */
+
+#ifndef SHARED_BUF_OFFSET
 #define SHARED_BUF_OFFSET 0x8000UL
+#endif /* !SHARED_BUF_OFFSET */
 
 #ifndef RPMSG_NO_IPI
 #define _rproc_wait() asm volatile("wfi")
@@ -91,7 +99,7 @@ extern void cleanup_system(void);
 
 /* processor operations from r5 to a53. It defines
  * notification operation and remote processor managementi operations. */
-extern struct remoteproc_ops zynqmp_r5_a53_proc_ops;
+extern const struct remoteproc_ops zynqmp_r5_a53_proc_ops;
 
 /* RPMsg virtio shared buffer pool */
 static struct rpmsg_virtio_shm_pool shpool;
@@ -136,7 +144,7 @@ platform_create_proc(int proc_index, int rsc_index)
 	/* parse resource table to remoteproc */
 	ret = remoteproc_set_rsc_table(&rproc_inst, rsc_table, rsc_size);
 	if (ret) {
-		xil_printf("Failed to intialize remoteproc\r\n");
+		xil_printf("Failed to initialize remoteproc\r\n");
 		remoteproc_remove(&rproc_inst);
 		return NULL;
 	}
@@ -207,12 +215,12 @@ platform_create_rpmsg_vdev(void *platform, unsigned int vdev_index,
 	}
 
 	xil_printf("initializing rpmsg shared buffer pool\r\n");
-	/* Only RPMsg virtio master needs to initialize the shared buffers pool */
+	/* Only RPMsg virtio driver needs to initialize the shared buffers pool */
 	rpmsg_virtio_init_shm_pool(&shpool, shbuf,
 				   (SHARED_MEM_SIZE - SHARED_BUF_OFFSET));
 
 	xil_printf("initializing rpmsg vdev\r\n");
-	/* RPMsg virtio slave can set shared buffers pool argument to NULL */
+	/* RPMsg virtio device can set shared buffers pool argument to NULL */
 	ret =  rpmsg_init_vdev(rpmsg_vdev, vdev, ns_bind_cb,
 			       shbuf_io,
 			       &shpool);

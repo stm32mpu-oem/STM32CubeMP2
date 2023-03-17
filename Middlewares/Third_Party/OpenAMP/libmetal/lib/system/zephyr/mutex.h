@@ -17,7 +17,7 @@
 #define __METAL_ZEPHYR_MUTEX__H__
 
 #include <metal/atomic.h>
-#include <kernel.h>
+#include <zephyr/kernel.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,7 +26,7 @@ extern "C" {
 typedef struct k_sem metal_mutex_t;
 
 /*
- * METAL_MUTEX_INIT - used for initializing an mutex elmenet in a static struct
+ * METAL_MUTEX_INIT - used for initializing an mutex element in a static struct
  * or global
  */
 #define METAL_MUTEX_INIT(m) _K_SEM_INITIALIZER(m, 1, 1)

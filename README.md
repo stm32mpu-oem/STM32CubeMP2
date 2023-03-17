@@ -1,6 +1,6 @@
-# STM32CubeMP25 MCU Firmware Package
+# STM32CubeMP2 MCU Firmware Package
 
-![latest tag](https://img.shields.io/github/v/tag/STMicroelectronics/STM32CubeMP25.svg?color=brightgreen)
+![latest tag](https://img.shields.io/github/v/tag/STMicroelectronics/STM32CubeMP2.svg?color=brightgreen)
 
 **STM32Cube** is an STMicroelectronics original initiative to ease developers' life by reducing efforts, time and cost.
 
@@ -21,6 +21,7 @@ Details about the content of this release are available in the release note [her
 
   * STM32MP25
     * [STM32MP257F-VALID3]
+    * [STM32MP257F-EV]
 
 ## Troubleshooting
 

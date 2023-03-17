@@ -62,6 +62,7 @@ typedef struct
   uint32_t AHB3_Frequency;   /*!< AHB3 clock frequency */
   uint32_t AHB4_Frequency;   /*!< AHB4 clock frequency */
   uint32_t AHB5_Frequency;   /*!< AHB5 clock frequency */
+  uint32_t AHB6_Frequency;   /*!< AHB6 clock frequency */
   uint32_t AHBSR_Frequency;  /*!< AHBSR clock frequency */
   uint32_t APB1_Frequency;   /*!< APB1 clock frequency */
   uint32_t APB2_Frequency;   /*!< APB2 clock frequency */
@@ -126,6 +127,10 @@ typedef struct
   * @}
   */
 #endif /* USE_FULL_LL_DRIVER */
+
+#if defined(CORE_CA35)
+#define PLL1_Typedef CA35SSC_TypeDef;
+#endif
 
 /* Exported constants --------------------------------------------------------*/
 /** @defgroup RCC_LL_Exported_Constants RCC Exported Constants
@@ -405,6 +410,15 @@ typedef struct
   * @}
   */
 
+/** @defgroup RCC_LSMCUDIV  LSMCU prescaler
+  * @{
+  */
+#define LL_RCC_LSMCUDIV_1                   (0x0U << RCC_LSMCUDIVR_LSMCUDIV_Pos)  /*!< lsmcu divided by 1 */
+#define LL_RCC_LSMCUDIV_2                   (0x1U << RCC_LSMCUDIVR_LSMCUDIV_Pos)  /*!< lsmcu divided by 2 */
+/**
+  * @}
+  */
+
 /** @defgroup RCC_LL_EC_LSEDRIVE  LSE oscillator drive capability
   * @{
   */
@@ -549,6 +563,7 @@ typedef struct
 #define  LL_RCC_SPI23_CLKSOURCE                0x1U
 #define  LL_RCC_SPI45_CLKSOURCE                0x2U
 #define  LL_RCC_SPI67_CLKSOURCE                0x3U
+#define  LL_RCC_SPI8_CLKSOURCE                0x4U
 
 #define  LL_RCC_USART1_CLKSOURCE               0x0U
 #define  LL_RCC_UART24_CLKSOURCE               0x1U
@@ -557,6 +572,50 @@ typedef struct
 #define  LL_RCC_UART78_CLKSOURCE               0x4U
 #define  LL_RCC_UART9_CLKSOURCE                0x5U
 #define  LL_RCC_LPUART1_CLKSOURCE              0x6U
+
+#define  LL_RCC_SAI1_CLKSOURCE                 0x0U
+#define  LL_RCC_SAI2_CLKSOURCE                 0x1U
+#define  LL_RCC_SAI34_CLKSOURCE                0x2U
+
+#define  LL_RCC_I2C12_I3C12_CLKSOURCE          0x0U
+#define  LL_RCC_I2C46_CLKSOURCE                0x1U
+#define  LL_RCC_I2C35_I3C3_CLKSOURCE           0x2U
+#define  LL_RCC_I2C7_CLKSOURCE                 0x3U
+#define  LL_RCC_I3C4_CLKSOURCE                 0x4U
+
+#define  LL_RCC_SDMMC1_CLKSOURCE               0x0U
+#define  LL_RCC_SDMMC2_CLKSOURCE               0x1U
+#define  LL_RCC_SDMMC3_CLKSOURCE               0x2U
+
+#define  LL_RCC_ETH1_ETHSW_CLKSOURCE           0x0U
+#define  LL_RCC_ETH2_CLKSOURCE                 0x1U
+#define  LL_RCC_ETH1PTP_ETH2PTP_CLKSOURCE      0x2U
+
+#define  LL_RCC_OSPI1_CLKSOURCE                0x0U
+#define  LL_RCC_OSPI2_CLKSOURCE                0x1U
+
+#define  LL_RCC_FMC_CLKSOURCE                  0x0U
+
+#define  LL_RCC_FDCAN_CLKSOURCE                0x0U
+
+#define  LL_RCC_SPDIFRX_CLKSOURCE              0x0U
+
+#define  LL_RCC_USB2PHY1_CLKSOURCE             0x0U
+#define  LL_RCC_USB2PHY2_CLKSOURCE             0x1U
+#define  LL_RCC_USB3PCIEPHY_CLKSOURCE          0x2U
+
+#define  LL_RCC_STGEN_CLKSOURCE                0x0U
+
+#define  LL_RCC_DSIBLANE_CLKSOURCE             0x0U
+#define  LL_RCC_DSIPHY_CLKSOURCE               0x1U
+
+#define  LL_RCC_ADC12_CLKSOURCE                0x0U
+#define  LL_RCC_ADC3_CLKSOURCE                 0x1U
+
+#define  LL_RCC_LPTIM12_CLKSOURCE              0x0U
+#define  LL_RCC_LPTIM3_CLKSOURCE               0x1U
+#define  LL_RCC_LPTIM45_CLKSOURCE              0x2U
+
 /**
   * @}
   */
@@ -1012,8 +1071,8 @@ __STATIC_INLINE uint32_t LL_RCC_LSI_IsReady(void)
 }
 
 /**
-  * @brief  Check if LSI is Ready
-  * @rmtoll BDCR          LSIRDY        LL_RCC_LSI_IsReady
+  * @brief  Check if MSI is Ready
+  * @rmtoll BDCR          MSIRDY        LL_RCC_MSI_IsReady
   * @retval State of bit (1 or 0).
   */
 __STATIC_INLINE uint32_t LL_RCC_MSI_IsReady(void)
@@ -1028,6 +1087,103 @@ __STATIC_INLINE uint32_t LL_RCC_MSI_IsReady(void)
 /** @defgroup RCC_LL_EF_System System
   * @{
   */
+
+/**
+  * @brief  Set LSMCU divider Value
+  * @param  lsmcudiv value of the divider
+          Value parameter can be LL_RCC_LSMCUDIV_1 or LL_RCC_LSMCUDIV_2
+  * @retval None
+  */
+__STATIC_INLINE void LL_RCC_Set_LSMCUDIVR(uint32_t lsmcudiv)
+{
+  MODIFY_REG(RCC->LSMCUDIVR, RCC_LSMCUDIVR_LSMCUDIV_Msk, lsmcudiv);
+}
+/**
+  * @}
+  */
+
+/**
+  * @brief  Get LSMCU divider Value
+  * @param  None
+            Value parameter can be LL_RCC_LSMCUDIV_1 or LL_RCC_LSMCUDIV_2
+  * @retval LL_RCC_LSMCUDIV_1 or LL_RCC_LSMCUDIV_2
+  */
+__STATIC_INLINE uint32_t LL_RCC_Get_LSMCUDIVR(void)
+{
+  return (READ_BIT(RCC->LSMCUDIVR, RCC_LSMCUDIVR_LSMCUDIV));
+}
+/**
+  * @}
+  */
+
+/**
+  * @brief  Check if LSMCU is Ready
+  * @rmtoll LL_RCC_LSMCUDIV_IsReady
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_RCC_LSMCUDIV_IsReady(void)
+{
+  return ((READ_BIT(RCC->LSMCUDIVR, RCC_LSMCUDIVR_LSMCUDIVRDY) == RCC_LSMCUDIVR_LSMCUDIVRDY) ? 1UL : 0UL);
+}
+/**
+  * @}
+  */
+
+/**
+  * @brief  Set channel pre divider Value
+  * @param  flexId number of the channel to be configured (0 to 63)
+            Value parameter can be 0, 1, 3 or 0x3FF
+  * @retval None
+  */
+__STATIC_INLINE void LL_RCC_Set_PREDIVx(uint32_t flexid, uint32_t Value)
+{
+  MODIFY_REG(RCC->PREDIVxCFGR[flexid], RCC_PREDIVxCFGR_PREDIVx_Msk, Value);
+}
+
+/**
+  * @brief  Check PREDIV state (ready or not)
+  * @param  flexId number of the channel to be checked (0 to 63)
+  * @retval State of divider (0 for ready, 1 if change is on going)
+  */
+__STATIC_INLINE uint32_t LL_RCC_PREDIVxIsReady(uint32_t flexid)
+{
+  if (flexid <= 31)
+  {
+    return ((READ_BIT(RCC->PREDIVSR1, (1 << flexid)) == (1 << flexid)) ? 1UL : 0UL);
+  }
+  else
+  {
+    return ((READ_BIT(RCC->PREDIVSR2, (1 << (flexid % 32))) == (1 << (flexid % 32))) ? 1UL : 0UL);
+  }
+}
+
+/**
+  * @brief  Set channel final divider Value
+  * @param  flexId number of the channel to be configured (0 to 63)
+            Value parameter can be a value between 0 and 63 to divide from 1 up to 64
+  * @retval None
+  */
+__STATIC_INLINE void LL_RCC_Set_FINDIVx(uint32_t flexid, uint32_t Value)
+{
+  MODIFY_REG(RCC->FINDIVxCFGR[flexid], RCC_FINDIVxCFGR_FINDIVx_Msk, Value);
+}
+
+/**
+  * @brief  Check FINDIV state (ready or not)
+  * @param  flexId number of the channel to be checked (0 to 63)
+  * @retval State of divider (0 for ready, 1 if change is on going)
+  */
+__STATIC_INLINE uint32_t LL_RCC_FINDIVxIsReady(uint32_t flexid)
+{
+  if (flexid <= 31)
+  {
+    return ((READ_BIT(RCC->FINDIVSR1, (1 << flexid)) == (1 << flexid)) ? 1UL : 0UL);
+  }
+  else
+  {
+    return ((READ_BIT(RCC->FINDIVSR2, (1 << (flexid % 32))) == (1 << (flexid % 32))) ? 1UL : 0UL);
+  }
+}
 
 /**
   * @brief  Set the APB1 prescaler
@@ -5718,7 +5874,7 @@ __STATIC_INLINE void LL_RCC_DisableSPI2_3_FINDIV(void)
   *        @arg @ref LL_RCC_PREDIV_DIV3
   *        @arg @ref LL_RCC_PREDIV_DIV1024
   */
-__STATIC_INLINE uint32_t LL_RCC_GetSPIDFRX_PREDIV(void)
+__STATIC_INLINE uint32_t LL_RCC_GetSPDIFRX_PREDIV(void)
 {
   return (uint32_t)(READ_BIT(RCC->PREDIVxCFGR[11], RCC_PREDIVxCFGR_PREDIVx_Msk));
 }
@@ -5733,7 +5889,7 @@ __STATIC_INLINE uint32_t LL_RCC_GetSPIDFRX_PREDIV(void)
   *        @arg @ref LL_RCC_PREDIV_DIV1024
   * @retval None
   */
-__STATIC_INLINE void LL_RCC_SetSPIDFRX_PREDIV(uint32_t Source)
+__STATIC_INLINE void LL_RCC_SetSPDIFRX_PREDIV(uint32_t Source)
 {
   MODIFY_REG(RCC->PREDIVxCFGR[11], RCC_PREDIVxCFGR_PREDIVx_Msk, Source);
 }
@@ -5745,7 +5901,7 @@ __STATIC_INLINE void LL_RCC_SetSPIDFRX_PREDIV(uint32_t Source)
   * @rmtoll FINDIV11CFGR      FINDIV11      LL_RCC_GetSPIDFRX_FINDIV
   * @retval A value between 0 and 63, div1 up to div64 step
   */
-__STATIC_INLINE uint32_t LL_RCC_GetSPIDFRX_FINDIV(void)
+__STATIC_INLINE uint32_t LL_RCC_GetSPDIFRX_FINDIV(void)
 {
   return (uint32_t)(READ_BIT(RCC->FINDIVxCFGR[11], RCC_FINDIVxCFGR_FINDIVx_Msk));
 }
@@ -5776,7 +5932,7 @@ __STATIC_INLINE void LL_RCC_EnableSPIDFRX_FINDIV(void)
   * @rmtoll FINDIV11CFGR         FINDIV11EN         LL_RCC_DisableSPIDFRX_FINDIV
   * @retval None
   */
-__STATIC_INLINE void LL_RCC_DisableSPIDFRX_FINDIV(void)
+__STATIC_INLINE void LL_RCC_DisableSPDIFRX_FINDIV(void)
 {
   CLEAR_BIT(RCC->FINDIVxCFGR[11], RCC_FINDIVxCFGR_FINDIVxEN_Msk);
 }
@@ -8550,7 +8706,7 @@ __STATIC_INLINE void LL_RCC_DisableOSPI2_FINDIV(void)
   *        @arg @ref LL_RCC_PREDIV_DIV3
   *        @arg @ref LL_RCC_PREDIV_DIV1024
   */
-__STATIC_INLINE uint32_t LL_RCC_GetFMCCLOCK_PREDIV(void)
+__STATIC_INLINE uint32_t LL_RCC_GetFMC_PREDIV(void)
 {
   return (uint32_t)(READ_BIT(RCC->PREDIVxCFGR[50], RCC_PREDIVxCFGR_PREDIVx_Msk));
 }
@@ -8565,7 +8721,7 @@ __STATIC_INLINE uint32_t LL_RCC_GetFMCCLOCK_PREDIV(void)
   *        @arg @ref LL_RCC_PREDIV_DIV1024
   * @retval None
   */
-__STATIC_INLINE void LL_RCC_SetFMCCLOCK_PREDIV(uint32_t Source)
+__STATIC_INLINE void LL_RCC_SetFMC_PREDIV(uint32_t Source)
 {
   MODIFY_REG(RCC->PREDIVxCFGR[50], RCC_PREDIVxCFGR_PREDIVx_Msk, Source);
 }
@@ -8577,7 +8733,7 @@ __STATIC_INLINE void LL_RCC_SetFMCCLOCK_PREDIV(uint32_t Source)
   * @rmtoll FINDIV50CFGR      FINDIV50      LL_RCC_GetFMCCLOCK_FINDIV
   * @retval A value between 0 and 63, div1 up to div64 step
   */
-__STATIC_INLINE uint32_t LL_RCC_GetFMCCLOCK_FINDIV(void)
+__STATIC_INLINE uint32_t LL_RCC_GetFMC_FINDIV(void)
 {
   return (uint32_t)(READ_BIT(RCC->FINDIVxCFGR[50], RCC_FINDIVxCFGR_FINDIVx_Msk));
 }
@@ -8588,7 +8744,7 @@ __STATIC_INLINE uint32_t LL_RCC_GetFMCCLOCK_FINDIV(void)
   * @param  Value parameter can be a value between 0 and 63 to divide from 1 up to 64
   * @retval None
   */
-__STATIC_INLINE void LL_RCC_SetFMCCLOCK_FINDIV(uint32_t Value)
+__STATIC_INLINE void LL_RCC_SetFMC_FINDIV(uint32_t Value)
 {
   MODIFY_REG(RCC->FINDIVxCFGR[50], RCC_FINDIVxCFGR_FINDIVx_Msk, Value);
 }
@@ -8598,7 +8754,7 @@ __STATIC_INLINE void LL_RCC_SetFMCCLOCK_FINDIV(uint32_t Value)
   * @rmtoll FINDIV50CFGR         FINDIV50EN         LL_RCC_EnableFMCCLOCK_FINDIV
   * @retval None
   */
-__STATIC_INLINE void LL_RCC_EnableFMCCLOCK_FINDIV(void)
+__STATIC_INLINE void LL_RCC_EnableFMC_FINDIV(void)
 {
   SET_BIT(RCC->FINDIVxCFGR[50], RCC_FINDIVxCFGR_FINDIVxEN_Msk);
 }
@@ -8608,7 +8764,7 @@ __STATIC_INLINE void LL_RCC_EnableFMCCLOCK_FINDIV(void)
   * @rmtoll FINDIV50CFGR         FINDIV50EN         LL_RCC_DisableFMCCLOCK_FINDIV
   * @retval None
   */
-__STATIC_INLINE void LL_RCC_DisableFMCCLOCK_FINDIV(void)
+__STATIC_INLINE void LL_RCC_DisableFMC_FINDIV(void)
 {
   CLEAR_BIT(RCC->FINDIVxCFGR[50], RCC_FINDIVxCFGR_FINDIVxEN_Msk);
 }
@@ -12659,6 +12815,109 @@ __STATIC_INLINE uint32_t LL_RCC_PLL8_GetFREQDIV_L2(void)
 /**
   * @}
   */
+#if defined(CORE_CA35)
+__STATIC_INLINE void LL_CA35SS_SetCA35SSClockSourceExt(void)
+{
+  /* Set A35 source clock to external ck_cpu1_ext2f */
+  CA35SSC->CHGCLKREQ_WS1 = CA35SSC_CHGCLKREQ_WS1_ARM_CHGCLKREQ;
+}
+
+__STATIC_INLINE void LL_CA35SS_SetCA35SSClockSourcePLL1(void)
+{
+  /* Set A35 source clock to internal PLL */
+  CA35SSC->CHGCLKREQ_WC1 = CA35SSC_CHGCLKREQ_WC1_ARM_CHGCLKREQ;
+}
+
+/**
+  * @brief  Enable PLL1
+  * @rmtoll
+  * @retval None
+  */
+__STATIC_INLINE void LL_CA35SS_PLL1_Enable(void)
+{
+  CA35SSC->PLL_ENABLE_WS1 = CA35SSC_PLL_ENABLE_WS1_PLL_EN;
+}
+
+/**
+  * @brief  Disable PLL1
+  * @rmtoll
+  * @retval None
+  */
+__STATIC_INLINE void LL_CA35SS_PLL1_Disable(void)
+{
+  CA35SSC->PLL_ENABLE_WC1 = CA35SSC_PLL_ENABLE_WC1_PLL_EN;
+}
+
+/**
+  * @brief  Reset PLL1 output path
+  * @rmtoll
+  * @retval None
+  */
+__STATIC_INLINE void LL_CA35SS_PLL1_Reset_output(void)
+{
+  CA35SSC->PLL_ENABLE_WC1 = CA35SSC_PLL_ENABLE_WC1_NRESET_SWPLL;
+}
+
+/**
+  * @brief  Set PLL1 output path
+  * @rmtoll
+  * @retval None
+  */
+__STATIC_INLINE void LL_CA35SS_PLL1_Set_output(void)
+{
+  CA35SSC->PLL_ENABLE_WS1 = CA35SSC_PLL_ENABLE_WS1_NRESET_SWPLL;
+}
+
+/**
+  * @brief  Check if PLL1 Ready
+  * @rmtoll
+  * @retval State of bit (1 or 0).
+  */
+__STATIC_INLINE uint32_t LL_CA35SS_PLL1_IsReady(void)
+{
+  return ((CA35SSC->PLL_ENABLE_RW & CA35SSC_PLL_ENABLE_RW_LOCKP) != CA35SSC_PLL_ENABLE_RW_LOCKP);
+}
+
+/**
+  * @brief  Set PLL1 VCO multiplication factor
+  * @rmtoll
+  * @param
+  */
+__STATIC_INLINE void LL_CA35SS_PLL1_SetFBDIV(uint32_t FBDIV)
+{
+  MODIFY_REG(CA35SSC->PLL_FREQ1_RW, CA35SSC_PLL_FREQ1_RW_FBDIV, FBDIV << CA35SSC_PLL_FREQ1_RW_FBDIV_Pos);
+}
+
+/**
+  * @brief  Set PLL1 reference input clock divide frequency ratio
+  * @rmtoll
+  * @param
+  */
+__STATIC_INLINE void LL_CA35SS_PLL1_SetFREFDIV(uint32_t REFDIV)
+{
+  MODIFY_REG(CA35SSC->PLL_FREQ1_RW, CA35SSC_PLL_FREQ1_RW_REFDIV, REFDIV << CA35SSC_PLL_FREQ1_RW_REFDIV_Pos);
+}
+
+/**
+  * @brief  Set PLL1 post divider 1
+  * @rmtoll
+  * @param
+  */
+__STATIC_INLINE void LL_CA35SS_PLL1_SetPostDiv1(uint32_t POSTDIV1)
+{
+  MODIFY_REG(CA35SSC->PLL_FREQ2_RW, CA35SSC_PLL_FREQ2_RW_POSTDIV1, POSTDIV1 << CA35SSC_PLL_FREQ2_RW_POSTDIV1_Pos);
+}
+
+/**
+  * @brief  Set PLL1 post divider 2
+  * @rmtoll
+  * @param
+  */
+__STATIC_INLINE void LL_CA35SS_PLL1_SetPostDiv2(uint32_t POSTDIV2)
+{
+  MODIFY_REG(CA35SSC->PLL_FREQ2_RW, CA35SSC_PLL_FREQ2_RW_POSTDIV2, POSTDIV2 << CA35SSC_PLL_FREQ2_RW_POSTDIV2_Pos);
+}
+#endif
 
 /** @defgroup RCC_LL_EF_FLAG_Management FLAG Management
   * @{
@@ -13560,12 +13819,13 @@ ErrorStatus LL_RCC_DeInit(void);
 /** @defgroup RCC_LL_EF_Get_Freq Get system and peripherals clocks frequency functions
   * @{
   */
-uint32_t    LL_RCC_CalcPLLClockFreq(uint32_t PLLInputFreq, uint32_t M, uint32_t N, uint32_t FRACV, uint32_t PQR);
-
-void        LL_RCC_GetPLL1ClockFreq(LL_PLL_ClocksTypeDef *PLL_Clocks);
 void        LL_RCC_GetPLL2ClockFreq(LL_PLL_ClocksTypeDef *PLL_Clocks);
 void        LL_RCC_GetPLL3ClockFreq(LL_PLL_ClocksTypeDef *PLL_Clocks);
 void        LL_RCC_GetPLL4ClockFreq(LL_PLL_ClocksTypeDef *PLL_Clocks);
+void        LL_RCC_GetPLL5ClockFreq(LL_PLL_ClocksTypeDef *PLL_Clocks);
+void        LL_RCC_GetPLL6ClockFreq(LL_PLL_ClocksTypeDef *PLL_Clocks);
+void        LL_RCC_GetPLL7ClockFreq(LL_PLL_ClocksTypeDef *PLL_Clocks);
+void        LL_RCC_GetPLL8ClockFreq(LL_PLL_ClocksTypeDef *PLL_Clocks);
 void        LL_RCC_GetSystemClocksFreq(LL_RCC_ClocksTypeDef *RCC_Clocks);
 
 uint32_t    LL_RCC_GetI2CClockFreq(uint32_t I2CxSource);
@@ -13574,7 +13834,7 @@ uint32_t    LL_RCC_GetSPIClockFreq(uint32_t SPIxSource);
 uint32_t    LL_RCC_GetUARTClockFreq(uint32_t UARTxSource);
 uint32_t    LL_RCC_GetSDMMCClockFreq(uint32_t SDMMCxSource);
 uint32_t    LL_RCC_GetETHClockFreq(uint32_t ETHxSource);
-uint32_t    LL_RCC_GetQSPIClockFreq(uint32_t QSPIxSource);
+uint32_t    LL_RCC_GetOSPIClockFreq(uint32_t OSPIxSource);
 uint32_t    LL_RCC_GetFMCClockFreq(uint32_t FMCxSource);
 #if defined(FDCAN1)
 uint32_t    LL_RCC_GetFDCANClockFreq(uint32_t FDCANxSource);
