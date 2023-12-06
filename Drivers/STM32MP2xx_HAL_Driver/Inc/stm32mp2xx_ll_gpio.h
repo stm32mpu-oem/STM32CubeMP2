@@ -145,9 +145,9 @@ typedef struct
   * @{
   */
 #define LL_GPIO_MODE_INPUT                 (0x0U << GPIO_MODER_MODE0_Pos) /*!< Select input mode */
-#define LL_GPIO_MODE_OUTPUT                (0x1U << GPIO_MODER_MODE0_Pos)  /*!< Select output mode */
-#define LL_GPIO_MODE_ALTERNATE             (0x2U << GPIO_MODER_MODE0_Pos)  /*!< Select alternate function mode */
-#define LL_GPIO_MODE_ANALOG                (0x3U << GPIO_MODER_MODE0_Pos)    /*!< Select analog mode */
+#define LL_GPIO_MODE_OUTPUT                (0x1U << GPIO_MODER_MODE0_Pos) /*!< Select output mode */
+#define LL_GPIO_MODE_ALTERNATE             (0x2U << GPIO_MODER_MODE0_Pos) /*!< Select alternate function mode */
+#define LL_GPIO_MODE_ANALOG                (0x3U << GPIO_MODER_MODE0_Pos) /*!< Select analog mode */
 /**
   * @}
   */
@@ -340,7 +340,7 @@ __STATIC_INLINE void LL_GPIO_SetPinMode(GPIO_TypeDef *GPIOx, uint32_t Pin, uint3
   *         @arg @ref LL_GPIO_MODE_ALTERNATE
   *         @arg @ref LL_GPIO_MODE_ANALOG
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetPinMode(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetPinMode(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
   return (uint32_t)(READ_BIT(GPIOx->MODER,
                              (GPIO_MODER_MODE0 << (POSITION_VAL(Pin) * 2U))) >> (POSITION_VAL(Pin) * 2U));
@@ -409,7 +409,7 @@ __STATIC_INLINE void LL_GPIO_SetPinOutputType(GPIO_TypeDef *GPIOx, uint32_t PinM
   *         @arg @ref LL_GPIO_OUTPUT_PUSHPULL
   *         @arg @ref LL_GPIO_OUTPUT_OPENDRAIN
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetPinOutputType(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetPinOutputType(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
   return (uint32_t)(READ_BIT(GPIOx->OTYPER, Pin) >> POSITION_VAL(Pin));
 }
@@ -483,10 +483,10 @@ __STATIC_INLINE void LL_GPIO_SetPinSpeed(GPIO_TypeDef *GPIOx, uint32_t Pin, uint
   *         @arg @ref LL_GPIO_SPEED_FREQ_HIGH
   *         @arg @ref LL_GPIO_SPEED_FREQ_VERY_HIGH
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetPinSpeed(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetPinSpeed(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
   return (uint32_t)(READ_BIT(GPIOx->OSPEEDR,
-                             (GPIO_OSPEEDR_OSPEED0 << (POSITION_VAL(Pin) * 2U))) >> (POSITION_VAL(Pin) * 2U));
+                             ((uint32_t)GPIO_OSPEEDR_OSPEED0 << (POSITION_VAL(Pin) * 2U))) >> (POSITION_VAL(Pin) * 2UL));
 }
 
 /**
@@ -549,10 +549,10 @@ __STATIC_INLINE void LL_GPIO_SetPinPull(GPIO_TypeDef *GPIOx, uint32_t Pin, uint3
   *         @arg @ref LL_GPIO_PULL_UP
   *         @arg @ref LL_GPIO_PULL_DOWN
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetPinPull(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetPinPull(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
   return (uint32_t)(READ_BIT(GPIOx->PUPDR,
-                             (GPIO_PUPDR_PUPD0 << (POSITION_VAL(Pin) * 2U))) >> (POSITION_VAL(Pin) * 2U));
+                             ((uint32_t)GPIO_PUPDR_PUPD0 << (POSITION_VAL(Pin) * 2U))) >> (POSITION_VAL(Pin) * 2U));
 }
 
 /**
@@ -626,10 +626,10 @@ __STATIC_INLINE void LL_GPIO_SetAFPin_0_7(GPIO_TypeDef *GPIOx, uint32_t Pin, uin
   *         @arg @ref LL_GPIO_AF_14
   *         @arg @ref LL_GPIO_AF_15
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetAFPin_0_7(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetAFPin_0_7(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
   return (uint32_t)(READ_BIT(GPIOx->AFR[0],
-                             (GPIO_AFRL_AFSEL0 << (POSITION_VAL(Pin) * 4U))) >> (POSITION_VAL(Pin) * 4U));
+                             ((uint32_t)GPIO_AFRL_AFSEL0 << (POSITION_VAL(Pin) * 4U))) >> (POSITION_VAL(Pin) * 4U));
 }
 
 /**
@@ -704,10 +704,10 @@ __STATIC_INLINE void LL_GPIO_SetAFPin_8_15(GPIO_TypeDef *GPIOx, uint32_t Pin, ui
   *         @arg @ref LL_GPIO_AF_14
   *         @arg @ref LL_GPIO_AF_15
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetAFPin_8_15(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetAFPin_8_15(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
   return (uint32_t)(READ_BIT(GPIOx->AFR[1],
-                             (GPIO_AFRH_AFSEL8 << (POSITION_VAL(Pin >> 8U) * 4U))) >> (POSITION_VAL(Pin >> 8U) * 4U));
+                             ((uint32_t)GPIO_AFRH_AFSEL8 << (POSITION_VAL(Pin >> 8U) * 4U))) >> (POSITION_VAL(Pin >> 8U) * 4U));
 }
 
 
@@ -775,7 +775,7 @@ __STATIC_INLINE void LL_GPIO_LockPin(GPIO_TypeDef *GPIOx, uint32_t PinMask)
   *         @arg @ref LL_GPIO_PIN_ALL
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsPinLocked(GPIO_TypeDef *GPIOx, uint32_t PinMask)
+__STATIC_INLINE uint32_t LL_GPIO_IsPinLocked(const GPIO_TypeDef *GPIOx, uint32_t PinMask)
 {
   return ((READ_BIT(GPIOx->LCKR, PinMask) == (PinMask)) ? 1UL : 0UL);
 }
@@ -786,7 +786,7 @@ __STATIC_INLINE uint32_t LL_GPIO_IsPinLocked(GPIO_TypeDef *GPIOx, uint32_t PinMa
   * @param  GPIOx GPIO Port
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsAnyPinLocked(GPIO_TypeDef *GPIOx)
+__STATIC_INLINE uint32_t LL_GPIO_IsAnyPinLocked(const GPIO_TypeDef *GPIOx)
 {
   return ((READ_BIT(GPIOx->LCKR, GPIO_LCKR_LCKK) == (GPIO_LCKR_LCKK)) ? 1UL : 0UL);
 }
@@ -822,7 +822,7 @@ __STATIC_INLINE uint32_t LL_GPIO_IsAnyPinLocked(GPIO_TypeDef *GPIOx)
   */
 __STATIC_INLINE void LL_GPIO_LockResourcePin(GPIO_TypeDef *GPIOx, uint32_t PinMask)
 {
-  MODIFY_REG(GPIOx->RCFGLOCKR, 0, PinMask);
+  MODIFY_REG(GPIOx->RCFGLOCKR, 0U, PinMask);
 }
 
 /**
@@ -849,7 +849,7 @@ __STATIC_INLINE void LL_GPIO_LockResourcePin(GPIO_TypeDef *GPIOx, uint32_t PinMa
   *         @arg @ref LL_GPIO_PIN_ALL
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsResourcePinLocked(GPIO_TypeDef *GPIOx, uint32_t PinMask)
+__STATIC_INLINE uint32_t LL_GPIO_IsResourcePinLocked(const GPIO_TypeDef *GPIOx, uint32_t PinMask)
 {
   return ((READ_BIT(GPIOx->RCFGLOCKR, PinMask) == (PinMask)) ? 1UL : 0UL);
 }
@@ -860,7 +860,7 @@ __STATIC_INLINE uint32_t LL_GPIO_IsResourcePinLocked(GPIO_TypeDef *GPIOx, uint32
   * @param  GPIOx GPIO Port
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsAnyResourcePinLocked(GPIO_TypeDef *GPIOx)
+__STATIC_INLINE uint32_t LL_GPIO_IsAnyResourcePinLocked(const GPIO_TypeDef *GPIOx)
 {
   return ((READ_BIT(GPIOx->RCFGLOCKR, GPIO_LCKR_LCKK) == (GPIO_LCKR_LCKK)) ? 1UL : 0UL);
 }
@@ -901,7 +901,7 @@ __STATIC_INLINE uint32_t LL_GPIO_IsAnyResourcePinLocked(GPIO_TypeDef *GPIOx)
   */
 __STATIC_INLINE void LL_GPIO_SetDelayPin_0_7(GPIO_TypeDef *GPIOx, uint32_t Pin, uint32_t Delay)
 {
-  MODIFY_REG(GPIOx->DELAYRL, GPIO_DELAYRL_DELAY0 << (POSITION_VAL(Pin) * 4U), (Delay << (POSITION_VAL(Pin) * 4U)));
+  MODIFY_REG(GPIOx->DELAYRL, GPIO_DELAYRL_DLY0 << (POSITION_VAL(Pin) * 4U), (Delay << (POSITION_VAL(Pin) * 4U)));
 }
 
 /**
@@ -932,10 +932,10 @@ __STATIC_INLINE void LL_GPIO_SetDelayPin_0_7(GPIO_TypeDef *GPIOx, uint32_t Pin, 
   *         @arg @ref LL_GPIO_DELAY_3000
   *         @arg @ref LL_GPIO_DELAY_3250
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetDelayPin_0_7(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetDelayPin_0_7(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
   return (uint32_t)(READ_BIT(GPIOx->DELAYRL,
-                             (GPIO_DELAYRL_DELAY0 << (POSITION_VAL(Pin) * 4U))) >> (POSITION_VAL(Pin) * 4U));
+                             ((uint32_t)GPIO_DELAYRL_DLY0 << (POSITION_VAL(Pin) * 4U))) >> (POSITION_VAL(Pin) * 4U));
 }
 
 /**
@@ -970,7 +970,7 @@ __STATIC_INLINE uint32_t LL_GPIO_GetDelayPin_0_7(GPIO_TypeDef *GPIOx, uint32_t P
   */
 __STATIC_INLINE void LL_GPIO_SetDelayPin_8_15(GPIO_TypeDef *GPIOx, uint32_t Pin, uint32_t Delay)
 {
-  MODIFY_REG(GPIOx->DELAYRH, GPIO_DELAYRH_DELAY8 << (POSITION_VAL(Pin) * 4U), (Delay << (POSITION_VAL(Pin) * 4U)));
+  MODIFY_REG(GPIOx->DELAYRH, GPIO_DELAYRH_DLY8 << (POSITION_VAL(Pin) * 4U), (Delay << (POSITION_VAL(Pin) * 4U)));
 }
 
 /**
@@ -1001,10 +1001,10 @@ __STATIC_INLINE void LL_GPIO_SetDelayPin_8_15(GPIO_TypeDef *GPIOx, uint32_t Pin,
   *         @arg @ref LL_GPIO_DELAY_3000
   *         @arg @ref LL_GPIO_DELAY_3250
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetDelayPin_8_15(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetDelayPin_8_15(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
   return (uint32_t)(READ_BIT(GPIOx->DELAYRH,
-                             (GPIO_DELAYRH_DELAY8 << (POSITION_VAL(Pin) * 4U))) >> (POSITION_VAL(Pin) * 4U));
+                             ((uint32_t)GPIO_DELAYRH_DLY8 << (POSITION_VAL(Pin) * 4U))) >> (POSITION_VAL(Pin) * 4U));
 }
 
 /**
@@ -1021,15 +1021,15 @@ __STATIC_INLINE uint32_t LL_GPIO_GetDelayPin_8_15(GPIO_TypeDef *GPIOx, uint32_t 
   *         @arg @ref LL_GPIO_PIN_6
   *         @arg @ref LL_GPIO_PIN_7
   * @param  CfgMask:
-  *         PIOCFG[0] : Delay on ouptput path
-  *         PIOCFG[1] : input and ouptput data are double edge
-  *         PIOCFG[2] : I/O clocks are inverted
-  *         PIOCFG[3] : input and ouptput data are retimed
+  *         ADVCFG[0] : Delay on ouptput path
+  *         ADVCFG[1] : input and ouptput data are double edge
+  *         ADVCFG[2] : I/O clocks are inverted
+  *         ADVCFG[3] : input and ouptput data are retimed
   * @retval None
   */
 __STATIC_INLINE void LL_GPIO_SetPIOControlPin_0_7(GPIO_TypeDef *GPIOx, uint32_t Pin, uint32_t CfgMask)
 {
-  MODIFY_REG(GPIOx->PIOCFGRL, GPIO_PIOCFGRL_PIOCFG0 << (POSITION_VAL(Pin) * 4U), (CfgMask << (POSITION_VAL(Pin) * 4U)));
+  MODIFY_REG(GPIOx->ADVCFGRL, GPIO_ADVCFGRL_0 << (POSITION_VAL(Pin) * 4U), (CfgMask << (POSITION_VAL(Pin) * 4U)));
 }
 
 /**
@@ -1045,15 +1045,15 @@ __STATIC_INLINE void LL_GPIO_SetPIOControlPin_0_7(GPIO_TypeDef *GPIOx, uint32_t 
   *         @arg @ref LL_GPIO_PIN_6
   *         @arg @ref LL_GPIO_PIN_7
   * @retval Returned value can be one of the following values:
-  *         PIOCFG[0] : Delay on ouptput path
-  *         PIOCFG[1] : input and ouptput data are double edge
-  *         PIOCFG[2] : I/O clocks are inverted
-  *         PIOCFG[3] : input and ouptput data are retimed
+  *         ADVCFG[0] : Delay on ouptput path
+  *         ADVCFG[1] : input and ouptput data are double edge
+  *         ADVCFG[2] : I/O clocks are inverted
+  *         ADVCFG[3] : input and ouptput data are retimed
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetPIOControlPin_0_7(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetPIOControlPin_0_7(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  return (uint32_t)(READ_BIT(GPIOx->PIOCFGRL,
-                             (GPIO_PIOCFGRL_PIOCFG0 << (POSITION_VAL(Pin) * 4U))) >> (POSITION_VAL(Pin) * 4U));
+  return (uint32_t)(READ_BIT(GPIOx->ADVCFGRL,
+                             ((uint32_t)GPIO_ADVCFGRL_0 << (POSITION_VAL(Pin) * 4U))) >> (POSITION_VAL(Pin) * 4U));
 }
 
 /**
@@ -1070,15 +1070,15 @@ __STATIC_INLINE uint32_t LL_GPIO_GetPIOControlPin_0_7(GPIO_TypeDef *GPIOx, uint3
   *         @arg @ref LL_GPIO_PIN_14
   *         @arg @ref LL_GPIO_PIN_15
   * @param  CfgMask:
-  *         PIOCFG[0] : Delay on ouptput path
-  *         PIOCFG[1] : input and ouptput data are double edge
-  *         PIOCFG[2] : I/O clocks are inverted
-  *         PIOCFG[3] : input and ouptput data are retimed
+  *         ADVCFG[0] : Delay on ouptput path
+  *         ADVCFG[1] : input and ouptput data are double edge
+  *         ADVCFG[2] : I/O clocks are inverted
+  *         ADVCFG[3] : input and ouptput data are retimed
   * @retval None
   */
 __STATIC_INLINE void LL_GPIO_SetPIOControlPin_8_15(GPIO_TypeDef *GPIOx, uint32_t Pin, uint32_t CfgMask)
 {
-  MODIFY_REG(GPIOx->PIOCFGRH, GPIO_PIOCFGRH_PIOCFG8 << (POSITION_VAL(Pin) * 4U) ,(CfgMask << (POSITION_VAL(Pin) * 4U)));
+  MODIFY_REG(GPIOx->ADVCFGRH, GPIO_ADVCFGRH_8 << (POSITION_VAL(Pin) * 4U) ,(CfgMask << (POSITION_VAL(Pin) * 4U)));
 }
 
 /**
@@ -1094,15 +1094,15 @@ __STATIC_INLINE void LL_GPIO_SetPIOControlPin_8_15(GPIO_TypeDef *GPIOx, uint32_t
   *         @arg @ref LL_GPIO_PIN_14
   *         @arg @ref LL_GPIO_PIN_15
   * @retval Returned value can be one of the following values:
-  *         PIOCFG[0] : Delay on ouptput path
-  *         PIOCFG[1] : input and ouptput data are double edge
-  *         PIOCFG[2] : I/O clocks are inverted
-  *         PIOCFG[3] : input and ouptput data are retimed
+  *         ADVCFG[0] : Delay on ouptput path
+  *         ADVCFG[1] : input and ouptput data are double edge
+  *         ADVCFG[2] : I/O clocks are inverted
+  *         ADVCFG[3] : input and ouptput data are retimed
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetPIOControlPin_8_15(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetPIOControlPin_8_15(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  return (uint32_t)(READ_BIT(GPIOx->PIOCFGRH,
-                             (GPIO_PIOCFGRH_PIOCFG8 << (POSITION_VAL(Pin) * 4U))) >> (POSITION_VAL(Pin) * 4U));
+  return (uint32_t)(READ_BIT(GPIOx->ADVCFGRH,
+                             ((uint32_t)GPIO_ADVCFGRH_8 << (POSITION_VAL(Pin) * 4U))) >> (POSITION_VAL(Pin) * 4U));
 }
 
 
@@ -1116,7 +1116,7 @@ __STATIC_INLINE uint32_t LL_GPIO_GetPIOControlPin_8_15(GPIO_TypeDef *GPIOx, uint
   * @param  GPIOx GPIO Port
   * @retval Input data register value of port
   */
-__STATIC_INLINE uint32_t LL_GPIO_ReadInputPort(GPIO_TypeDef *GPIOx)
+__STATIC_INLINE uint32_t LL_GPIO_ReadInputPort(const GPIO_TypeDef *GPIOx)
 {
   return (uint32_t)(READ_REG(GPIOx->IDR));
 }
@@ -1145,7 +1145,7 @@ __STATIC_INLINE uint32_t LL_GPIO_ReadInputPort(GPIO_TypeDef *GPIOx)
   *         @arg @ref LL_GPIO_PIN_ALL
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsInputPinSet(GPIO_TypeDef *GPIOx, uint32_t PinMask)
+__STATIC_INLINE uint32_t LL_GPIO_IsInputPinSet(const GPIO_TypeDef *GPIOx, uint32_t PinMask)
 {
   return ((READ_BIT(GPIOx->IDR, PinMask) == (PinMask)) ? 1UL : 0UL);
 }
@@ -1168,7 +1168,7 @@ __STATIC_INLINE void LL_GPIO_WriteOutputPort(GPIO_TypeDef *GPIOx, uint32_t PortV
   * @param  GPIOx GPIO Port
   * @retval Output data register value of port
   */
-__STATIC_INLINE uint32_t LL_GPIO_ReadOutputPort(GPIO_TypeDef *GPIOx)
+__STATIC_INLINE uint32_t LL_GPIO_ReadOutputPort(const GPIO_TypeDef *GPIOx)
 {
   return (uint32_t)(READ_REG(GPIOx->ODR));
 }
@@ -1197,7 +1197,7 @@ __STATIC_INLINE uint32_t LL_GPIO_ReadOutputPort(GPIO_TypeDef *GPIOx)
   *         @arg @ref LL_GPIO_PIN_ALL
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsOutputPinSet(GPIO_TypeDef *GPIOx, uint32_t PinMask)
+__STATIC_INLINE uint32_t LL_GPIO_IsOutputPinSet(const GPIO_TypeDef *GPIOx, uint32_t PinMask)
 {
   return ((READ_BIT(GPIOx->ODR, PinMask) == (PinMask)) ? 1UL : 0UL);
 }
@@ -1372,9 +1372,9 @@ __STATIC_INLINE void LL_GPIO_DisablePinCidFiltering(GPIO_TypeDef *GPIOx, uint32_
   *         @arg @ref LL_GPIO_PIN_15
   * @retval xxx
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinCidFiltering(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinCidFiltering(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  __IO uint32_t *regaddr;
+  const __IO uint32_t *regaddr;
 
   regaddr = &GPIOx->CIDCFGR0 + (POSITION_VAL(Pin)*2U);
   return ((READ_BIT(*regaddr, GPIO_CIDCFGR0_CFEN) == GPIO_CIDCFGR0_CFEN) ? 1UL : 0UL);
@@ -1462,9 +1462,9 @@ __STATIC_INLINE void LL_GPIO_DisablePinSemaphore(GPIO_TypeDef *GPIOx, uint32_t P
   *         @arg @ref LL_GPIO_PIN_15
   * @retval xxx
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSemaphore(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSemaphore(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  __IO uint32_t *regaddr;
+  const __IO uint32_t *regaddr;
 
   regaddr = &GPIOx->CIDCFGR0 + (POSITION_VAL(Pin)*2U);
   return ((READ_BIT(*regaddr, GPIO_CIDCFGR0_SEM_EN) == GPIO_CIDCFGR0_SEM_EN) ? 1UL : 0UL);
@@ -1525,9 +1525,9 @@ __STATIC_INLINE void LL_GPIO_SetPinCid(GPIO_TypeDef *GPIOx, uint32_t Pin, uint32
   * @param  cid
   * @retval CID
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetPinCid(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetPinCid(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  __IO uint32_t *regaddr;
+  const __IO uint32_t *regaddr;
 
   regaddr = &GPIOx->CIDCFGR0 + (POSITION_VAL(Pin)*2U);
 
@@ -1616,9 +1616,9 @@ __STATIC_INLINE void LL_GPIO_DisablePinSemaphoreWhitelistCompartment0(GPIO_TypeD
   *         @arg @ref LL_GPIO_PIN_15
   * @retval true is semaphire whitelist for compartment is enabled
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSemaphoreWhitelistCompartment0(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSemaphoreWhitelistCompartment0(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  __IO uint32_t *regaddr;
+  const __IO uint32_t *regaddr;
 
   regaddr = &GPIOx->CIDCFGR0 + (POSITION_VAL(Pin)*2U);
   return ((READ_BIT(*regaddr, GPIO_CIDCFGR0_SEMWLC0) == GPIO_CIDCFGR0_SEMWLC0) ? 1UL : 0UL);
@@ -1707,9 +1707,9 @@ __STATIC_INLINE void LL_GPIO_DisablePinSemaphoreWhitelistCompartment1(GPIO_TypeD
   *         @arg @ref LL_GPIO_PIN_15
   * @retval true is semaphire whitelist for compartment is enabled
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSemaphoreWhitelistCompartment1(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSemaphoreWhitelistCompartment1(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  __IO uint32_t *regaddr;
+  const __IO uint32_t *regaddr;
 
   regaddr = &GPIOx->CIDCFGR0 + (POSITION_VAL(Pin)*2U);
   return ((READ_BIT(*regaddr, GPIO_CIDCFGR0_SEMWLC1) == GPIO_CIDCFGR0_SEMWLC1) ? 1UL : 0UL);
@@ -1797,9 +1797,9 @@ __STATIC_INLINE void LL_GPIO_DisablePinSemaphoreWhitelistCompartment2(GPIO_TypeD
   *         @arg @ref LL_GPIO_PIN_15
   * @retval true is semaphire whitelist for compartment is enabled
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSemaphoreWhitelistCompartment2(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSemaphoreWhitelistCompartment2(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  __IO uint32_t *regaddr;
+  const __IO uint32_t *regaddr;
 
   regaddr = &GPIOx->CIDCFGR0 + (POSITION_VAL(Pin)*2U);
   return ((READ_BIT(*regaddr, GPIO_CIDCFGR0_SEMWLC2) == GPIO_CIDCFGR0_SEMWLC2) ? 1UL : 0UL);
@@ -1887,9 +1887,9 @@ __STATIC_INLINE void LL_GPIO_DisablePinSemaphoreWhitelistCompartment3(GPIO_TypeD
   *         @arg @ref LL_GPIO_PIN_15
   * @retval true is semaphire whitelist for compartment is enabled
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSemaphoreWhitelistCompartment3(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSemaphoreWhitelistCompartment3(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  __IO uint32_t *regaddr;
+  const __IO uint32_t *regaddr;
 
   regaddr = &GPIOx->CIDCFGR0 + (POSITION_VAL(Pin)*2U);
   return ((READ_BIT(*regaddr, GPIO_CIDCFGR0_SEMWLC3) == GPIO_CIDCFGR0_SEMWLC3) ? 1UL : 0UL);
@@ -1982,9 +1982,9 @@ __STATIC_INLINE uint32_t LL_GPIO_ReleasePinSemaphore(GPIO_TypeDef *GPIOx, uint32
   *         @arg @ref LL_GPIO_PIN_15
   * @retval xxx
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsPinSemaphoreTaken(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_IsPinSemaphoreTaken(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  __IO uint32_t *regaddr;
+  const __IO uint32_t *regaddr;
 
   regaddr = &GPIOx->SEMCR0 + (POSITION_VAL(Pin)*2U);
   return ((READ_BIT(*regaddr, GPIO_SEMCR0_SEM_MUTEX) == GPIO_SEMCR0_SEM_MUTEX) ? 1UL : 0UL);
@@ -2013,9 +2013,9 @@ __STATIC_INLINE uint32_t LL_GPIO_IsPinSemaphoreTaken(GPIO_TypeDef *GPIOx, uint32
   * @param  cid
   * @retval CID
   */
-__STATIC_INLINE uint32_t LL_GPIO_GetPinSemaphoreCid(GPIO_TypeDef *GPIOx, uint32_t Pin)
+__STATIC_INLINE uint32_t LL_GPIO_GetPinSemaphoreCid(const GPIO_TypeDef *GPIOx, uint32_t Pin)
 {
-  __IO uint32_t *regaddr;
+  const __IO uint32_t *regaddr;
 
   regaddr = &GPIOx->SEMCR0 + (POSITION_VAL(Pin)*2U);
 
@@ -2114,7 +2114,7 @@ __STATIC_INLINE void LL_GPIO_DisablePinSecure(GPIO_TypeDef *GPIOx, uint32_t PinM
   *         @arg @ref LL_GPIO_PIN_ALL
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSecure(GPIO_TypeDef *GPIOx, uint32_t PinMask)
+__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinSecure(const GPIO_TypeDef *GPIOx, uint32_t PinMask)
 {
   return ((READ_BIT(GPIOx->SECCFGR, PinMask) == (PinMask)) ? 1UL : 0UL);
 }
@@ -2211,7 +2211,7 @@ __STATIC_INLINE void LL_GPIO_DisablePinPrivilege(GPIO_TypeDef *GPIOx, uint32_t P
   *         @arg @ref LL_GPIO_PIN_ALL
   * @retval State of bit (1 or 0).
   */
-__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinPrivilege(GPIO_TypeDef *GPIOx, uint32_t PinMask)
+__STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinPrivilege(const GPIO_TypeDef *GPIOx, uint32_t PinMask)
 {
   return ((READ_BIT(GPIOx->PRIVCFGR, PinMask) == (PinMask)) ? 1UL : 0UL);
 }
@@ -2225,7 +2225,7 @@ __STATIC_INLINE uint32_t LL_GPIO_IsEnabledPinPrivilege(GPIO_TypeDef *GPIOx, uint
   * @{
   */
 
-ErrorStatus LL_GPIO_DeInit(GPIO_TypeDef *GPIOx);
+ErrorStatus LL_GPIO_DeInit(const GPIO_TypeDef *GPIOx);
 ErrorStatus LL_GPIO_Init(GPIO_TypeDef *GPIOx, LL_GPIO_InitTypeDef *GPIO_InitStruct);
 void        LL_GPIO_StructInit(LL_GPIO_InitTypeDef *GPIO_InitStruct);
 

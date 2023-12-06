@@ -402,5 +402,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif /* USBPD_CORE_OSPORT_H_ */
 
+#endif /* USBPD_CORE_OSPORT_H_ */

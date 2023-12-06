@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -78,12 +78,14 @@ int ddrphy_phyinit_usercustom_saveretregs(void)
 		for (lane = 0; lane <= R_MAX; lane++) {
 			r_addr = lane << 8;
 
-			ret = ddrphy_phyinit_trackreg(TDBYTE | c_addr | r_addr | CSR_RXPBDLYTG0_ADDR);
+			ret = ddrphy_phyinit_trackreg(TDBYTE | c_addr | r_addr |
+						      CSR_RXPBDLYTG0_ADDR);
 			if (ret != 0) {
 				return ret;
 			}
 #if STM32MP_LPDDR4_TYPE
-			ret = ddrphy_phyinit_trackreg(TDBYTE | c_addr | r_addr | CSR_RXPBDLYTG1_ADDR);
+			ret = ddrphy_phyinit_trackreg(TDBYTE | c_addr | r_addr |
+						      CSR_RXPBDLYTG1_ADDR);
 			if (ret != 0) {
 				return ret;
 			}
@@ -180,7 +182,7 @@ int ddrphy_phyinit_usercustom_saveretregs(void)
 				b_addr = nibble << 8;
 
 				ret = ddrphy_phyinit_trackreg(p_addr | TDBYTE | c_addr | b_addr |
-							CSR_DQDQSRCVCNTRL_ADDR);
+							      CSR_DQDQSRCVCNTRL_ADDR);
 				if (ret != 0) {
 					return ret;
 				}
@@ -190,37 +192,37 @@ int ddrphy_phyinit_usercustom_saveretregs(void)
 				u_addr = nibble << 8;
 
 				ret = ddrphy_phyinit_trackreg(p_addr | TDBYTE | c_addr | u_addr |
-							CSR_RXENDLYTG0_ADDR);
+							      CSR_RXENDLYTG0_ADDR);
 				if (ret != 0) {
 					return ret;
 				}
 #if STM32MP_LPDDR4_TYPE
 				ret = ddrphy_phyinit_trackreg(p_addr | TDBYTE | c_addr | u_addr |
-							CSR_RXENDLYTG1_ADDR);
+							      CSR_RXENDLYTG1_ADDR);
 				if (ret != 0) {
 					return ret;
 				}
 #endif /* STM32MP_LPDDR4_TYPE */
 				ret = ddrphy_phyinit_trackreg(p_addr | TDBYTE | c_addr | u_addr |
-							CSR_TXDQSDLYTG0_ADDR);
+							      CSR_TXDQSDLYTG0_ADDR);
 				if (ret != 0) {
 					return ret;
 				}
 #if STM32MP_LPDDR4_TYPE
 				ret = ddrphy_phyinit_trackreg(p_addr | TDBYTE | c_addr | u_addr |
-							CSR_TXDQSDLYTG1_ADDR);
+							      CSR_TXDQSDLYTG1_ADDR);
 				if (ret != 0) {
 					return ret;
 				}
 #endif /* STM32MP_LPDDR4_TYPE */
 				ret = ddrphy_phyinit_trackreg(p_addr | TDBYTE | c_addr | u_addr |
-							CSR_RXCLKDLYTG0_ADDR);
+							      CSR_RXCLKDLYTG0_ADDR);
 				if (ret != 0) {
 					return ret;
 				}
 #if STM32MP_LPDDR4_TYPE
 				ret = ddrphy_phyinit_trackreg(p_addr | TDBYTE | c_addr | u_addr |
-							CSR_RXCLKDLYTG1_ADDR);
+							      CSR_RXCLKDLYTG1_ADDR);
 				if (ret != 0) {
 					return ret;
 				}
@@ -231,13 +233,13 @@ int ddrphy_phyinit_usercustom_saveretregs(void)
 				r_addr = lane << 8;
 
 				ret = ddrphy_phyinit_trackreg(p_addr | TDBYTE | c_addr | r_addr |
-							CSR_TXDQDLYTG0_ADDR);
+							      CSR_TXDQDLYTG0_ADDR);
 				if (ret != 0) {
 					return ret;
 				}
 #if STM32MP_LPDDR4_TYPE
 				ret = ddrphy_phyinit_trackreg(p_addr | TDBYTE | c_addr | r_addr |
-							CSR_TXDQDLYTG1_ADDR);
+							      CSR_TXDQDLYTG1_ADDR);
 				if (ret != 0) {
 					return ret;
 				}
@@ -250,7 +252,6 @@ int ddrphy_phyinit_usercustom_saveretregs(void)
 			if (ret != 0) {
 				return ret;
 			}
-
 			ret = ddrphy_phyinit_trackreg(p_addr | TDBYTE | c_addr |
 						CSR_PPTDQSCNTINVTRNTG1_ADDR);
 			if (ret != 0) {
@@ -328,6 +329,7 @@ int ddrphy_phyinit_usercustom_saveretregs(void)
 	if (ret != 0) {
 		return ret;
 	}
+
 #if STM32MP_LPDDR4_TYPE
 	ret = ddrphy_phyinit_trackreg(TMASTER | CSR_HWTLPCSENA_ADDR);
 	if (ret != 0) {
@@ -383,7 +385,7 @@ int ddrphy_phyinit_usercustom_saveretregs(void)
 	 * --------------------------------------------------------------------------
 	 */
 
-	ret = ddrphy_phyinit_reginterface(saveregs, 0, 0);
+	ret = ddrphy_phyinit_reginterface(SAVEREGS, 0, 0);
 	if (ret != 0) {
 		return ret;
 	}
@@ -396,13 +398,8 @@ int ddrphy_phyinit_usercustom_saveretregs(void)
 	 * --------------------------------------------------------------------------
 	 */
 
-#if STM32MP_DDR3_TYPE || STM32MP_DDR4_TYPE
 	/* Disabling Ucclk (PMU) and Hclk (training hardware) */
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TDRTUB | CSR_UCCLKHCLKENABLES_ADDR)), 0x0U);
-#elif STM32MP_LPDDR4_TYPE
-	/* Disabling Ucclk (PMU) */
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TDRTUB | CSR_UCCLKHCLKENABLES_ADDR)), 0x2U);
-#endif /* STM32MP_LPDDR4_TYPE */
 
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TAPBONLY | CSR_MICROCONTMUXSEL_ADDR)), 0x1U);
 

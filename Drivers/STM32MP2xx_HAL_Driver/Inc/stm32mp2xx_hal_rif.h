@@ -187,35 +187,35 @@ typedef struct
 
 /* Definitions for RIF register values and constants */
 #if defined (STM32MP257Cxx)
-#define RIF_PERIPH_REG_MAX             (6)
-#define RIF_COMP_MAX                   (8)
-#define RIF_CID_MAX                    (7)
-#define RIF_PAGE_MAX                   (32)
-#define RIF_BLOCK_MAX                  (8)
-#define RIF_MCID_MAX                   (15)
-#define RIF_REGION_MAX                 (15)
-#define RIF_SUBREGION_MAX              (2)
-#define RIF_KEY_REG_MAX                (4)
-#define RISAF1_BASE_REGION_MAX         (4)
-#define RISAF2_BASE_REGION_MAX         (4)
-#define RISAF4_BASE_REGION_MAX         (15)
-#define RISAF5_BASE_REGION_MAX         (2)
-#define RISAF1_WATERMARK_MAX           (256)
-#define RISAF2_WATERMARK_MAX           (4096)
-#define RISAF4_WATERMARK_MAX           (4096)
-#define RISAF5_WATERMARK_MAX           (4096)
+#define RIF_PERIPH_REG_MAX             (6U)
+#define RIF_COMP_MAX                   (8U)
+#define RIF_CID_MAX                    (7U)
+#define RIF_PAGE_MAX                   (32U)
+#define RIF_BLOCK_MAX                  (8U)
+#define RIF_MCID_MAX                   (15U)
+#define RIF_REGION_MAX                 (15U)
+#define RIF_SUBREGION_MAX              (2U)
+#define RIF_KEY_REG_MAX                (4U)
+#define RISAF1_BASE_REGION_MAX         (4U)
+#define RISAF2_BASE_REGION_MAX         (4U)
+#define RISAF4_BASE_REGION_MAX         (15U)
+#define RISAF5_BASE_REGION_MAX         (2U)
+#define RISAF1_WATERMARK_MAX           (256U)
+#define RISAF2_WATERMARK_MAX           (4096U)
+#define RISAF4_WATERMARK_MAX           (4096U)
+#define RISAF5_WATERMARK_MAX           (4096U)
 #define RIF_REG_ALL_Msk                (0xFFFFFFFFUL)
 #define RISC_PERIPH_REG0_ALL_Msk       (0xFFFFFFFFUL)
 #if defined(USE_UART4)
 #define RISC_PERIPH_REG1_ALL_Msk       (0xBFDFFFFBUL)
 #else
 #define RISC_PERIPH_REG1_ALL_Msk       (0xBFDFFFFFUL)
-#endif
+#endif /* defined(USE_UART4) */
 #define RISC_PERIPH_REG2_ALL_Msk       (0xF7D3FDFCUL)
 #define RISC_PERIPH_REG3_ALL_Msk       (0x0FFDFDFFUL)
 #define RISC_PERIPH_REG4_ALL_Msk       (0x00000000UL)
 #define RISC_PERIPH_REG5_ALL_Msk       (0x00000000UL)
-#endif
+#endif /* defined (STM32MP257Cxx) */
 
 /** @defgroup RIF_Attribute RIF Attribute
   *           bitmap: bit0 : Sec Attr (0 = Ns, 1 = Sec)
@@ -443,13 +443,13 @@ typedef struct
 #define RIF_PERIPH_RES191              (RIF_PERIPH_REG5 | RISC_SECCFGR5_SEC191_Pos)
 
 #define RIF_NB_PERIPH_MAX              (RIF_GET_ARRAY_INDEX(RIF_PERIPH_OTFDEC2) + 1)
-#define RIF_NB_PERIPH_LAST             (RIF_GET_ARRAY_INDEX(RIF_PERIPH_RES191) + 1)
+#define RIF_NB_PERIPH_LAST             (RIF_GET_ARRAY_INDEX(RIF_PERIPH_RES191) + 1U)
 
 #define RIF_PERIPH_ALL                 (RIF_PERIPH_ALLIP_Msk)
 
-#define RISAL1                         (RISC_BASE+0x900)
-#define RISAL2                         (RISC_BASE+0x910)
-#define RISAL3                         (RISC_BASE+0x920)
+#define RISAL1                         (RISC_BASE+0x900U)
+#define RISAL2                         (RISC_BASE+0x910U)
+#define RISAL3                         (RISC_BASE+0x920U)
 
 #define RIF_SYSRAMlow                  ((uint32_t)RISAB1)
 #define RIF_SYSRAMhigh                 ((uint32_t)RISAB2)
@@ -470,30 +470,30 @@ typedef struct
   * @{
   */
 /* Master Fixed values */
-#define RIF_MCID_CPU1                  (0x01u)
-#define RIF_MCID_CPU2                  (0x02u)
-#define RIF_MCID_CPU3                  (0x03u)
+#define RIF_MCID_CPU1                  (0x01U)
+#define RIF_MCID_CPU2                  (0x02U)
+#define RIF_MCID_CPU3                  (0x03U)
 
 /* Master CID index */
-#define RIF_MCID_TRACE                 (0u)
-#define RIF_MCID_SDMMC1                (1u)
-#define RIF_MCID_SDMMC2                (2u)
-#define RIF_MCID_SDMMC3                (3u)
-#define RIF_MCID_USB3DR                (4u)
-#define RIF_MCID_USBH                  (5u)
-#define RIF_MCID_ETH1                  (6u)
-#define RIF_MCID_ETH2                  (7u)
-#define RIF_MCID_PCIE                  (8u)
-#define RIF_MCID_GPU                   (9u)
-#define RIF_MCID_DCMIPP                (10u)
-#define RIF_MCID_LTDC_L1_L2            (11u)
-#define RIF_MCID_LTDC_L3               (12u)
-#define RIF_MCID_LTDC_ROT              (13u)
-#define RIF_MCID_VDEC                  (14u)
-#define RIF_MCID_VENC                  (15u)
+#define RIF_MCID_TRACE                 (0U)
+#define RIF_MCID_SDMMC1                (1U)
+#define RIF_MCID_SDMMC2                (2U)
+#define RIF_MCID_SDMMC3                (3U)
+#define RIF_MCID_USB3DR                (4U)
+#define RIF_MCID_USBH                  (5U)
+#define RIF_MCID_ETH1                  (6U)
+#define RIF_MCID_ETH2                  (7U)
+#define RIF_MCID_PCIE                  (8U)
+#define RIF_MCID_GPU                   (9U)
+#define RIF_MCID_DCMIPP                (10U)
+#define RIF_MCID_LTDC_L1_L2            (11U)
+#define RIF_MCID_LTDC_L3               (12U)
+#define RIF_MCID_LTDC_ROT              (13U)
+#define RIF_MCID_VDEC                  (14U)
+#define RIF_MCID_VENC                  (15U)
 
 /* DAPCID specific value (highest level of debug access) */
-#define DAPCID_MASTER                  (0x07u)
+#define DAPCID_MASTER                  (0x07U)
 /**
   * @}
   */
@@ -503,7 +503,7 @@ typedef struct
   */
 
 /* RIF user-oriented definition  */
-#define RIF_HAL_ERROR                  (-1U)
+#define RIF_HAL_ERROR                  ((uint32_t)-1)
 
 /* PERIPH user-oriented definition  */
 #define RIF_PERIPH_LOCK_OFF            (0U)
@@ -575,9 +575,9 @@ typedef struct
 #if defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE)
 HAL_StatusTypeDef HAL_RISC_ConfigPeriphAttributes(RIF_Periph_Desc * PeriphAttributes);
 void HAL_RIF_PeriphGLock();
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 HAL_StatusTypeDef HAL_RISC_GetConfigPeriphAttributes(uint32_t PeriphId, RIF_Periph_Desc *PeriphAttributes);
-uint32_t HAL_RIF_GetPeriphGLock();
+uint32_t HAL_RIF_GetPeriphGLock(void);
 
 /**
   * @}
@@ -589,8 +589,9 @@ uint32_t HAL_RIF_GetPeriphGLock();
   */
 #if defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE)
 HAL_StatusTypeDef HAL_RISAL_ConfigMemAttributes(RIF_MemRisal_Desc * MemAttributes);
-#endif
-HAL_StatusTypeDef HAL_RISAL_GetConfigMemAttributes(uint32_t Instance, uint32_t SubRegId, RIF_MemRisal_Desc *MemAttributes);
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
+HAL_StatusTypeDef HAL_RISAL_GetConfigMemAttributes(uint32_t Instance, uint32_t SubRegId,\
+                                                   RIF_MemRisal_Desc *MemAttributes);
 
 /**
   * @}
@@ -605,10 +606,10 @@ HAL_StatusTypeDef HAL_RISAL_GetConfigMemAttributes(uint32_t Instance, uint32_t S
 HAL_StatusTypeDef HAL_RIMC_ConfigTrustedAttributes(RIF_RIMC_TrustedDesc * Attributes);
 HAL_StatusTypeDef HAL_RIMC_ConfigMasterAttributes(RIF_RIMC_MasterDesc * Attributes);
 void HAL_RIMC_GLock();
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 HAL_StatusTypeDef HAL_RIMC_GetConfigTrustedAttributes(RIF_RIMC_TrustedDesc *Attributes);
 HAL_StatusTypeDef HAL_RIMC_GetConfigMasterAttributes(uint32_t MasterId, RIF_RIMC_MasterDesc *Attributes);
-uint32_t HAL_RIMC_GetGLock();
+uint32_t HAL_RIMC_GetGLock(void);
 
 /**
   * @}
@@ -622,8 +623,9 @@ uint32_t HAL_RIMC_GetGLock();
 #if defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE)
 HAL_StatusTypeDef HAL_RISAB_ConfigMemAttributes(uint32_t PageId, RIF_MemRisab_Desc * MemAttributes);
 void HAL_RISAB_MemGLock(uint32_t Instance);
-#endif
-HAL_StatusTypeDef HAL_RISAB_GetConfigMemAttributes(uint32_t Instance, uint32_t PageId, uint32_t Cid, RIF_MemRisab_Desc *MemAttributes);
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
+HAL_StatusTypeDef HAL_RISAB_GetConfigMemAttributes(uint32_t Instance, uint32_t PageId,\
+                                                   uint32_t Cid, RIF_MemRisab_Desc *MemAttributes);
 uint32_t HAL_RISAB_GetMemGLock(uint32_t Instance);
 
 /**
@@ -640,9 +642,11 @@ HAL_StatusTypeDef HAL_RISAF_ConfigMemRegionAttributes(uint32_t RegionId, RIF_Mem
 HAL_StatusTypeDef HAL_RISAF_ConfigMemSubRegionAttributes(uint32_t RegionId, RIF_MemRisafSubReg_Desc * MemAttributes);
 HAL_StatusTypeDef HAL_RISAF_ConfigMemEncryptAttributes(RIF_MemRisafEncKey_Desc * MemAttributes);
 void HAL_RISAF_MemGLock(uint32_t Instance);
-#endif
-HAL_StatusTypeDef HAL_RISAF_GetConfigMemRegionAttributes(uint32_t Instance, uint32_t RegionId, RIF_MemRisafReg_Desc *MemAttributes);
-HAL_StatusTypeDef HAL_RISAF_GetConfigMemSubRegionAttributes(uint32_t Instance, uint32_t RegionId, uint32_t SubRegionId, RIF_MemRisafSubReg_Desc *MemAttributes);
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
+HAL_StatusTypeDef HAL_RISAF_GetConfigMemRegionAttributes(uint32_t Instance, uint32_t RegionId,\
+                                                         RIF_MemRisafReg_Desc *MemAttributes);
+HAL_StatusTypeDef HAL_RISAF_GetConfigMemSubRegionAttributes(uint32_t Instance, uint32_t RegionId,\
+                                                            uint32_t SubRegionId, RIF_MemRisafSubReg_Desc *MemAttributes);
 uint32_t HAL_RISAF_GetMemGLock(uint32_t Instance);
 
 /**
@@ -684,15 +688,15 @@ void HAL_IAC_Callback(uint32_t PeriphId);
   * @brief  RIF private macros usable to retrieve information to access register
   *         for a specific PeriphId
   */
-#define RIF_GET_REG_INDEX(periphid)        ((periphid & RIF_PERIPH_REG_Msk) >> RIF_PERIPH_REG_Pos)
-#define RIF_GET_PERIPH_POS(periphid)       (periphid & RIF_PERIPH_BITPOS_Msk)
+#define RIF_GET_REG_INDEX(periphid)        (((periphid) & RIF_PERIPH_REG_Msk) >> RIF_PERIPH_REG_Pos)
+#define RIF_GET_PERIPH_POS(periphid)       ((periphid) & (RIF_PERIPH_BITPOS_Msk))
 
 /**
   * @brief  RIF private macro to get array index of a specific PeriphId
   *         in case of RIF_PERIPH_ALLIP_Msk usage in the two following functions:
   *         HAL_RISC_ConfigPeriphAttributes and HAL_RISC_GetConfigPeriphAttributes
   */
-#define RIF_GET_ARRAY_INDEX(periphid)      ((RIF_GET_REG_INDEX(periphid)*32U) + RIF_GET_PERIPH_POS(periphid))
+#define RIF_GET_ARRAY_INDEX(periphid)      (((RIF_GET_REG_INDEX(periphid))*32U) + (RIF_GET_PERIPH_POS(periphid)))
 
 
 /**
@@ -700,7 +704,8 @@ void HAL_IAC_Callback(uint32_t PeriphId);
   */
 #define IS_RIF_ATTRIBUTE(__ATTRIBUTES__)   (((__ATTRIBUTES__) & ~(RIF_ATTRIBUTE_SEC | RIF_ATTRIBUTE_PRIV)) == 0x00u)
 
-#define IS_RIF_PERIPHERAL(__PERIPHERAL__)  (((((__PERIPHERAL__) & ~(RIF_PERIPH_REG_Msk | RIF_PERIPH_BITPOS_Msk)) == 0x00u) && \
+#define IS_RIF_PERIPHERAL(__PERIPHERAL__)  (((((__PERIPHERAL__) & ~\
+                                            (RIF_PERIPH_REG_Msk | RIF_PERIPH_BITPOS_Msk)) == 0x00u) && \
                                             ((RIF_GET_ARRAY_INDEX(__PERIPHERAL__) < RIF_NB_PERIPH_LAST))) || \
                                             ((__PERIPHERAL__) == RIF_PERIPH_ALLIP_Msk))
 
@@ -775,7 +780,7 @@ void HAL_IAC_Callback(uint32_t PeriphId);
       ( (uint32_t)(cid) == RIF_MCID_CPU3 ) )
 
 #define IS_RISAB_PAGEID(pageid) \
-    ( ( (uint32_t)(pageid) >= 0 ) && \
+    ( ( (uint32_t)(pageid) >= 0U ) && \
       ( (uint32_t)(pageid) < RIF_PAGE_MAX ) )
 
 #define IS_RISAB_DCCID(cid) \
@@ -795,7 +800,7 @@ void HAL_IAC_Callback(uint32_t PeriphId);
       ( (uint32_t)(instance) == (uint32_t)(RIF_PCIE) ) )
 
 #define IS_RISAF_REGIONID(regionid) \
-    ( ( (uint32_t)(regionid) >= 0 ) && \
+    ( ( (uint32_t)(regionid) >= 0U ) && \
       ( (uint32_t)(regionid) < RIF_REGION_MAX ) )
 
 #define IS_RISAF_SUBREGID(subreg) \
@@ -847,48 +852,74 @@ void HAL_IAC_Callback(uint32_t PeriphId);
 #define SEC_WRITE_REG(REG, VAL)
 #define SEC_READ_REG(REG)                       READ_REG(REG)
 #define SEC_MODIFY_REG(REG, CLEARMASK, SETMASK)
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 
 /**
   * @brief  RIF private macros to configure RISC
   */
-#define HAL_RIF_IS_RISC_CFEN(periphid)             (SEC_READ_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_CFEN))
-#define HAL_RIF_IS_RISC_SEMEN(periphid)            (SEC_READ_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SEMEN))
-#define HAL_RIF_IS_RISC_SEMMUTEX(periphid)         (READ_BIT(RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].SEMCR, RISC_PERSEMCR_SEMMUTEX))
-#define HAL_RIF_IS_RISC_RLOCK(periphid)            (SEC_READ_BIT((RISC->RCFGLOCKR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
-#define HAL_RIF_IS_RISC_SEC(periphid)              (SEC_READ_BIT((RISC->SECCFGR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
-#define HAL_RIF_IS_RISC_PRIV(periphid)             (SEC_READ_BIT((RISC->PRIVCFGR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
+#define HAL_RIF_IS_RISC_CFEN(periphid)             (SEC_READ_BIT\
+   ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid) & 0x7FU].CIDCFGR), RISC_PERCIDCFGR_CFEN))
+#define HAL_RIF_IS_RISC_SEMEN(periphid)            (SEC_READ_BIT\
+     ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid) & 0x7FU].CIDCFGR), RISC_PERCIDCFGR_SEMEN))
+#define HAL_RIF_IS_RISC_SEMMUTEX(periphid)         (READ_BIT\
+     (RISC->PER[RIF_GET_ARRAY_INDEX(periphid) & 0x7FU].SEMCR, RISC_PERSEMCR_SEMMUTEX))
+#define HAL_RIF_IS_RISC_RLOCK(periphid)            (SEC_READ_BIT\
+     ((RISC->RCFGLOCKR[RIF_GET_REG_INDEX(periphid) % (sizeof(RISC->RCFGLOCKR)/sizeof(RISC->RCFGLOCKR[0]))]), (1UL<<RIF_GET_PERIPH_POS(periphid))))
+#define HAL_RIF_IS_RISC_SEC(periphid)              (SEC_READ_BIT\
+     ((RISC->SECCFGR[RIF_GET_REG_INDEX(periphid) % (sizeof(RISC->SECCFGR)/sizeof(RISC->SECCFGR[0]))]), (1UL<<RIF_GET_PERIPH_POS(periphid))))
+#define HAL_RIF_IS_RISC_PRIV(periphid)             (SEC_READ_BIT\
+     ((RISC->PRIVCFGR[RIF_GET_REG_INDEX(periphid) % (sizeof(RISC->PRIVCFGR)/sizeof(RISC->PRIVCFGR[0]))]), (1UL<<RIF_GET_PERIPH_POS(periphid))))
 #define HAL_RIF_IS_RISC_GLOCK()                    (SEC_READ_BIT((RISC->CR), RISC_CR_GLOCK))
 
-#define HAL_RIF_SET_RISC_CFEN(periphid)            (SEC_SET_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_CFEN))
-#define HAL_RIF_SET_RISC_SEMEN(periphid)           (SEC_SET_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SEMEN))
-#define HAL_RIF_SET_RISC_RLOCK(periphid)           (SEC_SET_BIT((RISC->RCFGLOCKR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
-#define HAL_RIF_SET_RISC_SEC(periphid)             (SEC_SET_BIT((RISC->SECCFGR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
-#define HAL_RIF_SET_RISC_PRIV(periphid)            (SEC_SET_BIT((RISC->PRIVCFGR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
+#define HAL_RIF_SET_RISC_CFEN(periphid)            (SEC_SET_BIT\
+   ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_CFEN))
+#define HAL_RIF_SET_RISC_SEMEN(periphid)           (SEC_SET_BIT\
+     ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SEMEN))
+#define HAL_RIF_SET_RISC_RLOCK(periphid)           (SEC_SET_BIT\
+     ((RISC->RCFGLOCKR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
+#define HAL_RIF_SET_RISC_SEC(periphid)             (SEC_SET_BIT\
+     ((RISC->SECCFGR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
+#define HAL_RIF_SET_RISC_PRIV(periphid)            (SEC_SET_BIT\
+     ((RISC->PRIVCFGR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
 #define HAL_RIF_SET_RISC_GLOCK()                   (SEC_SET_BIT((RISC->CR), RISC_CR_GLOCK))
 
-#define HAL_RIF_CLEAR_RISC_CFEN(periphid)          (SEC_CLEAR_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_CFEN))
-#define HAL_RIF_CLEAR_RISC_SEMEN(periphid)         (SEC_CLEAR_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SEMEN))
-#define HAL_RIF_CLEAR_RISC_RLOCK(periphid)         (SEC_CLEAR_BIT((RISC->RCFGLOCKR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
-#define HAL_RIF_CLEAR_RISC_SEC(periphid)           (SEC_CLEAR_BIT((RISC->SECCFGR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
-#define HAL_RIF_CLEAR_RISC_PRIV(periphid)          (SEC_CLEAR_BIT((RISC->PRIVCFGR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
+#define HAL_RIF_CLEAR_RISC_CFEN(periphid)          (SEC_CLEAR_BIT\
+   ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_CFEN))
+#define HAL_RIF_CLEAR_RISC_SEMEN(periphid)         (SEC_CLEAR_BIT\
+     ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SEMEN))
+#define HAL_RIF_CLEAR_RISC_RLOCK(periphid)         (SEC_CLEAR_BIT\
+     ((RISC->RCFGLOCKR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
+#define HAL_RIF_CLEAR_RISC_SEC(periphid)           (SEC_CLEAR_BIT\
+     ((RISC->SECCFGR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
+#define HAL_RIF_CLEAR_RISC_PRIV(periphid)          (SEC_CLEAR_BIT\
+     ((RISC->PRIVCFGR[RIF_GET_REG_INDEX(periphid)]), 1<<RIF_GET_PERIPH_POS(periphid)))
 
 /* SCID */
-#define HAL_RIF_READ_RISC_SCID(periphid)           (SEC_READ_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SCID))
-#define HAL_RIF_SET_RISC_SCID(periphid,scid)       (SEC_MODIFY_REG((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SCID_Msk, scid & RISC_PERCIDCFGR_SCID_Msk))
+#define HAL_RIF_READ_RISC_SCID(periphid)           (SEC_READ_BIT\
+   ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)& 0x7FU].CIDCFGR), RISC_PERCIDCFGR_SCID))
+#define HAL_RIF_SET_RISC_SCID(periphid,scid)       (SEC_MODIFY_REG\
+     ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SCID_Msk, scid & RISC_PERCIDCFGR_SCID_Msk))
 #define HAL_RIF_IS_RISC_SCIDCX(periphid,scid)      (HAL_RIF_READ_RISC_SCID(periphid) == scid ? 1 : 0)
-#define HAL_RIF_CLEAR_RISC_SCID(periphid)          (SEC_CLEAR_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SCID))
+#define HAL_RIF_CLEAR_RISC_SCID(periphid)          (SEC_CLEAR_BIT\
+   ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SCID))
 /* SEMWL */
-#define HAL_RIF_READ_RISC_SEMWL(periphid)          (SEC_READ_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), RISC_PERCIDCFGR_SEMWL))
-#define HAL_RIF_IS_RISC_SEMWLCX(periphid,cid)      (SEC_READ_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), cid))
-#define HAL_RIF_SET_RISC_SEMWLCX(periphid,cid)     (SEC_MODIFY_REG((RISC->PER[RIF_GET_ARRAY_INDEX(periphid )].CIDCFGR), RISC_PERCIDCFGR_SEMWL_Msk, cid & RISC_PERCIDCFGR_SEMWL_Msk))
-#define HAL_RIF_RESET_RISC_SEMWLCX(periphid,cid)   (SEC_CLEAR_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), cid))
+#define HAL_RIF_READ_RISC_SEMWL(periphid)          (SEC_READ_BIT\
+   ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid) & 0x7FU].CIDCFGR), RISC_PERCIDCFGR_SEMWL))
+#define HAL_RIF_IS_RISC_SEMWLCX(periphid,cid)      (SEC_READ_BIT\
+     ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), cid))
+#define HAL_RIF_SET_RISC_SEMWLCX(periphid,cid)     (SEC_MODIFY_REG\
+     ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid )].CIDCFGR), RISC_PERCIDCFGR_SEMWL_Msk, cid & RISC_PERCIDCFGR_SEMWL_Msk))
+#define HAL_RIF_RESET_RISC_SEMWLCX(periphid,cid)   (SEC_CLEAR_BIT\
+     ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].CIDCFGR), cid))
 /* SEMCID */
-#define HAL_RIF_READ_RISC_SEMCID(periphid)         (SEC_READ_BIT((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].SEMCR), RISC_PERSEMCR_SEMCID))
+#define HAL_RIF_READ_RISC_SEMCID(periphid)         (SEC_READ_BIT\
+   ((RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].SEMCR), RISC_PERSEMCR_SEMCID))
 #define HAL_RIF_IS_RISC_SEMCIDCX(periphid,semcid)  (HAL_RIF_READ_RISC_SEMCID(periphid) == semcid  ? 1 : 0)
 /* SEMMUTEX */
-#define HAL_RIF_TAKE_RISC_SEM(periphid)            (SET_BIT(RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].SEMCR, RISC_PERSEMCR_SEMMUTEX))
-#define HAL_RIF_RELEASE_RISC_SEM(periphid)         (CLEAR_BIT(RISC->PER[RIF_GET_ARRAY_INDEX(periphid)].SEMCR, RISC_PERSEMCR_SEMMUTEX))
+#define HAL_RIF_TAKE_RISC_SEM(periphid)            (SET_BIT(RISC->PER\
+   [RIF_GET_ARRAY_INDEX(periphid)].SEMCR, RISC_PERSEMCR_SEMMUTEX))
+#define HAL_RIF_RELEASE_RISC_SEM(periphid)         (CLEAR_BIT(RISC->PER\
+     [RIF_GET_ARRAY_INDEX(periphid)].SEMCR, RISC_PERSEMCR_SEMMUTEX))
 
 /**
   * @brief  RIF private macros to configure RISAL
@@ -946,15 +977,23 @@ void HAL_IAC_Callback(uint32_t PeriphId);
 #define HAL_RIF_SET_RISAL3_SUBREGB_RLOCK()                (SEC_SET_BIT((RISC->REG3BCFGR), RISC_REGCFGR_RLOCK))
 #define HAL_RIF_SET_RISAL3_SUBREGB_SEC()                  (SEC_SET_BIT((RISC->REG3BCFGR), RISC_REGCFGR_SEC))
 #define HAL_RIF_SET_RISAL3_SUBREGB_PRIV()                 (SEC_SET_BIT((RISC->REG3BCFGR), RISC_REGCFGR_PRIV))
-#define HAL_RIF_SET_RISAL3_SUBREGA_SUBSTART(val)          (SEC_MODIFY_REG((RISC->REG3AADDR), RISC_REG3ADDR_SUBSTART_Msk, val << RISC_REG3ADDR_SUBSTART_Pos))
-#define HAL_RIF_SET_RISAL3_SUBREGA_SUBLENGTH(val)         (SEC_MODIFY_REG((RISC->REG3AADDR), RISC_REG3ADDR_SUBLENGTH_Msk, val << RISC_REG3ADDR_SUBLENGTH_Pos))
-#define HAL_RIF_SET_RISAL3_SUBREGB_SUBSTART(val)          (SEC_MODIFY_REG((RISC->REG3BADDR), RISC_REG3ADDR_SUBSTART_Msk, val << RISC_REG3ADDR_SUBSTART_Pos))
-#define HAL_RIF_SET_RISAL3_SUBREGB_SUBLENGTH(val)         (SEC_MODIFY_REG((RISC->REG3BADDR), RISC_REG3ADDR_SUBLENGTH_Msk, val << RISC_REG3ADDR_SUBLENGTH_Pos))
+#define HAL_RIF_SET_RISAL3_SUBREGA_SUBSTART(val)          (SEC_MODIFY_REG((RISC->REG3AADDR),\
+   RISC_REG3ADDR_SUBSTART_Msk, val << RISC_REG3ADDR_SUBSTART_Pos))
+#define HAL_RIF_SET_RISAL3_SUBREGA_SUBLENGTH(val)         (SEC_MODIFY_REG((RISC->REG3AADDR),\
+     RISC_REG3ADDR_SUBLENGTH_Msk, val << RISC_REG3ADDR_SUBLENGTH_Pos))
+#define HAL_RIF_SET_RISAL3_SUBREGB_SUBSTART(val)          (SEC_MODIFY_REG((RISC->REG3BADDR),\
+     RISC_REG3ADDR_SUBSTART_Msk, val << RISC_REG3ADDR_SUBSTART_Pos))
+#define HAL_RIF_SET_RISAL3_SUBREGB_SUBLENGTH(val)         (SEC_MODIFY_REG((RISC->REG3BADDR),\
+     RISC_REG3ADDR_SUBLENGTH_Msk, val << RISC_REG3ADDR_SUBLENGTH_Pos))
 
-#define HAL_RIF_READ_RISAL3_SUBREGA_SUBSTART()            (SEC_READ_BIT((RISC->REG3AADDR), RISC_REG3ADDR_SUBSTART_Msk) >> RISC_REG3ADDR_SUBSTART_Pos)
-#define HAL_RIF_READ_RISAL3_SUBREGA_SUBLENGTH()           (SEC_READ_BIT((RISC->REG3AADDR), RISC_REG3ADDR_SUBLENGTH_Msk) >> RISC_REG3ADDR_SUBLENGTH_Pos)
-#define HAL_RIF_READ_RISAL3_SUBREGB_SUBSTART()            (SEC_READ_BIT((RISC->REG3BADDR), RISC_REG3ADDR_SUBSTART_Msk) >> RISC_REG3ADDR_SUBSTART_Pos)
-#define HAL_RIF_READ_RISAL3_SUBREGB_SUBLENGTH()           (SEC_READ_BIT((RISC->REG3BADDR), RISC_REG3ADDR_SUBLENGTH_Msk) >> RISC_REG3ADDR_SUBLENGTH_Pos)
+#define HAL_RIF_READ_RISAL3_SUBREGA_SUBSTART()            (SEC_READ_BIT((RISC->REG3AADDR),\
+   RISC_REG3ADDR_SUBSTART_Msk) >> RISC_REG3ADDR_SUBSTART_Pos)
+#define HAL_RIF_READ_RISAL3_SUBREGA_SUBLENGTH()           (SEC_READ_BIT((RISC->REG3AADDR),\
+     RISC_REG3ADDR_SUBLENGTH_Msk) >> RISC_REG3ADDR_SUBLENGTH_Pos)
+#define HAL_RIF_READ_RISAL3_SUBREGB_SUBSTART()            (SEC_READ_BIT((RISC->REG3BADDR),\
+     RISC_REG3ADDR_SUBSTART_Msk) >> RISC_REG3ADDR_SUBSTART_Pos)
+#define HAL_RIF_READ_RISAL3_SUBREGB_SUBLENGTH()           (SEC_READ_BIT((RISC->REG3BADDR),\
+     RISC_REG3ADDR_SUBLENGTH_Msk) >> RISC_REG3ADDR_SUBLENGTH_Pos)
 
 #define HAL_RIF_CLEAR_RISAL1_SUBREGA_SREN()               (SEC_CLEAR_BIT((RISC->REG1ACFGR), RISC_REGCFGR_SREN))
 #define HAL_RIF_CLEAR_RISAL1_SUBREGA_RLOCK()              (SEC_CLEAR_BIT((RISC->REG1ACFGR), RISC_REGCFGR_RLOCK))
@@ -996,18 +1035,30 @@ void HAL_IAC_Callback(uint32_t PeriphId);
 #define HAL_RIF_IS_RISAL2_SUBREGB_SRCID(srcid)            (HAL_RIF_READ_RISAL2_SUBREGB_SRCID() == srcid ? 1 : 0)
 #define HAL_RIF_IS_RISAL3_SUBREGA_SRCID(srcid)            (HAL_RIF_READ_RISAL3_SUBREGA_SRCID() == srcid ? 1 : 0)
 #define HAL_RIF_IS_RISAL3_SUBREGB_SRCID(srcid)            (HAL_RIF_READ_RISAL3_SUBREGB_SRCID() == srcid ? 1 : 0)
-#define HAL_RIF_SET_RISAL1_SUBREGA_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG1ACFGR), RISC_REGCFGR_SRCID_Msk, srcid))
-#define HAL_RIF_SET_RISAL1_SUBREGB_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG1BCFGR), RISC_REGCFGR_SRCID_Msk, srcid))
-#define HAL_RIF_SET_RISAL2_SUBREGA_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG2ACFGR), RISC_REGCFGR_SRCID_Msk, srcid))
-#define HAL_RIF_SET_RISAL2_SUBREGB_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG2BCFGR), RISC_REGCFGR_SRCID_Msk, srcid))
-#define HAL_RIF_SET_RISAL3_SUBREGA_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG3ACFGR), RISC_REGCFGR_SRCID_Msk, srcid))
-#define HAL_RIF_SET_RISAL3_SUBREGB_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG3BCFGR), RISC_REGCFGR_SRCID_Msk, srcid))
-#define HAL_RIF_CLEAR_RISAL1_SUBREGA_SRCID()              (SEC_MODIFY_REG((RISC->REG1ACFGR), RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
-#define HAL_RIF_CLEAR_RISAL1_SUBREGB_SRCID()              (SEC_MODIFY_REG((RISC->REG1BCFGR), RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
-#define HAL_RIF_CLEAR_RISAL2_SUBREGA_SRCID()              (SEC_MODIFY_REG((RISC->REG2ACFGR), RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
-#define HAL_RIF_CLEAR_RISAL2_SUBREGB_SRCID()              (SEC_MODIFY_REG((RISC->REG2BCFGR), RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
-#define HAL_RIF_CLEAR_RISAL3_SUBREGA_SRCID()              (SEC_MODIFY_REG((RISC->REG3ACFGR), RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
-#define HAL_RIF_CLEAR_RISAL3_SUBREGB_SRCID()              (SEC_MODIFY_REG((RISC->REG3BCFGR), RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
+#define HAL_RIF_SET_RISAL1_SUBREGA_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG1ACFGR),\
+   RISC_REGCFGR_SRCID_Msk, srcid))
+#define HAL_RIF_SET_RISAL1_SUBREGB_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG1BCFGR),\
+     RISC_REGCFGR_SRCID_Msk, srcid))
+#define HAL_RIF_SET_RISAL2_SUBREGA_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG2ACFGR),\
+     RISC_REGCFGR_SRCID_Msk, srcid))
+#define HAL_RIF_SET_RISAL2_SUBREGB_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG2BCFGR),\
+     RISC_REGCFGR_SRCID_Msk, srcid))
+#define HAL_RIF_SET_RISAL3_SUBREGA_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG3ACFGR),\
+     RISC_REGCFGR_SRCID_Msk, srcid))
+#define HAL_RIF_SET_RISAL3_SUBREGB_SRCID(srcid)           (SEC_MODIFY_REG((RISC->REG3BCFGR),\
+     RISC_REGCFGR_SRCID_Msk, srcid))
+#define HAL_RIF_CLEAR_RISAL1_SUBREGA_SRCID()              (SEC_MODIFY_REG((RISC->REG1ACFGR),\
+     RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
+#define HAL_RIF_CLEAR_RISAL1_SUBREGB_SRCID()              (SEC_MODIFY_REG((RISC->REG1BCFGR),\
+     RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
+#define HAL_RIF_CLEAR_RISAL2_SUBREGA_SRCID()              (SEC_MODIFY_REG((RISC->REG2ACFGR),\
+     RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
+#define HAL_RIF_CLEAR_RISAL2_SUBREGB_SRCID()              (SEC_MODIFY_REG((RISC->REG2BCFGR),\
+     RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
+#define HAL_RIF_CLEAR_RISAL3_SUBREGA_SRCID()              (SEC_MODIFY_REG((RISC->REG3ACFGR),\
+     RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
+#define HAL_RIF_CLEAR_RISAL3_SUBREGB_SRCID()              (SEC_MODIFY_REG((RISC->REG3BCFGR),\
+     RISC_REGCFGR_SRCID_Msk, RISC_REGCFGR_SRCID0))
 
 /**
   * @brief  RIF private macros to configure RIMC
@@ -1017,7 +1068,8 @@ void HAL_IAC_Callback(uint32_t PeriphId);
 #define HAL_RIF_READ_RIMC_MCID(masterid)                  (SEC_READ_BIT((RIMC->ATTR[masterid]), RIMC_ATTR_MCID))
 #define HAL_RIF_SET_RIMC_TDCID(val)                       (SEC_MODIFY_REG((RIMC->CR), RIMC_CR_TDCID_Msk, val))
 #define HAL_RIF_SET_RIMC_DAPCID(val)                      (SEC_MODIFY_REG((RIMC->CR), RIMC_CR_DAPCID_Msk, val))
-#define HAL_RIF_SET_RIMC_MCID(masterid,val)               (SEC_MODIFY_REG((RIMC->ATTR[masterid]), RIMC_ATTR_MCID_Msk, val))
+#define HAL_RIF_SET_RIMC_MCID(masterid,val)               (SEC_MODIFY_REG\
+   ((RIMC->ATTR[masterid]), RIMC_ATTR_MCID_Msk, val))
 #define HAL_RIF_SET_RIMC_GLOCK()                          (SEC_SET_BIT((RIMC->CR), RIMC_CR_GLOCK))
 #define HAL_RIF_SET_RIMC_SEC(masterid)                    (SEC_SET_BIT((RIMC->ATTR[masterid]), RIMC_ATTR_MSEC))
 #define HAL_RIF_SET_RIMC_PRIV(masterid)                   (SEC_SET_BIT((RIMC->ATTR[masterid]), RIMC_ATTR_MPRIV))
@@ -1030,258 +1082,456 @@ void HAL_IAC_Callback(uint32_t PeriphId);
 #define HAL_RIF_IS_RIMC_DDEN()                            (SEC_READ_BIT((RIMC->CR), RIMC_CR_DDEN))
 
 #define HAL_RIF_IS_TRUSTED_DOMAIN(cpu)                    ((HAL_RIF_READ_RIMC_TDCID()) == cpu)
-#define HAL_RIF_IS_DEBUG_DOMAIN(cpu)                      (HAL_RIF_IS_RIMC_DDEN() && ((HAL_RIF_READ_RIMC_DAPCID()) == cpu))
+#define HAL_RIF_IS_DEBUG_DOMAIN(cpu)                      (HAL_RIF_IS_RIMC_DDEN() &&\
+   ((HAL_RIF_READ_RIMC_DAPCID()) == cpu))
 
 /**
   * @brief  RIF private macros to configure RISAB
   */
-// INSTANCE
-#define HAL_RIF_IS_RISAB_GLOCK(Instance)                                  (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CR), RISAB_CR_GLOCK))
-#define HAL_RIF_IS_RISAB_SRWIAD(Instance)                                 (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CR), RISAB_CR_SRWIAD))
-// PAGEID then BLOCKID
-#define HAL_RIF_IS_RISAB_PG_BLOCK_SEC(Instance,pageid,blockid)            (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), (1 << blockid) & RISAB_PGSECCFGR_SEC))
-#define HAL_RIF_IS_RISAB_PG_BLOCK_PRIV(Instance,pageid,blockid)           (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), (1 << blockid) & RISAB_PGPRIVCFGR_PRIV))
-#define HAL_RIF_IS_RISAB_PG_C2_BLOCK_PRIV(Instance,pageid,blockid)        (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), (1 << blockid) & RISAB_PGC2PRIVCFGR_PRIV))
-// CID then PAGEID
-#define HAL_RIF_IS_RISAB_PG_CX_PRIV(Instance,cid,pageid)                  (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), (1 << pageid)))
-#define HAL_RIF_IS_RISAB_PG_CX_READ(Instance,cid,pageid)                  (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), (1 << pageid)))
-#define HAL_RIF_IS_RISAB_PG_CX_WRITE(Instance,cid,pageid)                 (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), (1 << pageid)))
-// PAGEID
-#define HAL_RIF_IS_RISAB_PG_CFEN(Instance,pageid)                         (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_CFEN))
-#define HAL_RIF_IS_RISAB_PG_DCEN(Instance,pageid)                         (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_DCEN))
-#define HAL_RIF_IS_RISAB_PG_LOCK(Instance,pageid)                         (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->RIFLOCKR), (1 << pageid)))
+/* INSTANCE */
+#define HAL_RIF_IS_RISAB_GLOCK(Instance)                                  (SEC_READ_BIT\
+   ((((RISAB_TypeDef*)Instance)->CR), RISAB_CR_GLOCK))
+#define HAL_RIF_IS_RISAB_SRWIAD(Instance)                                 (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->CR), RISAB_CR_SRWIAD))
+/* PAGEID then BLOCKID */
+#define HAL_RIF_IS_RISAB_PG_BLOCK_SEC(Instance,pageid,blockid)            (SEC_READ_BIT\
+   ((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), (1U << blockid) & RISAB_PGSECCFGR_SEC))
+#define HAL_RIF_IS_RISAB_PG_BLOCK_PRIV(Instance,pageid,blockid)           (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), (1U << blockid) & RISAB_PGPRIVCFGR_PRIV))
+#define HAL_RIF_IS_RISAB_PG_C2_BLOCK_PRIV(Instance,pageid,blockid)        (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), (1U << blockid) & RISAB_PGC2PRIVCFGR_PRIV))
+/* CID then PAGEID */
+#define HAL_RIF_IS_RISAB_PG_CX_PRIV(Instance,cid,pageid)                  (SEC_READ_BIT\
+   ((((RISAB_TypeDef*)(Instance))->CID[(cid)].PRIVCFGR), (1UL << (pageid))))
+#define HAL_RIF_IS_RISAB_PG_CX_READ(Instance,cid,pageid)                  (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)(Instance))->CID[(cid)].RDCFGR), (1UL << (pageid))))
+#define HAL_RIF_IS_RISAB_PG_CX_WRITE(Instance,cid,pageid)                 (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)(Instance))->CID[(cid)].WRCFGR), (1UL << (pageid))))
+/* PAGEID */
+#define HAL_RIF_IS_RISAB_PG_CFEN(Instance,pageid)                         (SEC_READ_BIT\
+   ((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_CFEN))
+#define HAL_RIF_IS_RISAB_PG_DCEN(Instance,pageid)                         (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_DCEN))
+#define HAL_RIF_IS_RISAB_PG_LOCK(Instance,pageid)                         (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)(Instance))->RIFLOCKR), (1UL << (pageid))))
 
-// INSTANCE
-#define HAL_RIF_SET_RISAB_GLOCK(Instance)                                 (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->CR), RISAB_CR_GLOCK))
-#define HAL_RIF_SET_RISAB_SRWIAD(Instance)                                (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->CR), RISAB_CR_SRWIAD))
-#define HAL_RIF_SET_RISAB_LOCK(Instance)                                  (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->RIFLOCKR), RISAB_RIFLOCKR_RLOCK))
-// PAGEID then BLOCKID
-#define HAL_RIF_SET_RISAB_PG_BLOCK_SEC(Instance,pageid,blockid)           (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), (1 << blockid) & RISAB_PGSECCFGR_SEC))
-#define HAL_RIF_SET_RISAB_PG_BLOCK_PRIV(Instance,pageid,blockid)          (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), (1 << blockid) & RISAB_PGPRIVCFGR_PRIV))
-#define HAL_RIF_SET_RISAB_PG_C2_BLOCK_PRIV(Instance,pageid,blockid)       (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), (1 << blockid) & RISAB_PGC2PRIVCFGR_PRIV))
-// PAGEID
-#define HAL_RIF_SET_RISAB_PG_SEC(Instance,pageid)                         (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), RISAB_PGSECCFGR_SEC))
-#define HAL_RIF_SET_RISAB_PG_PRIV(Instance,pageid)                        (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), RISAB_PGPRIVCFGR_PRIV))
-#define HAL_RIF_SET_RISAB_PG_C2_PRIV(Instance,pageid)                     (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), RISAB_PGC2PRIVCFGR_PRIV))
-#define HAL_RIF_SET_RISAB_PG_CFEN(Instance,pageid)                        (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_CFEN))
-#define HAL_RIF_SET_RISAB_PG_DCEN(Instance,pageid)                        (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_DCEN))
-#define HAL_RIF_SET_RISAB_PG_LOCK(Instance,pageid)                        (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->RIFLOCKR), (1 << pageid)))
-// CID
-#define HAL_RIF_SET_RISAB_CX_PRIV(Instance,cid)                           (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), RISAB_CIDPRIVCFGR_PPRIV))
-#define HAL_RIF_SET_RISAB_CX_READ(Instance,cid)                           (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), RISAB_CIDRDCFGR_PRDEN))
-#define HAL_RIF_SET_RISAB_CX_WRITE(Instance,cid)                          (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), RISAB_CIDRDCFGR_PWREN))
-// CID then PAGEID
-#define HAL_RIF_SET_RISAB_PG_CX_PRIV(Instance,cid,pageid)                 (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), (1 << pageid)))
-#define HAL_RIF_SET_RISAB_PG_CX_READ(Instance,cid,pageid)                 (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), (1 << pageid)))
-#define HAL_RIF_SET_RISAB_PG_CX_WRITE(Instance,cid,pageid)                (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), (1 << pageid)))
+/* INSTANCE */
+#define HAL_RIF_SET_RISAB_GLOCK(Instance)                                 (SEC_SET_BIT\
+   ((((RISAB_TypeDef*)Instance)->CR), RISAB_CR_GLOCK))
+#define HAL_RIF_SET_RISAB_SRWIAD(Instance)                                (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->CR), RISAB_CR_SRWIAD))
+#define HAL_RIF_SET_RISAB_LOCK(Instance)                                  (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->RIFLOCKR), RISAB_RIFLOCKR_RLOCK))
+/* PAGEID then BLOCKID */
+#define HAL_RIF_SET_RISAB_PG_BLOCK_SEC(Instance,pageid,blockid)           (SEC_SET_BIT\
+   ((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), ((1U << blockid) & RISAB_PGSECCFGR_SEC))
+#define HAL_RIF_SET_RISAB_PG_BLOCK_PRIV(Instance,pageid,blockid)          (SEC_SET_BIT\
+   ((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), ((1U << blockid) & RISAB_PGPRIVCFGR_PRIV))
+#define HAL_RIF_SET_RISAB_PG_C2_BLOCK_PRIV(Instance,pageid,blockid)       (SEC_SET_BIT\
+   ((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), ((1U << blockid) & RISAB_PGC2PRIVCFGR_PRIV))
+/* PAGEID */
+#define HAL_RIF_SET_RISAB_PG_SEC(Instance,pageid)                         (SEC_SET_BIT\
+   ((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), RISAB_PGSECCFGR_SEC))
+#define HAL_RIF_SET_RISAB_PG_PRIV(Instance,pageid)                        (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), RISAB_PGPRIVCFGR_PRIV))
+#define HAL_RIF_SET_RISAB_PG_C2_PRIV(Instance,pageid)                     (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), RISAB_PGC2PRIVCFGR_PRIV))
+#define HAL_RIF_SET_RISAB_PG_CFEN(Instance,pageid)                        (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_CFEN))
+#define HAL_RIF_SET_RISAB_PG_DCEN(Instance,pageid)                        (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_DCEN))
+#define HAL_RIF_SET_RISAB_PG_LOCK(Instance,pageid)                        (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->RIFLOCKR), (1U << pageid)))
+/* CID */
+#define HAL_RIF_SET_RISAB_CX_PRIV(Instance,cid)                           (SEC_SET_BIT\
+   ((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), RISAB_CIDPRIVCFGR_PPRIV))
+#define HAL_RIF_SET_RISAB_CX_READ(Instance,cid)                           (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), RISAB_CIDRDCFGR_PRDEN))
+#define HAL_RIF_SET_RISAB_CX_WRITE(Instance,cid)                          (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), RISAB_CIDRDCFGR_PWREN))
+/* CID then PAGEID */
+#define HAL_RIF_SET_RISAB_PG_CX_PRIV(Instance,cid,pageid)                 (SEC_SET_BIT\
+   ((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), (1U << pageid)))
+#define HAL_RIF_SET_RISAB_PG_CX_READ(Instance,cid,pageid)                 (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), (1U << pageid)))
+#define HAL_RIF_SET_RISAB_PG_CX_WRITE(Instance,cid,pageid)                (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), (1U << pageid)))
 
-// INSTANCE
-#define HAL_RIF_CLEAR_RISAB_SRWIAD(Instance)                              (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->CR), RISAB_CR_SRWIAD))
-#define HAL_RIF_CLEAR_RISAB_LOCK(Instance)                                (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->RIFLOCKR), RISAB_RIFLOCKR_RLOCK))
-// PAGEID then BLOCKID
-#define HAL_RIF_CLEAR_RISAB_PG_BLOCK_SEC(Instance,pageid,blockid)         (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), (1 << blockid) & RISAB_PGSECCFGR_SEC))
-#define HAL_RIF_CLEAR_RISAB_PG_BLOCK_PRIV(Instance,pageid,blockid)        (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), (1 << blockid) & RISAB_PGPRIVCFGR_PRIV))
-#define HAL_RIF_CLEAR_RISAB_PG_C2_BLOCK_PRIV(Instance,pageid,blockid)     (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), (1 << blockid) & RISAB_PGC2PRIVCFGR_PRIV))
-// PAGEID
-#define HAL_RIF_CLEAR_RISAB_PG_SEC(Instance,pageid)                       (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), RISAB_PGSECCFGR_SEC))
-#define HAL_RIF_CLEAR_RISAB_PG_PRIV(Instance,pageid)                      (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), RISAB_PGPRIVCFGR_PRIV))
-#define HAL_RIF_CLEAR_RISAB_PG_C2_PRIV(Instance,pageid)                   (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), RISAB_PGC2PRIVCFGR_PRIV))
-#define HAL_RIF_CLEAR_RISAB_PG_CFEN(Instance,pageid)                      (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_CFEN))
-#define HAL_RIF_CLEAR_RISAB_PG_DCEN(Instance,pageid)                      (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_DCEN))
-#define HAL_RIF_CLEAR_RISAB_PG_LOCK(Instance,pageid)                      (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->RIFLOCKR), (1 << pageid)))
-// CID
-#define HAL_RIF_CLEAR_RISAB_CX_PRIV(Instance,cid)                         (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), RISAB_CIDPRIVCFGR_PPRIV))
-#define HAL_RIF_CLEAR_RISAB_CX_READ(Instance,cid)                         (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), RISAB_CIDRDCFGR_PRDEN))
-#define HAL_RIF_CLEAR_RISAB_CX_WRITE(Instance,cid)                        (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), RISAB_CIDRDCFGR_PWREN))
-// CID then PAGEID
-#define HAL_RIF_CLEAR_RISAB_PG_CX_PRIV(Instance,cid,pageid)               (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), (1 << pageid)))
-#define HAL_RIF_CLEAR_RISAB_PG_CX_READ(Instance,cid,pageid)               (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), (1 << pageid)))
-#define HAL_RIF_CLEAR_RISAB_PG_CX_WRITE(Instance,cid,pageid)              (SEC_CLEAR_BIT((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), (1 << pageid)))
+/* INSTANCE */
+#define HAL_RIF_CLEAR_RISAB_SRWIAD(Instance)                              (SEC_CLEAR_BIT\
+   ((((RISAB_TypeDef*)Instance)->CR), RISAB_CR_SRWIAD))
+#define HAL_RIF_CLEAR_RISAB_LOCK(Instance)                                (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->RIFLOCKR), RISAB_RIFLOCKR_RLOCK))
+/* PAGEID then BLOCKID */
+#define HAL_RIF_CLEAR_RISAB_PG_BLOCK_SEC(Instance,pageid,blockid)         (SEC_CLEAR_BIT\
+   ((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), (1U << blockid) & RISAB_PGSECCFGR_SEC))
+#define HAL_RIF_CLEAR_RISAB_PG_BLOCK_PRIV(Instance,pageid,blockid)        (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), (1U << blockid) & RISAB_PGPRIVCFGR_PRIV))
+#define HAL_RIF_CLEAR_RISAB_PG_C2_BLOCK_PRIV(Instance,pageid,blockid)     (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), (1U << blockid) & RISAB_PGC2PRIVCFGR_PRIV))
+/* PAGEID */
+#define HAL_RIF_CLEAR_RISAB_PG_SEC(Instance,pageid)                       (SEC_CLEAR_BIT\
+   ((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), RISAB_PGSECCFGR_SEC))
+#define HAL_RIF_CLEAR_RISAB_PG_PRIV(Instance,pageid)                      (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), RISAB_PGPRIVCFGR_PRIV))
+#define HAL_RIF_CLEAR_RISAB_PG_C2_PRIV(Instance,pageid)                   (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), RISAB_PGC2PRIVCFGR_PRIV))
+#define HAL_RIF_CLEAR_RISAB_PG_CFEN(Instance,pageid)                      (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_CFEN))
+#define HAL_RIF_CLEAR_RISAB_PG_DCEN(Instance,pageid)                      (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_DCEN))
+#define HAL_RIF_CLEAR_RISAB_PG_LOCK(Instance,pageid)                      (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->RIFLOCKR), (1U << pageid)))
+/* CID */
+#define HAL_RIF_CLEAR_RISAB_CX_PRIV(Instance,cid)                         (SEC_CLEAR_BIT\
+   ((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), RISAB_CIDPRIVCFGR_PPRIV))
+#define HAL_RIF_CLEAR_RISAB_CX_READ(Instance,cid)                         (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), RISAB_CIDRDCFGR_PRDEN))
+#define HAL_RIF_CLEAR_RISAB_CX_WRITE(Instance,cid)                        (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), RISAB_CIDRDCFGR_PWREN))
+/* CID then PAGEID */
+#define HAL_RIF_CLEAR_RISAB_PG_CX_PRIV(Instance,cid,pageid)               (SEC_CLEAR_BIT\
+   ((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), (1U << pageid)))
+#define HAL_RIF_CLEAR_RISAB_PG_CX_READ(Instance,cid,pageid)               (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), (1U << pageid)))
+#define HAL_RIF_CLEAR_RISAB_PG_CX_WRITE(Instance,cid,pageid)              (SEC_CLEAR_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), (1U << pageid)))
 
-// PAGEID
-#define HAL_RIF_READ_RISAB_PG_SEC(Instance,pageid)                        (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), RISAB_PGSECCFGR_SEC))
-#define HAL_RIF_READ_RISAB_PG_PRIV(Instance,pageid)                       (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), RISAB_PGPRIVCFGR_PRIV))
-#define HAL_RIF_READ_RISAB_PG_C2_PRIV(Instance,pageid)                    (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), RISAB_PGC2PRIVCFGR_PRIV))
-// CID
-#define HAL_RIF_READ_RISAB_CX_PRIV(Instance,cid)                          (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), RISAB_CIDPRIVCFGR_PPRIV))
-#define HAL_RIF_READ_RISAB_CX_READ(Instance,cid)                          (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), RISAB_CIDRDCFGR_PRDEN))
-#define HAL_RIF_READ_RISAB_CX_WRITE(Instance,cid)                         (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), RISAB_CIDRDCFGR_PWREN))
-// Per CID then PAGEID
-#define HAL_RIF_READ_RISAB_PG_CX_PRIV(Instance,cid,pageid)                (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), (1 << pageid)))
-#define HAL_RIF_READ_RISAB_PG_CX_READ(Instance,cid,pageid)                (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), (1 << pageid)))
-#define HAL_RIF_READ_RISAB_PG_CX_WRITE(Instance,cid,pageid)               (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), (1 << pageid)))
+/* PAGEID */
+#define HAL_RIF_READ_RISAB_PG_SEC(Instance,pageid)                        (SEC_READ_BIT\
+   ((((RISAB_TypeDef*)Instance)->PGSECCFGR[pageid]), RISAB_PGSECCFGR_SEC))
+#define HAL_RIF_READ_RISAB_PG_PRIV(Instance,pageid)                       (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGPRIVCFGR[pageid]), RISAB_PGPRIVCFGR_PRIV))
+#define HAL_RIF_READ_RISAB_PG_C2_PRIV(Instance,pageid)                    (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->PGC2PRIVCFGR[pageid]), RISAB_PGC2PRIVCFGR_PRIV))
+/* CID */
+#define HAL_RIF_READ_RISAB_CX_PRIV(Instance,cid)                          (SEC_READ_BIT\
+   ((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), RISAB_CIDPRIVCFGR_PPRIV))
+#define HAL_RIF_READ_RISAB_CX_READ(Instance,cid)                          (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), RISAB_CIDRDCFGR_PRDEN))
+#define HAL_RIF_READ_RISAB_CX_WRITE(Instance,cid)                         (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), RISAB_CIDRDCFGR_PWREN))
+/* Per CID then PAGEID */
+#define HAL_RIF_READ_RISAB_PG_CX_PRIV(Instance,cid,pageid)                (SEC_READ_BIT\
+   ((((RISAB_TypeDef*)Instance)->CID[cid].PRIVCFGR), (1U << pageid)))
+#define HAL_RIF_READ_RISAB_PG_CX_READ(Instance,cid,pageid)                (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].RDCFGR), (1U << pageid)))
+#define HAL_RIF_READ_RISAB_PG_CX_WRITE(Instance,cid,pageid)               (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->CID[cid].WRCFGR), (1U << pageid)))
 
-// DCCID
-#define HAL_RIF_READ_RISAB_PG_DCCID(Instance,pageid)                      (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_DCCID))
-#define HAL_RIF_IS_RISAB_PG_DCCID(Instance,pageid,cid)                    (HAL_RIF_READ_RISAB_PG_DCCID(Instance,pageid) == cid ? 1 : 0)
-#define HAL_RIF_SET_RISAB_PG_DCCID(Instance,pageid,val)                   (SEC_MODIFY_REG((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_DCCID_Msk, val))
+/* DCCID */
+#define HAL_RIF_READ_RISAB_PG_DCCID(Instance,pageid)                      (SEC_READ_BIT\
+   ((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_DCCID))
+#define HAL_RIF_IS_RISAB_PG_DCCID(Instance,pageid,cid)                    (HAL_RIF_READ_RISAB_PG_DCCID\
+     (Instance,pageid) == cid ? 1 : 0)
+#define HAL_RIF_SET_RISAB_PG_DCCID(Instance,pageid,val)                   (SEC_MODIFY_REG\
+     ((((RISAB_TypeDef*)Instance)->PGCIDCFGR[pageid]), RISAB_PGCIDCFGR_DCCID_Msk, val))
 
 /* ILLEGAL ACCESS */
-#define HAL_RIF_READ_RISAB_IASR(Instance)                                 (SEC_READ_REG((((RISAB_TypeDef*)Instance)->IASR)))
-#define HAL_RIF_READ_RISAB_IAESR(Instance)                                (SEC_READ_REG((((RISAB_TypeDef*)Instance)->IAESR)))
-#define HAL_RIF_READ_RISAB_IADDR(Instance)                                (SEC_READ_REG((((RISAB_TypeDef*)Instance)->IADDR)))
-#define HAL_RIF_CLEAR_RISAB_IACR_CAEF(Instance)                           (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->IACR), RISAB_IACR_CAEF))
-#define HAL_RIF_CLEAR_RISAB_IACR_IAEF(Instance)                           (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->IACR), RISAB_IACR_IAEF))
-#define HAL_RIF_CLEAR_RISAB_IACR(Instance)                                (SEC_SET_BIT((((RISAB_TypeDef*)Instance)->IACR), RISAB_IACR_CAEF|RISAB_IACR_IAEF))
-#define HAL_RIF_IS_RISAB_IASR_CAEF(Instance)                              (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->IASR), RISAB_IASR_CAEF))
-#define HAL_RIF_IS_RISAB_IASR_IAEF(Instance)                              (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->IASR), RISAB_IASR_IAEF))
-#define HAL_RIF_IS_RISAB_IAESR_IAPRIV(Instance)                           (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->IAESR), RISAB_IAESR_IAPRIV))
-#define HAL_RIF_IS_RISAB_IAESR_IASEC(Instance)                            (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->IAESR), RISAB_IAESR_IASEC))
-#define HAL_RIF_IS_RISAB_IAESR_IANRW(Instance)                            (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->IAESR), RISAB_IAESR_IANRW))
-#define HAL_RIF_READ_RISAB_IAESR_IACID(Instance)                          (SEC_READ_BIT((((RISAB_TypeDef*)Instance)->IAESR), RISAB_IAESR_IACID) >> RISAB_IAESR_IACID_Pos)
+#define HAL_RIF_READ_RISAB_IASR(Instance)                                 (SEC_READ_REG\
+   ((((RISAB_TypeDef*)Instance)->IASR)))
+#define HAL_RIF_READ_RISAB_IAESR(Instance)                                (SEC_READ_REG\
+     ((((RISAB_TypeDef*)Instance)->IAESR)))
+#define HAL_RIF_READ_RISAB_IADDR(Instance)                                (SEC_READ_REG\
+     ((((RISAB_TypeDef*)Instance)->IADDR)))
+#define HAL_RIF_CLEAR_RISAB_IACR_CAEF(Instance)                           (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->IACR), RISAB_IACR_CAEF))
+#define HAL_RIF_CLEAR_RISAB_IACR_IAEF(Instance)                           (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->IACR), RISAB_IACR_IAEF))
+#define HAL_RIF_CLEAR_RISAB_IACR(Instance)                                (SEC_SET_BIT\
+     ((((RISAB_TypeDef*)Instance)->IACR), RISAB_IACR_CAEF|RISAB_IACR_IAEF))
+#define HAL_RIF_IS_RISAB_IASR_CAEF(Instance)                              (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->IASR), RISAB_IASR_CAEF))
+#define HAL_RIF_IS_RISAB_IASR_IAEF(Instance)                              (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->IASR), RISAB_IASR_IAEF))
+#define HAL_RIF_IS_RISAB_IAESR_IAPRIV(Instance)                           (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->IAESR), RISAB_IAESR_IAPRIV))
+#define HAL_RIF_IS_RISAB_IAESR_IASEC(Instance)                            (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->IAESR), RISAB_IAESR_IASEC))
+#define HAL_RIF_IS_RISAB_IAESR_IANRW(Instance)                            (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->IAESR), RISAB_IAESR_IANRW))
+#define HAL_RIF_READ_RISAB_IAESR_IACID(Instance)                          (SEC_READ_BIT\
+     ((((RISAB_TypeDef*)Instance)->IAESR), RISAB_IAESR_IACID) >> RISAB_IAESR_IACID_Pos)
 
 /**
   * @brief  RIF private macros to configure RISAF
   */
-// INSTANCE
-#define HAL_RIF_IS_RISAF_GLOCK(Instance)                                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->CR), RISAF_CR_GLOCK))
-#define HAL_RIF_IS_RISAF_KEYRDY(Instance)                                 (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->SR), RISAF_SR_KEYRDY))
-#define HAL_RIF_IS_RISAF_KEYVALID(Instance)                               (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->SR), RISAF_SR_KEYVALID))
+/* INSTANCE */
+#define HAL_RIF_IS_RISAF_GLOCK(Instance)                                  (SEC_READ_BIT\
+   ((((RISAF_TypeDef*)Instance)->CR), RISAF_CR_GLOCK))
+#define HAL_RIF_IS_RISAF_KEYRDY(Instance)                                 (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->SR), RISAF_SR_KEYRDY))
+#define HAL_RIF_IS_RISAF_KEYVALID(Instance)                               (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->SR), RISAF_SR_KEYVALID))
 
-#define HAL_RIF_SET_RISAF_GLOCK(Instance)                                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->CR), RISAF_CR_GLOCK))
+#define HAL_RIF_SET_RISAF_GLOCK(Instance)                                 (SEC_SET_BIT\
+   ((((RISAF_TypeDef*)Instance)->CR), RISAF_CR_GLOCK))
 
-#define HAL_RIF_READ_RISAF_CR(Instance)                                   (SEC_READ_REG((((RISAF_TypeDef*)Instance)->CR)))
-#define HAL_RIF_READ_RISAF_SR(Instance)                                   (SEC_READ_REG((((RISAF_TypeDef*)Instance)->SR)))
+#define HAL_RIF_READ_RISAF_CR(Instance)                                   (SEC_READ_REG\
+   ((((RISAF_TypeDef*)Instance)->CR)))
+#define HAL_RIF_READ_RISAF_SR(Instance)                                   (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->SR)))
 
-// REGIONID
-#define HAL_RIF_SET_RISAF_REG_BREN(Instance,regionid)                     (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_BREN))
-#define HAL_RIF_SET_RISAF_REG_SEC(Instance,regionid)                      (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_SEC))
-#define HAL_RIF_SET_RISAF_REG_ENC(Instance,regionid)                      (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_ENC))
-#define HAL_RIF_SET_RISAF_REG_CIDPRIV(Instance,regionid,cid)              (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), cid))
-#define HAL_RIF_SET_RISAF_REG_CIDREAD(Instance,regionid,cid)              (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), cid))
-#define HAL_RIF_SET_RISAF_REG_CIDWRITE(Instance,regionid,cid)             (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), cid))
-#define HAL_RIF_SET_RISAF_REG_STARTR(Instance,regionid,addr)              (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].STARTR), addr))
-#define HAL_RIF_SET_RISAF_REG_ENDR(Instance,regionid,addr)                (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ENDR), addr))
+/* REGIONID */
+#define HAL_RIF_SET_RISAF_REG_BREN(Instance,regionid)                     (SEC_SET_BIT\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_BREN))
+#define HAL_RIF_SET_RISAF_REG_SEC(Instance,regionid)                      (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_SEC))
+#define HAL_RIF_SET_RISAF_REG_ENC(Instance,regionid)                      (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_ENC))
+#define HAL_RIF_SET_RISAF_REG_CIDPRIV(Instance,regionid,cid)              (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), cid))
+#define HAL_RIF_SET_RISAF_REG_CIDREAD(Instance,regionid,cid)              (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), cid))
+#define HAL_RIF_SET_RISAF_REG_CIDWRITE(Instance,regionid,cid)             (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), cid))
+#define HAL_RIF_SET_RISAF_REG_STARTR(Instance,regionid,addr)              (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].STARTR), addr))
+#define HAL_RIF_SET_RISAF_REG_ENDR(Instance,regionid,addr)                (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ENDR), addr))
 
-#define HAL_RIF_CLEAR_RISAF_REG_BREN(Instance,regionid)                   (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_BREN))
-#define HAL_RIF_CLEAR_RISAF_REG_SEC(Instance,regionid)                    (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_SEC))
-#define HAL_RIF_CLEAR_RISAF_REG_ENC(Instance,regionid)                    (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_ENC))
-#define HAL_RIF_CLEAR_RISAF_REG_CIDPRIV(Instance,regionid,cid)            (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), cid))
-#define HAL_RIF_CLEAR_RISAF_REG_CIDREAD(Instance,regionid,cid)            (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), cid))
-#define HAL_RIF_CLEAR_RISAF_REG_CIDWRITE(Instance,regionid,cid)           (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), cid))
+#define HAL_RIF_CLEAR_RISAF_REG_BREN(Instance,regionid)                   (SEC_CLEAR_BIT\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_BREN))
+#define HAL_RIF_CLEAR_RISAF_REG_SEC(Instance,regionid)                    (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_SEC))
+#define HAL_RIF_CLEAR_RISAF_REG_ENC(Instance,regionid)                    (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_ENC))
+#define HAL_RIF_CLEAR_RISAF_REG_CIDPRIV(Instance,regionid,cid)            (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), cid))
+#define HAL_RIF_CLEAR_RISAF_REG_CIDREAD(Instance,regionid,cid)            (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), cid))
+#define HAL_RIF_CLEAR_RISAF_REG_CIDWRITE(Instance,regionid,cid)           (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), cid))
 
-#define HAL_RIF_READ_RISAF_CFGR(Instance,regionid)                        (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR)))
-#define HAL_RIF_READ_RISAF_STARTR(Instance,regionid)                      (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].STARTR)))
-#define HAL_RIF_READ_RISAF_ENDR(Instance,regionid)                        (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].ENDR)))
-#define HAL_RIF_READ_RISAF_CIDCFGR(Instance,regionid)                     (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR)))
-#define HAL_RIF_READ_RISAF_REG_CIDPRIV(Instance,regionid)                 (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_PRIV))
-#define HAL_RIF_READ_RISAF_REG_CIDREAD(Instance,regionid)                 (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), RISAF_REGCIDCFGR_RDEN))
-#define HAL_RIF_READ_RISAF_REG_CIDWRITE(Instance,regionid)                (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), RISAF_REGCIDCFGR_WREN))
+#define HAL_RIF_READ_RISAF_CFGR(Instance,regionid)                        (SEC_READ_REG\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR)))
+#define HAL_RIF_READ_RISAF_STARTR(Instance,regionid)                      (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].STARTR)))
+#define HAL_RIF_READ_RISAF_ENDR(Instance,regionid)                        (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ENDR)))
+#define HAL_RIF_READ_RISAF_CIDCFGR(Instance,regionid)                     (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR)))
+#define HAL_RIF_READ_RISAF_REG_CIDPRIV(Instance,regionid)                 (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_PRIV))
+#define HAL_RIF_READ_RISAF_REG_CIDREAD(Instance,regionid)                 (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), RISAF_REGCIDCFGR_RDEN))
+#define HAL_RIF_READ_RISAF_REG_CIDWRITE(Instance,regionid)                (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CIDCFGR), RISAF_REGCIDCFGR_WREN))
 
-#define HAL_RIF_IS_RISAF_REG_BREN(Instance,regionid)                      (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_BREN))
-#define HAL_RIF_IS_RISAF_REG_SEC(Instance,regionid)                       (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_SEC))
-#define HAL_RIF_IS_RISAF_REG_ENC(Instance,regionid)                       (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_ENC))
-#define HAL_RIF_IS_RISAF_REG_CIDPRIV(Instance,regionid,cid)               ((HAL_RIF_READ_RISAF_REG_CIDPRIV(Instance,regionid)&cid) == cid ? 1 : 0)
-#define HAL_RIF_IS_RISAF_REG_CIDREAD(Instance,regionid,cid)               ((HAL_RIF_READ_RISAF_REG_CIDREAD(Instance,regionid)&cid) == cid ? 1 : 0)
-#define HAL_RIF_IS_RISAF_REG_CIDWRITE(Instance,regionid,cid)              ((HAL_RIF_READ_RISAF_REG_CIDWRITE(Instance,regionid)&cid) == cid ? 1 : 0)
+#define HAL_RIF_IS_RISAF_REG_BREN(Instance,regionid)                      (SEC_READ_BIT\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_BREN))
+#define HAL_RIF_IS_RISAF_REG_SEC(Instance,regionid)                       (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_SEC))
+#define HAL_RIF_IS_RISAF_REG_ENC(Instance,regionid)                       (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].CFGR), RISAF_REGCFGR_ENC))
+#define HAL_RIF_IS_RISAF_REG_CIDPRIV(Instance,regionid,cid)               ((HAL_RIF_READ_RISAF_REG_CIDPRIV\
+     (Instance,regionid)&cid) == cid ? 1 : 0)
+#define HAL_RIF_IS_RISAF_REG_CIDREAD(Instance,regionid,cid)               ((HAL_RIF_READ_RISAF_REG_CIDREAD\
+     (Instance,regionid)&cid) == cid ? 1 : 0)
+#define HAL_RIF_IS_RISAF_REG_CIDWRITE(Instance,regionid,cid)              ((HAL_RIF_READ_RISAF_REG_CIDWRITE\
+     (Instance,regionid)&cid) == cid ? 1 : 0)
 
-// SUBREGION
-#define HAL_RIF_IS_RISAF_SUBREGA_SREN(Instance,regionid)                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SREN))
-#define HAL_RIF_IS_RISAF_SUBREGA_RLOCK(Instance,regionid)                 (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_RLOCK))
-#define HAL_RIF_IS_RISAF_SUBREGA_SEC(Instance,regionid)                   (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SEC))
-#define HAL_RIF_IS_RISAF_SUBREGA_PRIV(Instance,regionid)                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_PRIV))
-#define HAL_RIF_IS_RISAF_SUBREGA_RDEN(Instance,regionid)                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_RDEN))
-#define HAL_RIF_IS_RISAF_SUBREGA_WREN(Instance,regionid)                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_WREN))
-#define HAL_RIF_IS_RISAF_SUBREGA_ENC(Instance,regionid)                   (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_ENC))
-#define HAL_RIF_IS_RISAF_SUBREGA_DCEN(Instance,regionid)                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCEN))
-#define HAL_RIF_IS_RISAF_SUBREGB_SREN(Instance,regionid)                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SREN))
-#define HAL_RIF_IS_RISAF_SUBREGB_RLOCK(Instance,regionid)                 (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_RLOCK))
-#define HAL_RIF_IS_RISAF_SUBREGB_SEC(Instance,regionid)                   (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SEC))
-#define HAL_RIF_IS_RISAF_SUBREGB_PRIV(Instance,regionid)                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_PRIV))
-#define HAL_RIF_IS_RISAF_SUBREGB_RDEN(Instance,regionid)                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_RDEN))
-#define HAL_RIF_IS_RISAF_SUBREGB_WREN(Instance,regionid)                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_WREN))
-#define HAL_RIF_IS_RISAF_SUBREGB_ENC(Instance,regionid)                   (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_ENC))
-#define HAL_RIF_IS_RISAF_SUBREGB_DCEN(Instance,regionid)                  (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCEN))
+/* SUBREGION */
+#define HAL_RIF_IS_RISAF_SUBREGA_SREN(Instance,regionid)                  (SEC_READ_BIT\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SREN))
+#define HAL_RIF_IS_RISAF_SUBREGA_RLOCK(Instance,regionid)                 (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_RLOCK))
+#define HAL_RIF_IS_RISAF_SUBREGA_SEC(Instance,regionid)                   (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SEC))
+#define HAL_RIF_IS_RISAF_SUBREGA_PRIV(Instance,regionid)                  (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_PRIV))
+#define HAL_RIF_IS_RISAF_SUBREGA_RDEN(Instance,regionid)                  (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_RDEN))
+#define HAL_RIF_IS_RISAF_SUBREGA_WREN(Instance,regionid)                  (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_WREN))
+#define HAL_RIF_IS_RISAF_SUBREGA_ENC(Instance,regionid)                   (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_ENC))
+#define HAL_RIF_IS_RISAF_SUBREGA_DCEN(Instance,regionid)                  (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCEN))
+#define HAL_RIF_IS_RISAF_SUBREGB_SREN(Instance,regionid)                  (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SREN))
+#define HAL_RIF_IS_RISAF_SUBREGB_RLOCK(Instance,regionid)                 (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_RLOCK))
+#define HAL_RIF_IS_RISAF_SUBREGB_SEC(Instance,regionid)                   (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SEC))
+#define HAL_RIF_IS_RISAF_SUBREGB_PRIV(Instance,regionid)                  (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_PRIV))
+#define HAL_RIF_IS_RISAF_SUBREGB_RDEN(Instance,regionid)                  (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_RDEN))
+#define HAL_RIF_IS_RISAF_SUBREGB_WREN(Instance,regionid)                  (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_WREN))
+#define HAL_RIF_IS_RISAF_SUBREGB_ENC(Instance,regionid)                   (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_ENC))
+#define HAL_RIF_IS_RISAF_SUBREGB_DCEN(Instance,regionid)                  (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCEN))
 
-#define HAL_RIF_SET_RISAF_SUBREGA_SREN(Instance,regionid)                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SREN))
-#define HAL_RIF_SET_RISAF_SUBREGA_RLOCK(Instance,regionid)                (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_RLOCK))
-#define HAL_RIF_SET_RISAF_SUBREGA_SEC(Instance,regionid)                  (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SEC))
-#define HAL_RIF_SET_RISAF_SUBREGA_PRIV(Instance,regionid)                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_PRIV))
-#define HAL_RIF_SET_RISAF_SUBREGA_RDEN(Instance,regionid)                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_RDEN))
-#define HAL_RIF_SET_RISAF_SUBREGA_WREN(Instance,regionid)                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_WREN))
-#define HAL_RIF_SET_RISAF_SUBREGA_DCEN(Instance,regionid)                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCEN))
-#define HAL_RIF_SET_RISAF_SUBREGA_STARTR(Instance,regionid,addr)          (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ASTARTR), addr))
-#define HAL_RIF_SET_RISAF_SUBREGA_ENDR(Instance,regionid,addr)            (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].AENDR), addr))
-#define HAL_RIF_SET_RISAF_SUBREGB_SREN(Instance,regionid)                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SREN))
-#define HAL_RIF_SET_RISAF_SUBREGB_RLOCK(Instance,regionid)                (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_RLOCK))
-#define HAL_RIF_SET_RISAF_SUBREGB_SEC(Instance,regionid)                  (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SEC))
-#define HAL_RIF_SET_RISAF_SUBREGB_PRIV(Instance,regionid)                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_PRIV))
-#define HAL_RIF_SET_RISAF_SUBREGB_RDEN(Instance,regionid)                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_RDEN))
-#define HAL_RIF_SET_RISAF_SUBREGB_WREN(Instance,regionid)                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_WREN))
-#define HAL_RIF_SET_RISAF_SUBREGB_ENC(Instance,regionid)                  (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_ENC))
-#define HAL_RIF_SET_RISAF_SUBREGB_DCEN(Instance,regionid)                 (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCEN))
-#define HAL_RIF_SET_RISAF_SUBREGB_STARTR(Instance,regionid,addr)          (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BSTARTR), addr))
-#define HAL_RIF_SET_RISAF_SUBREGB_ENDR(Instance,regionid,addr)            (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BENDR), addr))
+#define HAL_RIF_SET_RISAF_SUBREGA_SREN(Instance,regionid)                 (SEC_SET_BIT\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SREN))
+#define HAL_RIF_SET_RISAF_SUBREGA_RLOCK(Instance,regionid)                (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_RLOCK))
+#define HAL_RIF_SET_RISAF_SUBREGA_SEC(Instance,regionid)                  (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SEC))
+#define HAL_RIF_SET_RISAF_SUBREGA_PRIV(Instance,regionid)                 (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_PRIV))
+#define HAL_RIF_SET_RISAF_SUBREGA_RDEN(Instance,regionid)                 (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_RDEN))
+#define HAL_RIF_SET_RISAF_SUBREGA_WREN(Instance,regionid)                 (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_WREN))
+#define HAL_RIF_SET_RISAF_SUBREGA_DCEN(Instance,regionid)                 (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCEN))
+#define HAL_RIF_SET_RISAF_SUBREGA_STARTR(Instance,regionid,addr)          (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ASTARTR), addr))
+#define HAL_RIF_SET_RISAF_SUBREGA_ENDR(Instance,regionid,addr)            (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].AENDR), addr))
+#define HAL_RIF_SET_RISAF_SUBREGB_SREN(Instance,regionid)                 (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SREN))
+#define HAL_RIF_SET_RISAF_SUBREGB_RLOCK(Instance,regionid)                (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_RLOCK))
+#define HAL_RIF_SET_RISAF_SUBREGB_SEC(Instance,regionid)                  (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SEC))
+#define HAL_RIF_SET_RISAF_SUBREGB_PRIV(Instance,regionid)                 (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_PRIV))
+#define HAL_RIF_SET_RISAF_SUBREGB_RDEN(Instance,regionid)                 (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_RDEN))
+#define HAL_RIF_SET_RISAF_SUBREGB_WREN(Instance,regionid)                 (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_WREN))
+#define HAL_RIF_SET_RISAF_SUBREGB_ENC(Instance,regionid)                  (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_ENC))
+#define HAL_RIF_SET_RISAF_SUBREGB_DCEN(Instance,regionid)                 (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCEN))
+#define HAL_RIF_SET_RISAF_SUBREGB_STARTR(Instance,regionid,addr)          (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BSTARTR), addr))
+#define HAL_RIF_SET_RISAF_SUBREGB_ENDR(Instance,regionid,addr)            (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BENDR), addr))
 
-#define HAL_RIF_CLEAR_RISAF_SUBREGA_SREN(Instance,regionid)               (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SREN))
-#define HAL_RIF_CLEAR_RISAF_SUBREGA_SEC(Instance,regionid)                (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SEC))
-#define HAL_RIF_CLEAR_RISAF_SUBREGA_PRIV(Instance,regionid)               (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_PRIV))
-#define HAL_RIF_CLEAR_RISAF_SUBREGA_RDEN(Instance,regionid)               (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_RDEN))
-#define HAL_RIF_CLEAR_RISAF_SUBREGA_WREN(Instance,regionid)               (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_WREN))
-#define HAL_RIF_CLEAR_RISAF_SUBREGA_ENC(Instance,regionid)                (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_ENC))
-#define HAL_RIF_CLEAR_RISAF_SUBREGA_DCEN(Instance,regionid)               (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCEN))
-#define HAL_RIF_CLEAR_RISAF_SUBREGB_SREN(Instance,regionid)               (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SREN))
-#define HAL_RIF_CLEAR_RISAF_SUBREGB_SEC(Instance,regionid)                (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SEC))
-#define HAL_RIF_CLEAR_RISAF_SUBREGB_PRIV(Instance,regionid)               (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_PRIV))
-#define HAL_RIF_CLEAR_RISAF_SUBREGB_RDEN(Instance,regionid)               (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_RDEN))
-#define HAL_RIF_CLEAR_RISAF_SUBREGB_WREN(Instance,regionid)               (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_WREN))
-#define HAL_RIF_CLEAR_RISAF_SUBREGB_ENC(Instance,regionid)                (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_ENC))
-#define HAL_RIF_CLEAR_RISAF_SUBREGB_DCEN(Instance,regionid)               (SEC_CLEAR_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCEN))
+#define HAL_RIF_CLEAR_RISAF_SUBREGA_SREN(Instance,regionid)               (SEC_CLEAR_BIT\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SREN))
+#define HAL_RIF_CLEAR_RISAF_SUBREGA_SEC(Instance,regionid)                (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SEC))
+#define HAL_RIF_CLEAR_RISAF_SUBREGA_PRIV(Instance,regionid)               (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_PRIV))
+#define HAL_RIF_CLEAR_RISAF_SUBREGA_RDEN(Instance,regionid)               (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_RDEN))
+#define HAL_RIF_CLEAR_RISAF_SUBREGA_WREN(Instance,regionid)               (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_WREN))
+#define HAL_RIF_CLEAR_RISAF_SUBREGA_ENC(Instance,regionid)                (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_ENC))
+#define HAL_RIF_CLEAR_RISAF_SUBREGA_DCEN(Instance,regionid)               (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCEN))
+#define HAL_RIF_CLEAR_RISAF_SUBREGB_SREN(Instance,regionid)               (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SREN))
+#define HAL_RIF_CLEAR_RISAF_SUBREGB_SEC(Instance,regionid)                (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SEC))
+#define HAL_RIF_CLEAR_RISAF_SUBREGB_PRIV(Instance,regionid)               (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_PRIV))
+#define HAL_RIF_CLEAR_RISAF_SUBREGB_RDEN(Instance,regionid)               (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_RDEN))
+#define HAL_RIF_CLEAR_RISAF_SUBREGB_WREN(Instance,regionid)               (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_WREN))
+#define HAL_RIF_CLEAR_RISAF_SUBREGB_ENC(Instance,regionid)                (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_ENC))
+#define HAL_RIF_CLEAR_RISAF_SUBREGB_DCEN(Instance,regionid)               (SEC_CLEAR_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCEN))
 
-#define HAL_RIF_READ_RISAF_ACFGR(Instance,regionid)                       (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR)))
-#define HAL_RIF_READ_RISAF_ASTARTR(Instance,regionid)                     (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].ASTARTR)))
-#define HAL_RIF_READ_RISAF_AENDR(Instance,regionid)                       (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].AENDR)))
-#define HAL_RIF_READ_RISAF_ANESTR(Instance,regionid)                      (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR)))
-#define HAL_RIF_READ_RISAF_BCFGR(Instance,regionid)                       (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR)))
-#define HAL_RIF_READ_RISAF_BSTARTR(Instance,regionid)                     (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].BSTARTR)))
-#define HAL_RIF_READ_RISAF_BENDR(Instance,regionid)                       (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].BENDR)))
-#define HAL_RIF_READ_RISAF_BNESTR(Instance,regionid)                      (SEC_READ_REG((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR)))
+#define HAL_RIF_READ_RISAF_ACFGR(Instance,regionid)                       (SEC_READ_REG\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR)))
+#define HAL_RIF_READ_RISAF_ASTARTR(Instance,regionid)                     (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ASTARTR)))
+#define HAL_RIF_READ_RISAF_AENDR(Instance,regionid)                       (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].AENDR)))
+#define HAL_RIF_READ_RISAF_ANESTR(Instance,regionid)                      (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR)))
+#define HAL_RIF_READ_RISAF_BCFGR(Instance,regionid)                       (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR)))
+#define HAL_RIF_READ_RISAF_BSTARTR(Instance,regionid)                     (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BSTARTR)))
+#define HAL_RIF_READ_RISAF_BENDR(Instance,regionid)                       (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BENDR)))
+#define HAL_RIF_READ_RISAF_BNESTR(Instance,regionid)                      (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR)))
 
-//#define HAL_RIF_READ_RISAF_SUBREGA_DCCID(Instance,regionid)               (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCCID) >> RISAF_REGZNESTR_DCCID_Pos)
-#define HAL_RIF_READ_RISAF_SUBREGA_DCCID(Instance,regionid)               (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCCID))
-#define HAL_RIF_IS_RISAF_SUBREGA_DCCID(Instance,regionid,cid)             (HAL_RIF_READ_RISAF_SUBREGA_DCCID(Instance,regionid) == cid ? 1 : 0)
-#define HAL_RIF_SET_RISAF_SUBREGA_DCCID(Instance,regionid,val)            (SEC_MODIFY_REG((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCCID_Msk, val))
-//#define HAL_RIF_READ_RISAF_SUBREGB_DCCID(Instance,regionid)               (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCCID) >> RISAF_REGZNESTR_DCCID_Pos)
-#define HAL_RIF_READ_RISAF_SUBREGB_DCCID(Instance,regionid)               (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCCID))
-#define HAL_RIF_IS_RISAF_SUBREGB_DCCID(Instance,regionid,cid)             (HAL_RIF_READ_RISAF_SUBREGB_DCCID(Instance,regionid) == cid ? 1 : 0)
-#define HAL_RIF_SET_RISAF_SUBREGB_DCCID(Instance,regionid,val)            (SEC_MODIFY_REG((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCCID_Msk, val))
+/* #define HAL_RIF_READ_RISAF_SUBREGA_DCCID(Instance,regionid)               (SEC_READ_BIT\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCCID) >> RISAF_REGZNESTR_DCCID_Pos) */
+#define HAL_RIF_READ_RISAF_SUBREGA_DCCID(Instance,regionid)               (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCCID))
+#define HAL_RIF_IS_RISAF_SUBREGA_DCCID(Instance,regionid,cid)             (HAL_RIF_READ_RISAF_SUBREGA_DCCID\
+     (Instance,regionid) == cid ? 1 : 0)
+#define HAL_RIF_SET_RISAF_SUBREGA_DCCID(Instance,regionid,val)            (SEC_MODIFY_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ANESTR), RISAF_REGZNESTR_DCCID_Msk, val))
+/* #define HAL_RIF_READ_RISAF_SUBREGB_DCCID(Instance,regionid)               (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCCID) >> RISAF_REGZNESTR_DCCID_Pos) */
+#define HAL_RIF_READ_RISAF_SUBREGB_DCCID(Instance,regionid)               (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCCID))
+#define HAL_RIF_IS_RISAF_SUBREGB_DCCID(Instance,regionid,cid)             (HAL_RIF_READ_RISAF_SUBREGB_DCCID\
+     (Instance,regionid) == cid ? 1 : 0)
+#define HAL_RIF_SET_RISAF_SUBREGB_DCCID(Instance,regionid,val)            (SEC_MODIFY_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BNESTR), RISAF_REGZNESTR_DCCID_Msk, val))
 
-//#define HAL_RIF_READ_RISAF_SUBREGA_SRCID(Instance,regionid)               (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SRCID) >> RISAF_REGZCFGR_SRCID_Pos)
-#define HAL_RIF_READ_RISAF_SUBREGA_SRCID(Instance,regionid)               (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SRCID))
-#define HAL_RIF_IS_RISAF_SUBREGA_SRCID(Instance,regionid,cid)             (HAL_RIF__READ_RISAF_SUBREGA_SRCID(Instance,regionid) == cid ? 1 : 0)
-#define HAL_RIF_SET_RISAF_SUBREGA_SRCID(Instance,regionid,val)            (SEC_MODIFY_REG((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SRCID_Msk, val))
-//#define HAL_RIF_READ_RISAF_SUBREGB_SRCID(Instance,regionid)               (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SRCID) >> RISAF_REGZCFGR_SRCID_Pos)
-#define HAL_RIF_READ_RISAF_SUBREGB_SRCID(Instance,regionid)               (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SRCID))
-#define HAL_RIF_IS_RISAF_SUBREGB_SRCID(Instance,regionid,cid)             (HAL_RIF__READ_RISAF_SUBREGB_SRCID(Instance,regionid) == cid ? 1 : 0)
-#define HAL_RIF_SET_RISAF_SUBREGB_SRCID(Instance,regionid,val)            (SEC_MODIFY_REG((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SRCID_Msk, val))
+/* #define HAL_RIF_READ_RISAF_SUBREGA_SRCID(Instance,regionid)               (SEC_READ_BIT\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SRCID) >> RISAF_REGZCFGR_SRCID_Pos) */
+#define HAL_RIF_READ_RISAF_SUBREGA_SRCID(Instance,regionid)               (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SRCID))
+#define HAL_RIF_IS_RISAF_SUBREGA_SRCID(Instance,regionid,cid)             (HAL_RIF__READ_RISAF_SUBREGA_SRCID\
+     (Instance,regionid) == cid ? 1 : 0)
+#define HAL_RIF_SET_RISAF_SUBREGA_SRCID(Instance,regionid,val)            (SEC_MODIFY_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].ACFGR), RISAF_REGZCFGR_SRCID_Msk, val))
+/* #define HAL_RIF_READ_RISAF_SUBREGB_SRCID(Instance,regionid)               (SEC_READ_BIT\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SRCID) >> RISAF_REGZCFGR_SRCID_Pos) */
+#define HAL_RIF_READ_RISAF_SUBREGB_SRCID(Instance,regionid)               (SEC_READ_BIT\
+   ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SRCID))
+#define HAL_RIF_IS_RISAF_SUBREGB_SRCID(Instance,regionid,cid)             (HAL_RIF__READ_RISAF_SUBREGB_SRCID\
+     (Instance,regionid) == cid ? 1 : 0)
+#define HAL_RIF_SET_RISAF_SUBREGB_SRCID(Instance,regionid,val)            (SEC_MODIFY_REG\
+     ((((RISAF_TypeDef*)Instance)->REG[regionid].BCFGR), RISAF_REGZCFGR_SRCID_Msk, val))
 
-// ENCRYPTION KEY
-#define HAL_RIF_SET_RISAF_KEYR(Instance,keyid,val)                        (SEC_WRITE_REG((((RISAF_TypeDef*)Instance)->KEYR[keyid]), val))
+/* ENCRYPTION KEY */
+#define HAL_RIF_SET_RISAF_KEYR(Instance,keyid,val)                        (SEC_WRITE_REG\
+   ((((RISAF_TypeDef*)Instance)->KEYR[keyid]), val))
 
 /* ILLEGAL ACCESS */
-#define HAL_RIF_READ_RISAF_IASR(Instance)                                 (SEC_READ_REG((((RISAF_TypeDef*)Instance)->IASR)))
-#define HAL_RIF_READ_RISAF_IAESR0(Instance)                               (SEC_READ_REG((((RISAF_TypeDef*)Instance)->IAR[0].IAESR)))
-#define HAL_RIF_READ_RISAF_IAESR1(Instance)                               (SEC_READ_REG((((RISAF_TypeDef*)Instance)->IAR[1].IAESR)))
-#define HAL_RIF_READ_RISAF_IADDR0(Instance)                               (SEC_READ_REG((((RISAF_TypeDef*)Instance)->IAR[0].IADDR)))
-#define HAL_RIF_READ_RISAF_IADDR1(Instance)                               (SEC_READ_REG((((RISAF_TypeDef*)Instance)->IAR[1].IADDR)))
+#define HAL_RIF_READ_RISAF_IASR(Instance)                                 (SEC_READ_REG\
+   ((((RISAF_TypeDef*)Instance)->IASR)))
+#define HAL_RIF_READ_RISAF_IAESR0(Instance)                               (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->IAR[0].IAESR)))
+#define HAL_RIF_READ_RISAF_IAESR1(Instance)                               (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->IAR[1].IAESR)))
+#define HAL_RIF_READ_RISAF_IADDR0(Instance)                               (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->IAR[0].IADDR)))
+#define HAL_RIF_READ_RISAF_IADDR1(Instance)                               (SEC_READ_REG\
+     ((((RISAF_TypeDef*)Instance)->IAR[1].IADDR)))
 
-#define HAL_RIF_CLEAR_RISAF_IACR_CAEF(Instance)                           (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->IACR), RISAF_IACR_CAEF))
-#define HAL_RIF_CLEAR_RISAF_IACR_IAEF0(Instance)                          (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->IACR), RISAF_IACR_IAEF0))
-#define HAL_RIF_CLEAR_RISAF_IACR_IAEF1(Instance)                          (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->IACR), RISAF_IACR_IAEF1))
-#define HAL_RIF_CLEAR_RISAF_IACR(Instance)                                (SEC_SET_BIT((((RISAF_TypeDef*)Instance)->IACR), RISAF_IACR_CAEF|RISAF_IACR_IAEF0|RISAF_IACR_IAEF1))
+#define HAL_RIF_CLEAR_RISAF_IACR_CAEF(Instance)                           (SEC_SET_BIT\
+   ((((RISAF_TypeDef*)Instance)->IACR), RISAF_IACR_CAEF))
+#define HAL_RIF_CLEAR_RISAF_IACR_IAEF0(Instance)                          (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->IACR), RISAF_IACR_IAEF0))
+#define HAL_RIF_CLEAR_RISAF_IACR_IAEF1(Instance)                          (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->IACR), RISAF_IACR_IAEF1))
+#define HAL_RIF_CLEAR_RISAF_IACR(Instance)                                (SEC_SET_BIT\
+     ((((RISAF_TypeDef*)Instance)->IACR), RISAF_IACR_CAEF|RISAF_IACR_IAEF0|RISAF_IACR_IAEF1))
 
-#define HAL_RIF_IS_RISAF_IASR_CAEF(Instance)                              (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IASR), RISAF_IASR_CAEF))
-#define HAL_RIF_IS_RISAF_IASR_IAEF0(Instance)                             (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IASR), RISAF_IASR_IAEF0))
-#define HAL_RIF_IS_RISAF_IASR_IAEF1(Instance)                             (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IASR), RISAF_IASR_IAEF1))
-#define HAL_RIF_IS_RISAF_IAESR0_IAPRIV(Instance)                          (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IAR[0].IAESR), RISAF_IAESR_IAPRIV))
-#define HAL_RIF_IS_RISAF_IAESR0_IASEC(Instance)                           (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IAR[0].IAESR), RISAF_IAESR_IASEC))
-#define HAL_RIF_IS_RISAF_IAESR0_IANRW(Instance)                           (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IAR[0].IAESR), RISAF_IAESR_IANRW))
-#define HAL_RIF_IS_RISAF_IAESR1_IAPRIV(Instance)                          (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IAR[1].IAESR), RISAF_IAESR_IAPRIV))
-#define HAL_RIF_IS_RISAF_IAESR1_IASEC(Instance)                           (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IAR[1].IAESR), RISAF_IAESR_IASEC))
-#define HAL_RIF_IS_RISAF_IAESR1_IANRW(Instance)                           (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IAR[1].IAESR), RISAF_IAESR_IANRW))
+#define HAL_RIF_IS_RISAF_IASR_CAEF(Instance)                              (SEC_READ_BIT\
+   ((((RISAF_TypeDef*)Instance)->IASR), RISAF_IASR_CAEF))
+#define HAL_RIF_IS_RISAF_IASR_IAEF0(Instance)                             (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->IASR), RISAF_IASR_IAEF0))
+#define HAL_RIF_IS_RISAF_IASR_IAEF1(Instance)                             (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->IASR), RISAF_IASR_IAEF1))
+#define HAL_RIF_IS_RISAF_IAESR0_IAPRIV(Instance)                          (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->IAR[0].IAESR), RISAF_IAESR_IAPRIV))
+#define HAL_RIF_IS_RISAF_IAESR0_IASEC(Instance)                           (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->IAR[0].IAESR), RISAF_IAESR_IASEC))
+#define HAL_RIF_IS_RISAF_IAESR0_IANRW(Instance)                           (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->IAR[0].IAESR), RISAF_IAESR_IANRW))
+#define HAL_RIF_IS_RISAF_IAESR1_IAPRIV(Instance)                          (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->IAR[1].IAESR), RISAF_IAESR_IAPRIV))
+#define HAL_RIF_IS_RISAF_IAESR1_IASEC(Instance)                           (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->IAR[1].IAESR), RISAF_IAESR_IASEC))
+#define HAL_RIF_IS_RISAF_IAESR1_IANRW(Instance)                           (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->IAR[1].IAESR), RISAF_IAESR_IANRW))
 
-#define HAL_RIF_READ_RISAF_IAESR0_IACID(Instance)                         (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IAR[0].IAESR), RISAF_IAESR_IACID) >> RISAF_IAESR_IACID_Pos)
-#define HAL_RIF_READ_RISAF_IAESR1_IACID(Instance)                         (SEC_READ_BIT((((RISAF_TypeDef*)Instance)->IAR[1].IAESR), RISAF_IAESR_IACID) >> RISAF_IAESR_IACID_Pos)
+#define HAL_RIF_READ_RISAF_IAESR0_IACID(Instance)                         (SEC_READ_BIT\
+   ((((RISAF_TypeDef*)Instance)->IAR[0].IAESR), RISAF_IAESR_IACID) >> RISAF_IAESR_IACID_Pos)
+#define HAL_RIF_READ_RISAF_IAESR1_IACID(Instance)                         (SEC_READ_BIT\
+     ((((RISAF_TypeDef*)Instance)->IAR[1].IAESR), RISAF_IAESR_IACID) >> RISAF_IAESR_IACID_Pos)
 
 /**
   * @}

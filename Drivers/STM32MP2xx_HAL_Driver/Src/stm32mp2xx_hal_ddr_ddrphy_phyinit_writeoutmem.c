@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -30,13 +30,20 @@ void ddrphy_phyinit_writeoutmem(uint32_t *mem, int mem_offset, int mem_size)
 	 */
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TAPBONLY | CSR_MICROCONTMUXSEL_ADDR)), 0x0U);
 
-	for (index = 0; index < (int)(mem_size / sizeof(uint16_t)); index++) {
+	for (index = 0; index < (int)(mem_size / sizeof(uint32_t)); index++) {
 		uint32_t data = mem[index];
 
+#ifdef USE_STM32MP257CXX_EMU
+		mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * ((index * 2) + mem_offset)),
+			     (data >> 16) & 0xFFFFU);
+		mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * ((index * 2) + 1 + mem_offset)),
+			     data & 0xFFFFU);
+#else /* USE_STM32MP257CXX_EMU */
 		mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * ((index * 2) + mem_offset)),
 			     data & 0xFFFFU);
 		mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * ((index * 2) + 1 + mem_offset)),
 			     (data >> 16) & 0xFFFFU);
+#endif /* USE_STM32MP257CXX_EMU */
 	}
 
 	/*

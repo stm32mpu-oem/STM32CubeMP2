@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -32,18 +32,17 @@
 /*
  * Array of Address/value pairs used to store register values for the purpose
  * of retention restore.
- * By default, set base address at the end of RETRAM area.
- * Reserving a total of 4KB should be enough to mamange this data.
  */
-#define RETREG_AREA	((MAX_NUM_RET_REGS + 1) * sizeof(reg_addr_val_t))
+#define RETREG_AREA	((MAX_NUM_RET_REGS + 1) * sizeof(struct reg_addr_val))
 #define RETREG_BASE	(RETRAM_BASE + RETRAM_SIZE - RETREG_AREA)
-int *retregsize = (int *)(RETREG_BASE);
-reg_addr_val_t *retreglist = (reg_addr_val_t *)(RETREG_BASE + sizeof(int));
 
-int numregsaved = 0;    /* Current Number of registers saved. */
-int tracken = 1;        /* Enabled tracking of registers */
+static int *retregsize = (int *)(RETREG_BASE);
+static struct reg_addr_val *retreglist = (struct reg_addr_val *)(RETREG_BASE + sizeof(int));
 
-int ddrphy_phyinit_setretreglistbase(uint32_t base)
+static int numregsaved; /* Current Number of registers saved. */
+static int tracken = 1; /* Enabled tracking of registers */
+
+int ddrphy_phyinit_setretreglistbase(unsigned long base)
 {
   int *value = (int *)base;
   int save = *value;;
@@ -60,7 +59,7 @@ int ddrphy_phyinit_setretreglistbase(uint32_t base)
   *value = save;
 
   retregsize = (int *)base;
-  retreglist = (reg_addr_val_t *)(base + 4);
+  retreglist = (struct reg_addr_val *)(base + 4);
 
   return 0;
 }
@@ -72,7 +71,7 @@ int ddrphy_phyinit_setretreglistbase(uint32_t base)
  * during PhyInit registers writes, keeps track of address
  * for the purpose of restoring the PHY register state during PHY
  * retention exit process.  Tracking can be turned on/off via the
- * ddrphy_phyinit_reginterface starttrack, stoptrack instructions. By
+ * ddrphy_phyinit_reginterface STARTTRACK, STOPTRACK instructions. By
  * default tracking is always turned on.
  *
  * \return 0 on success.
@@ -82,7 +81,7 @@ int ddrphy_phyinit_trackreg(uint32_t adr)
 	int regindx = 0;
 
 	/* Return if tracking is disabled */
-	if (!tracken) {
+	if (tracken == 0) {
 		return 0;
 	}
 
@@ -115,7 +114,7 @@ int ddrphy_phyinit_trackreg(uint32_t adr)
  * Register tracking is enabled by calling:
  *
  *  \code
- *  ddrphy_phyinit_reginterface(starttrack,0,0);
+ *  ddrphy_phyinit_reginterface(STARTTRACK,0,0);
  *  \endcode
  *
  * from this point on any call to ddrphy_phyinit_usercustom_io_write16() in
@@ -123,27 +122,27 @@ int ddrphy_phyinit_trackreg(uint32_t adr)
  * ddrphy_phyinit_trackreg(). Tracking is disabled by calling:
  *
  *  \code
- *  ddrphy_phyinit_reginterface(stoptrack,0,0);
+ *  ddrphy_phyinit_reginterface(STOPTRACK,0,0);
  *  \endcode
  *
  * On calling this function, register write via
  * ddrphy_phyinit_usercustom_io_write16 are no longer tracked until a
- * starttrack call is made.  Once all the register write are complete, saveRegs
+ * STARTTRACK call is made.  Once all the register write are complete, SAVEREGS
  * command can be issue to save register values into the internal data array of
- * the register interface.  Upon retention exit restoreregs are command can be
+ * the register interface.  Upon retention exit RESTOREREGS are command can be
  * used to issue register write commands to the PHY based on values stored in
  * the array.
  *  \code
- *   ddrphy_phyinit_reginterface(saveregs,0,0);
- *   ddrphy_phyinit_reginterface(restoreregs,0,0);
+ *   ddrphy_phyinit_reginterface(SAVEREGS,0,0);
+ *   ddrphy_phyinit_reginterface(RESTOREREGS,0,0);
  *  \endcode
  * \return 0 on success.
  */
-int ddrphy_phyinit_reginterface(reginstr myreginstr,
+int ddrphy_phyinit_reginterface(enum reginstr myreginstr,
                                 __attribute__((unused))uint32_t adr,
                                 __attribute__((unused))uint16_t dat)
 {
-	if (myreginstr == saveregs) {
+	if (myreginstr == SAVEREGS) {
 		int regindx;
 
 		/*
@@ -161,7 +160,7 @@ int ddrphy_phyinit_reginterface(reginstr myreginstr,
 		*retregsize = numregsaved;
 
 		return 0;
-	} else if (myreginstr == restoreregs) {
+	} else if (myreginstr == RESTOREREGS) {
 		int regindx;
 
 		/*
@@ -174,16 +173,16 @@ int ddrphy_phyinit_reginterface(reginstr myreginstr,
 		}
 
 		return 0;
-	} else if (myreginstr == starttrack) { /* Enable tracking */
+	} else if (myreginstr == STARTTRACK) { /* Enable tracking */
 		tracken = 1;
 		return 0;
-	} else if (myreginstr == stoptrack) { /* Disable tracking */
+	} else if (myreginstr == STOPTRACK) { /* Disable tracking */
 		tracken = 0;
 		return 0;
-	} else if (myreginstr == dumpregs) { /* Dump restore state to file. */
+	} else if (myreginstr == DUMPREGS) { /* Dump restore state to file. */
 		/* TBD */
 		return 0;
-	} else if (myreginstr == importregs) { /* import register state from file. */
+	} else if (myreginstr == IMPORTREGS) { /* import register state from file. */
 		/* TBD */
 		return 0;
 	} else {

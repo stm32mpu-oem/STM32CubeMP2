@@ -30,7 +30,7 @@ extern "C" {
 /** @addtogroup STM32MP2xx_Driver
   * @{
   */
-
+#if defined (SDMMC1) || defined (SDMMC2)
 /** @addtogroup SDMMC_LL
   * @{
   */
@@ -1151,7 +1151,7 @@ uint32_t SDMMC_DMALinkedList_DisableCircularMode(SDMMC_DMALinkedListTypeDef *pLi
 /**
   * @}
   */
-
+#endif /* SDMMC1 || SDMMC2 */
 /**
   * @}
   */

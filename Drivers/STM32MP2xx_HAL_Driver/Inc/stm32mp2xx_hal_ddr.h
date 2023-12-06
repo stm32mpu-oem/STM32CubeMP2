@@ -75,7 +75,7 @@ typedef enum
 typedef struct {
   const char *name;
   uint32_t speed; /* in kHZ */
-  uint32_t size; /* Memory size in byte = col * row * width */
+  unsigned long size; /* Memory size in byte = col * row * width */
 }HAL_DDR_InfoTypeDef;
 
 typedef struct {
@@ -361,7 +361,7 @@ HAL_StatusTypeDef HAL_DDR_STDBY_SR_Entry(void);
 HAL_StatusTypeDef HAL_DDR_SR_Exit(void);
 HAL_StatusTypeDef HAL_DDR_SR_SetMode(HAL_DDR_SelfRefreshModeTypeDef mode);
 HAL_DDR_SelfRefreshModeTypeDef HAL_DDR_SR_ReadMode(void);
-HAL_StatusTypeDef HAL_DDR_SetRetentionAreaBase(uint32_t base);
+HAL_StatusTypeDef HAL_DDR_SetRetentionAreaBase(unsigned long base);
 
 /**
   * @}

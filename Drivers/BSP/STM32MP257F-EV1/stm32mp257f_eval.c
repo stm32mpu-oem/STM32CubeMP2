@@ -51,6 +51,10 @@ static void BUTTON_WAKEUP_EXTI_Callback(void);
 static void BUTTON_USER1_EXTI_Callback(void);
 static void BUTTON_USER2_EXTI_Callback(void);
 static void BUTTON_TAMPER_EXTI_Callback(void);
+static int32_t BSP_LED_MspInit(Led_TypeDef Led);
+static int32_t BSP_LED_MspDeInit(Led_TypeDef Led);
+static int32_t BSP_PB_MspInit(Button_TypeDef Button);
+static int32_t BSP_PB_MspDeInit(Button_TypeDef Button);
 #endif /* CORE_CA35 || CORE_CM33 */
 #if (USE_BSP_COM_FEATURE > 0)
 static void USART_MspInit(UART_HandleTypeDef *huart);
@@ -103,10 +107,24 @@ static const GPIO_PinState GPIO_LED_ON[LEDn] = { GPIO_PIN_RESET,
                                                  GPIO_PIN_SET};
 
 
-static GPIO_TypeDef* BUTTON_PORT[BUTTONn] = {BUTTON_WAKEUP_GPIO_PORT};
-static const uint16_t BUTTON_PIN[BUTTONn] = {BUTTON_WAKEUP_PIN};
-static const IRQn_Type BUTTON_IRQn[BUTTONn] = {BUTTON_WAKEUP_EXTI_IRQn};
-
+static GPIO_TypeDef* BUTTON_PORT[BUTTONn] = {
+												BUTTON_WAKEUP_GPIO_PORT,
+												BUTTON_USER1_GPIO_PORT,
+												BUTTON_USER2_GPIO_PORT,
+												BUTTON_TAMPER_GPIO_PORT
+											};
+static const uint16_t BUTTON_PIN[BUTTONn] = {
+												BUTTON_WAKEUP_PIN,
+												BUTTON_USER1_PIN,
+												BUTTON_USER2_PIN,
+												BUTTON_TAMPER_PIN
+											};
+static const IRQn_Type BUTTON_IRQn[BUTTONn] = {
+												BUTTON_WAKEUP_EXTI_IRQn,
+												BUTTON_USER1_EXTI_IRQn,
+												BUTTON_USER2_EXTI_IRQn,
+												BUTTON_TAMPER_EXTI_IRQn
+											};
 #elif defined (CORE_CM0PLUS)
 #warning "Core M0 can't manage LED in eval Board"
 #endif /* CORE_CA35 || CORE_CM33*/
@@ -173,26 +191,12 @@ int32_t BSP_LED_Init(Led_TypeDef Led)
   int32_t ret = BSP_ERROR_NONE;
   GPIO_InitTypeDef  GPIO_InitStruct;
 
-  /* Enable the GPIO_LED clock */
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
-  if (Led == LED1)
+  /*BSP LED Msp Init Configuration*/
+  if(BSP_LED_MspInit(Led) != BSP_ERROR_NONE)
   {
-    LED1_GPIO_CLK_ENABLE();
+	  return BSP_ERROR_MSP_FAILURE;
   }
-  else if (Led == LED2)
-  {
-    HAL_PWREx_EnableSupply(PWR_PVM_VDDIO3);
-    LED2_GPIO_CLK_ENABLE();
-  }
-  else if (Led == LED3)
-  {
-    LED3_GPIO_CLK_ENABLE();
-  }
-  else if (Led == LED4)
-  {
-    LED4_GPIO_CLK_ENABLE();
-  }
-#endif
+
   /* Configure the GPIO_LED pin */
   GPIO_InitStruct.Pin = LED_PIN[Led];
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -221,12 +225,96 @@ int32_t  BSP_LED_DeInit(Led_TypeDef Led)
   int32_t ret = BSP_ERROR_NONE;
   GPIO_InitTypeDef  gpio_init_structure;
 
+  /* BSP LED  MSP DeInit configuration*/
+  if(BSP_LED_MspDeInit(Led) != BSP_ERROR_NONE)
+  {
+	  return BSP_ERROR_MSP_FAILURE;
+  }
+
   /* DeInit the GPIO_LED pin */
   gpio_init_structure.Pin = LED_PIN [Led];
   /* Turn off LED */
   HAL_GPIO_WritePin (LED_PORT [Led], (uint16_t)LED_PIN[Led], GPIO_LED_OFF[Led]);
   HAL_GPIO_DeInit (LED_PORT [Led], gpio_init_structure.Pin);
   return ret;
+}
+
+/**
+  * @brief  MspInit LEDs.
+  * @param  Led LED to be configured.
+  *          This parameter can be one of the following values:
+  *            @arg  LED1
+  *            @arg  LED2
+  *            @arg  LED3
+  *            @arg  LED4
+  * @retval int32_t
+  */
+static int32_t BSP_LED_MspInit(Led_TypeDef Led)
+{
+	  int32_t ret = BSP_ERROR_NONE;
+	  GPIO_TypeDef* led = LED_PORT[Led];
+	  uint32_t pin = LED_PIN[Led];
+
+	  /* Enable the GPIO_LED clock */
+	  if (Led == LED1 && !(LED1_GPIO_IS_CLK_ENABLED()))
+	  {
+	    LED1_GPIO_CLK_ENABLE();
+	  }
+	  else if (Led == LED2 && !(LED2_GPIO_IS_CLK_ENABLED()))
+	  {
+	    HAL_PWREx_EnableSupply(PWR_PVM_VDDIO3);
+	    LED2_GPIO_CLK_ENABLE();
+	  }
+	  else if (Led == LED3 && !(LED3_GPIO_IS_CLK_ENABLED()))
+	  {
+	    LED3_GPIO_CLK_ENABLE();
+	  }
+	  else if (Led == LED4 && !(LED4_GPIO_IS_CLK_ENABLED()))
+	  {
+	    LED4_GPIO_CLK_ENABLE();
+	  }
+
+
+	  if(!IS_DEVELOPER_BOOT_MODE())
+	  {
+	    if((led == LED1_GPIO_PORT && pin == LED1_PIN && ResMgr_Request(LED1_GPIO_RIF_RES_TYP_GPIO, LED1_GPIO_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+	        || (led == LED2_GPIO_PORT && pin == LED2_PIN && ResMgr_Request(LED2_GPIO_RIF_RES_TYP_GPIO, LED2_GPIO_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+	        || (led == LED3_GPIO_PORT && pin == LED3_PIN && ResMgr_Request(LED3_GPIO_RIF_RES_TYP_GPIO, LED3_GPIO_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+	        || (led == LED4_GPIO_PORT && pin == LED4_PIN && ResMgr_Request(LED4_GPIO_RIF_RES_TYP_GPIO, LED4_GPIO_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK))
+	    {
+	      ret = BSP_ERROR_MSP_FAILURE;
+	    }
+	  }
+	   return ret;
+}
+
+/**
+  * @brief  MspDeInit LEDs.
+  * @param  Led LED to be configured.
+  *          This parameter can be one of the following values:
+  *            @arg  LED1
+  *            @arg  LED2
+  *            @arg  LED3
+  *            @arg  LED4
+  * @retval int32_t
+  */
+static int32_t BSP_LED_MspDeInit(Led_TypeDef Led)
+{
+	int32_t ret = BSP_ERROR_NONE;
+	GPIO_TypeDef* led = LED_PORT[Led];
+	uint32_t pin = LED_PIN[Led];
+
+	if(!IS_DEVELOPER_BOOT_MODE())
+	{
+	  if((led == LED1_GPIO_PORT && pin == LED1_PIN && ResMgr_Release(LED1_GPIO_RIF_RES_TYP_GPIO, LED1_GPIO_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+	      || (led == LED2_GPIO_PORT && pin == LED2_PIN && ResMgr_Release(LED2_GPIO_RIF_RES_TYP_GPIO, LED2_GPIO_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+	      || (led == LED3_GPIO_PORT && pin == LED3_PIN && ResMgr_Release(LED3_GPIO_RIF_RES_TYP_GPIO, LED3_GPIO_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+	      || (led == LED4_GPIO_PORT && pin == LED4_PIN && ResMgr_Release(LED4_GPIO_RIF_RES_TYP_GPIO, LED4_GPIO_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK))
+	  {
+	    ret = BSP_ERROR_MSP_FAILURE;
+	  }
+	}
+    return ret;
 }
 
 /**
@@ -298,6 +386,93 @@ int32_t BSP_LED_GetState (Led_TypeDef Led)
 }
 
 /**
+  * @brief  MspInit Buttons.
+  * @param  Button Button to be configured
+  *          This parameter can be one of the following values:
+  *            @arg  BUTTON_WAKEUP: Wakeup Push Button
+  *            @arg  BUTTON_TAMPER: Tamper Push Button
+  *            @arg  BUTTON_USER1 : User1 Push Button
+  *            @arg  BUTTON_USER2 : User2 Push Button
+  * @retval int32_t
+  */
+static int32_t BSP_PB_MspInit(Button_TypeDef Button)
+{
+  int32_t ret = BSP_ERROR_NONE;
+  GPIO_TypeDef* button = BUTTON_PORT[Button];
+  uint16_t pin = BUTTON_PIN[Button];
+
+  /* Enable the BUTTON clock*/
+  if(Button == BUTTON_WAKEUP && !(BUTTON_WAKEUP_GPIO_IS_CLK_ENABLE()))
+  {
+    BUTTON_WAKEUP_GPIO_CLK_ENABLE();
+  }
+  else if(Button == BUTTON_TAMPER && !(BUTTON_TAMPER_GPIO_IS_CLK_ENABLE()))
+  {
+    BUTTON_TAMPER_GPIO_CLK_ENABLE();
+  }
+  else if(Button == BUTTON_USER1 && !(BUTTON_USER1_GPIO_IS_CLK_ENABLE()))
+  {
+	if (IS_DEVELOPER_BOOT_MODE())
+	{
+	  HAL_PWR_EnableBkUpD3Access();
+	  HAL_PWREx_EnableSupply(PWR_PVM_VDDIO3);
+	}
+    if (!BUTTON_USER1_GPIO_IS_CLK_ENABLE())
+    {
+    	BUTTON_USER1_GPIO_CLK_ENABLE();
+    }
+  }
+  else if(Button == BUTTON_USER2 && !(BUTTON_USER2_GPIO_IS_CLK_ENABLE()))
+  {
+    if (!BUTTON_USER2_GPIO_IS_CLK_ENABLE())
+    {
+    	BUTTON_USER2_GPIO_CLK_ENABLE();
+    }
+  }
+
+  if(!IS_DEVELOPER_BOOT_MODE())
+  {
+    if((button == BUTTON_WAKEUP_GPIO_PORT && pin == BUTTON_WAKEUP_PIN && ResMgr_Request(BUTTON_WAKEUP_RIF_RES_TYP_GPIO, BUTTON_WAKEUP_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+        || (button == BUTTON_TAMPER_GPIO_PORT && pin == BUTTON_TAMPER_PIN && ResMgr_Request(BUTTON_TAMPER_RIF_RES_TYP_GPIO, BUTTON_TAMPER_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+        || (button == BUTTON_USER1_GPIO_PORT && pin == BUTTON_USER1_PIN && ResMgr_Request(BUTTON_USER1_RIF_RES_TYP_GPIO, BUTTON_USER1_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+        || (button == BUTTON_USER2_GPIO_PORT && pin == BUTTON_USER2_PIN && ResMgr_Request(BUTTON_USER2_RIF_RES_TYP_GPIO, BUTTON_USER2_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK))
+    {
+      ret = BSP_ERROR_MSP_FAILURE;
+    }
+  }
+  return ret;
+}
+
+/**
+  * @brief  MspDeInit BUTTONs.
+  * @param  Button BUTTON to be configured.
+  *          This parameter can be one of the following values:
+  *            @arg  BUTTON_WAKEUP: Wakeup Push Button
+  *            @arg  BUTTON_TAMPER: Tamper Push Button
+  *            @arg  BUTTON_USER1 : User1 Push Button
+  *            @arg  BUTTON_USER2 : User2 Push Button
+  * @retval int32_t
+  */
+static int32_t BSP_PB_MspDeInit(Button_TypeDef Button)
+{
+	int32_t ret = BSP_ERROR_NONE;
+	GPIO_TypeDef* button = BUTTON_PORT[Button];
+    uint16_t pin = BUTTON_PIN[Button];
+
+    if(!IS_DEVELOPER_BOOT_MODE())
+    {
+      if((button == BUTTON_WAKEUP_GPIO_PORT && pin == BUTTON_WAKEUP_PIN && ResMgr_Request(BUTTON_WAKEUP_RIF_RES_TYP_GPIO, BUTTON_WAKEUP_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+          || (button == BUTTON_TAMPER_GPIO_PORT && pin == BUTTON_TAMPER_PIN && ResMgr_Request(BUTTON_TAMPER_RIF_RES_TYP_GPIO, BUTTON_TAMPER_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+          || (button == BUTTON_USER1_GPIO_PORT && pin == BUTTON_USER1_PIN && ResMgr_Request(BUTTON_USER1_RIF_RES_TYP_GPIO, BUTTON_USER1_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK)
+          || (button == BUTTON_USER2_GPIO_PORT && pin == BUTTON_USER2_PIN && ResMgr_Request(BUTTON_USER2_RIF_RES_TYP_GPIO, BUTTON_USER2_RIF_RES_NUM_GPIO) != RESMGR_STATUS_ACCESS_OK))
+      {
+        ret = BSP_ERROR_MSP_FAILURE;
+      }
+    }
+    return ret;
+}
+
+/**
   * @brief  Configures button GPIO and EXTI Line.
   * @param  Button Button to be configured
   *          This parameter can be one of the following values:
@@ -318,11 +493,21 @@ int32_t  BSP_PB_Init(Button_TypeDef Button, ButtonMode_TypeDef ButtonMode)
 		  BSP_BUTTON_USER_IT_PRIORITY, BSP_BUTTON_TAMPER_IT_PRIORITY};
   static const uint32_t BUTTON_EXTI_LINE[BUTTONn] ={BUTTON_WAKEUP_EXTI_LINE, BUTTON_USER1_EXTI_LINE,
 		  BUTTON_USER2_EXTI_LINE, BUTTON_TAMPER_EXTI_LINE};
-  /* Enable the BUTTON clock*/
-  BUTTON_WAKEUP_GPIO_CLK_ENABLE();
+
+  /*BSP PB Msp Init Configuration*/
+  if(BSP_PB_MspInit(Button) != BSP_ERROR_NONE)
+  {
+	  return BSP_ERROR_MSP_FAILURE;
+  }
+
   gpio_init_structure.Pin = BUTTON_PIN [Button];
   gpio_init_structure.Pull = GPIO_NOPULL;
   gpio_init_structure.Speed = GPIO_SPEED_FREQ_HIGH;
+
+  if(Button == BUTTON_TAMPER)
+  {
+    gpio_init_structure.Pull = GPIO_PULLUP;
+  }
 
   if(ButtonMode == BUTTON_MODE_GPIO)
   {
@@ -363,6 +548,12 @@ int32_t  BSP_PB_Init(Button_TypeDef Button, ButtonMode_TypeDef ButtonMode)
 int32_t BSP_PB_DeInit(Button_TypeDef Button)
 {
   GPIO_InitTypeDef gpio_init_structure;
+
+  /* BSP PB  MSP DeInit configuration*/
+  if(BSP_PB_MspDeInit(Button) != BSP_ERROR_NONE)
+  {
+	  return BSP_ERROR_MSP_FAILURE;
+  }
 
   gpio_init_structure.Pin = BUTTON_PIN[Button];
 #if defined(CORE_CA35)
@@ -465,6 +656,16 @@ int32_t BSP_COM_Init(COM_TypeDef COM, COM_InitTypeDef *COM_Init)
     /* Set the COM Instance */
      hcom_uart[COM].Instance = COM_USART[COM];
 
+     if(!IS_DEVELOPER_BOOT_MODE() && COM == COM_VCP_CM33)
+     {
+       if(ResMgr_Request(COM_CM33_RIF_RES_TYP_TX_PIN, COM_CM33_RIF_RES_NUM_TX_PIN) != RESMGR_STATUS_ACCESS_OK
+           && ResMgr_Request(COM_CM33_RIF_RES_TYP_RX_PIN, COM_CM33_RIF_RES_NUM_RX_PIN) != RESMGR_STATUS_ACCESS_OK
+           && ResMgr_Request(COM_CM33_RIF_RES_TYP_UART, COM_CM33_RIF_RES_NUM_UART) != RESMGR_STATUS_ACCESS_OK)
+       {
+         return BSP_ERROR_MSP_FAILURE;
+       }
+     }
+
     /* Init the UART Msp */
 #if (USE_HAL_UART_REGISTER_CALLBACKS == 0)
     USART_MspInit(&hcom_uart[COM]);
@@ -506,6 +707,16 @@ int32_t BSP_COM_DeInit(COM_TypeDef COM)
     /* USART configuration */
     hcom_uart[COM].Instance = COM_USART[COM];
 
+    if(!IS_DEVELOPER_BOOT_MODE() && COM == COM_VCP_CM33)
+    {
+      if(ResMgr_Release(COM_CM33_RIF_RES_TYP_TX_PIN, COM_CM33_RIF_RES_NUM_TX_PIN) != RESMGR_STATUS_ACCESS_OK
+          && ResMgr_Release(COM_CM33_RIF_RES_TYP_RX_PIN, COM_CM33_RIF_RES_NUM_RX_PIN) != RESMGR_STATUS_ACCESS_OK
+          && ResMgr_Release(COM_CM33_RIF_RES_TYP_UART, COM_CM33_RIF_RES_NUM_UART) != RESMGR_STATUS_ACCESS_OK)
+      {
+        ret = BSP_ERROR_PERIPH_FAILURE;
+      }
+    }
+
 #if (USE_HAL_UART_REGISTER_CALLBACKS == 0)
     USART_MspDeInit(&hcom_uart[COM]);
 #endif /* (USE_HAL_UART_REGISTER_CALLBACKS == 0) */
@@ -540,6 +751,7 @@ __weak HAL_StatusTypeDef MX_USART_Init(UART_HandleTypeDef *huart, MX_UART_InitTy
   huart->Init.OverSampling = UART_OVERSAMPLING_8;
 #if !defined (CORE_CM0PLUS)
   ErrorCode = HAL_UART_Init(huart);
+
 #else
   /* Initialize the number of data to process during RX/TX ISR execution */
   huart->NbTxDataToProcess = 1;
@@ -681,19 +893,19 @@ static void USART_MspInit(UART_HandleTypeDef *huart)
   gpio_init_structure.Mode = GPIO_MODE_AF_PP;
   gpio_init_structure.Speed = GPIO_SPEED_FREQ_HIGH;
   gpio_init_structure.Pull = GPIO_PULLUP;
+  int request_status = RESMGR_STATUS_ACCESS_ERROR;
 
 #if defined (CORE_CA35) || defined (CORE_CM33)
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
-#endif
+
 
   if (huart->Instance == COM_CA35_UART)
   {
     /* USART2 clock config */
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
+	request_status = ResMgr_Request(RESMGR_RESOURCE_RIF_RCC, RESMGR_RCC_RESOURCE(8));
     PeriphClkInit.XBAR_Channel = RCC_PERIPHCLK_UART2_4;
-#endif
+
     /* Enable USART clock */
     COM_CA35_TX_GPIO_CLK_ENABLE();
     COM_CA35_RX_GPIO_CLK_ENABLE();
@@ -710,15 +922,20 @@ static void USART_MspInit(UART_HandleTypeDef *huart)
   }
   else if (huart->Instance == COM_CM33_UART)
   {
-  /* USART5 clock config */
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
-    PeriphClkInit.XBAR_Channel = RCC_PERIPHCLK_UART3_5;
-#endif
+
+   /* USART5 clock config */
+	request_status = ResMgr_Request(RESMGR_RESOURCE_RIF_RCC, RESMGR_RCC_RESOURCE(9));
+	PeriphClkInit.XBAR_Channel = RCC_PERIPHCLK_UART3_5;
     /* Enable USART clock */
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
-    COM_CM33_TX_GPIO_CLK_ENABLE();
-    COM_CM33_RX_GPIO_CLK_ENABLE();
-#endif
+    if(!COM_CM33_TX_GPIO_IS_CLK_ENABLED())
+    {
+	  COM_CM33_TX_GPIO_CLK_ENABLE();
+    }
+    if(!COM_CM33_RX_GPIO_IS_CLK_ENABLED())
+    {
+      COM_CM33_RX_GPIO_CLK_ENABLE();
+    }
+
     COM_CM33_CLK_ENABLE();
 
     /* Configure USART Tx as alternate function */
@@ -734,9 +951,9 @@ static void USART_MspInit(UART_HandleTypeDef *huart)
   else if (huart->Instance == COM_CM0PLUS_UART)
   {
     /* LPUART clock config */
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
+	request_status = ResMgr_Request(RESMGR_RESOURCE_RIF_RCC, RESMGR_RCC_RESOURCE(39));
     PeriphClkInit.XBAR_Channel = RCC_PERIPHCLK_LPUART1;
-#endif
+
     /* Enable Backup domain access */
     HAL_PWR_EnableBkUpD3Access();
 
@@ -756,24 +973,27 @@ static void USART_MspInit(UART_HandleTypeDef *huart)
     HAL_GPIO_Init(COM_CM0PLUS_RX_GPIO_PORT, &gpio_init_structure);
   }
 
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
-  /* Start HSE Oscillator to use it for UART source */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  if(request_status == RESMGR_STATUS_ACCESS_OK)
   {
-    while (1);
+    /* Start HSE Oscillator to use it for UART source */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+      while (1);
+    }
+
+    /* Set HSE as source clock for UART COM */
+    PeriphClkInit.XBAR_ClkSrc = RCC_XBAR_CLKSRC_HSE;
+    PeriphClkInit.Div = 1;
+
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+    {
+      while (1);
+    }
   }
 
-  /* Set HSE as source clock for UART COM */
-  PeriphClkInit.XBAR_ClkSrc = RCC_XBAR_CLKSRC_HSE;
-  PeriphClkInit.Div = 1;
 
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
-  {
-    while (1);
-  }
-#endif
 #elif defined(CORE_CM0PLUS)
   HAL_PWR_EnableBkUpAccess();
   /* Configure USART Tx as alternate function */
@@ -848,9 +1068,6 @@ static void USART_MspDeInit(UART_HandleTypeDef *huart)
 }
 #endif /* USE_BSP_COM_FEATURE */
 
-/**
-  * @}
-  */
 
 /**
   * @}

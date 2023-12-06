@@ -31,6 +31,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32mp257f_eval_conf.h"
 #include "stm32mp257f_eval_errno.h"
+#include "res_mgr.h"
 
 #if (USE_BSP_COM_FEATURE > 0)
   #if (USE_COM_LOG > 0)
@@ -180,7 +181,7 @@ typedef struct
   * @brief STM32MP257F EVAL BSP Driver version number VX.Y.Z
   */
 #define STM32MP257F_EV1_BSP_VERSION_MAIN   (0x00) /*!< [31:24] main version */
-#define STM32MP257F_EV1_BSP_VERSION_SUB1   (0x01) /*!< [23:16] sub1 version */
+#define STM32MP257F_EV1_BSP_VERSION_SUB1   (0x03) /*!< [23:16] sub1 version */
 #define STM32MP257F_EV1_BSP_VERSION_SUB2   (0x00) /*!< [15:8]  sub2 version */
 #define STM32MP257F_EV1_BSP_VERSION_RC     (0x00) /*!< [7:0]  release candidate */
 #define STM32MP257F_EV1_BSP_VERSION        ((STM32MP257F_EV1_BSP_VERSION_MAIN << 24)\
@@ -198,22 +199,34 @@ typedef struct
 #define LED1_PIN                         GPIO_PIN_4
 #define LED1_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOH_CLK_ENABLE()
 #define LED1_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOH_CLK_DISABLE()
+#define LED1_GPIO_IS_CLK_ENABLED()       __HAL_RCC_GPIOH_IS_CLK_ENABLED()
+#define LED1_GPIO_RIF_RES_TYP_GPIO       RESMGR_RESOURCE_RIF_GPIOH
+#define LED1_GPIO_RIF_RES_NUM_GPIO       RESMGR_GPIO_PIN(4)
 
 #if defined (USE_STM32MP257F_EV1)
 #define LED2_GPIO_PORT                   GPIOD
 #define LED2_PIN                         GPIO_PIN_8
 #define LED2_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOD_CLK_ENABLE()
 #define LED2_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOD_CLK_DISABLE()
+#define LED2_GPIO_IS_CLK_ENABLED()       __HAL_RCC_GPIOD_IS_CLK_ENABLED()
+#define LED2_GPIO_RIF_RES_TYP_GPIO       RESMGR_RESOURCE_RIF_GPIOD
+#define LED2_GPIO_RIF_RES_NUM_GPIO       RESMGR_GPIO_PIN(8)
 
 #define LED3_GPIO_PORT                   GPIOJ
 #define LED3_PIN                         GPIO_PIN_6
 #define LED3_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOJ_CLK_ENABLE()
 #define LED3_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOJ_CLK_DISABLE()
+#define LED3_GPIO_IS_CLK_ENABLED()       __HAL_RCC_GPIOJ_IS_CLK_ENABLED()
+#define LED3_GPIO_RIF_RES_TYP_GPIO       RESMGR_RESOURCE_RIF_GPIOJ
+#define LED3_GPIO_RIF_RES_NUM_GPIO       RESMGR_GPIO_PIN(6)
 
 #define LED4_GPIO_PORT                   GPIOJ
 #define LED4_PIN                         GPIO_PIN_7
 #define LED4_GPIO_CLK_ENABLE()           __HAL_RCC_GPIOJ_CLK_ENABLE()
 #define LED4_GPIO_CLK_DISABLE()          __HAL_RCC_GPIOJ_CLK_DISABLE()
+#define LED4_GPIO_IS_CLK_ENABLED()       __HAL_RCC_GPIOJ_IS_CLK_ENABLED()
+#define LED4_GPIO_RIF_RES_TYP_GPIO       RESMGR_RESOURCE_RIF_GPIOJ
+#define LED4_GPIO_RIF_RES_NUM_GPIO       RESMGR_GPIO_PIN(7)
 
 #else
 #error "Please define target board"
@@ -240,8 +253,11 @@ typedef struct
 #define BUTTON_WAKEUP_GPIO_PORT             GPIOI
 #define BUTTON_WAKEUP_GPIO_CLK_ENABLE()     __HAL_RCC_GPIOI_CLK_ENABLE()
 #define BUTTON_WAKEUP_GPIO_CLK_DISABLE()    __HAL_RCC_GPIOI_CLK_DISABLE()
+#define BUTTON_WAKEUP_GPIO_IS_CLK_ENABLE()  __HAL_RCC_GPIOI_IS_CLK_ENABLED()
 #define BUTTON_WAKEUP_EXTI_IRQn             EXTI2_2_IRQn
 #define BUTTON_WAKEUP_EXTI_LINE             EXTI2_LINE_2
+#define BUTTON_WAKEUP_RIF_RES_TYP_GPIO      RESMGR_RESOURCE_RIF_GPIOI
+#define BUTTON_WAKEUP_RIF_RES_NUM_GPIO      RESMGR_GPIO_PIN(6)
 #endif
 /**
   * @brief USER1 push-button
@@ -251,8 +267,11 @@ typedef struct
 #define BUTTON_USER1_GPIO_PORT             GPIOD
 #define BUTTON_USER1_GPIO_CLK_ENABLE()     __HAL_RCC_GPIOD_CLK_ENABLE()
 #define BUTTON_USER1_GPIO_CLK_DISABLE()    __HAL_RCC_GPIOD_CLK_DISABLE()
+#define BUTTON_USER1_GPIO_IS_CLK_ENABLE()  __HAL_RCC_GPIOD_IS_CLK_ENABLED()
 #define BUTTON_USER1_EXTI_IRQn             EXTI2_2_IRQn
 #define BUTTON_USER1_EXTI_LINE             EXTI2_LINE_2
+#define BUTTON_USER1_RIF_RES_TYP_GPIO      RESMGR_RESOURCE_RIF_GPIOD
+#define BUTTON_USER1_RIF_RES_NUM_GPIO      RESMGR_GPIO_PIN(2)
 #endif
 /**
   * @brief USER2 push-button
@@ -262,8 +281,11 @@ typedef struct
 #define BUTTON_USER2_GPIO_PORT             GPIOG
 #define BUTTON_USER2_GPIO_CLK_ENABLE()     __HAL_RCC_GPIOG_CLK_ENABLE()
 #define BUTTON_USER2_GPIO_CLK_DISABLE()    __HAL_RCC_GPIOG_CLK_DISABLE()
+#define BUTTON_USER2_GPIO_IS_CLK_ENABLE()  __HAL_RCC_GPIOG_IS_CLK_ENABLED()
 #define BUTTON_USER2_EXTI_IRQn             EXTI2_2_IRQn
 #define BUTTON_USER2_EXTI_LINE             EXTI2_LINE_2
+#define BUTTON_USER2_RIF_RES_TYP_GPIO      RESMGR_RESOURCE_RIF_GPIOG
+#define BUTTON_USER2_RIF_RES_NUM_GPIO      RESMGR_GPIO_PIN(8)
 #endif
 /**
   * @brief TAMPER push-button
@@ -273,8 +295,11 @@ typedef struct
 #define BUTTON_TAMPER_GPIO_PORT             GPIOI
 #define BUTTON_TAMPER_GPIO_CLK_ENABLE()     __HAL_RCC_GPIOI_CLK_ENABLE()
 #define BUTTON_TAMPER_GPIO_CLK_DISABLE()    __HAL_RCC_GPIOI_CLK_DISABLE()
+#define BUTTON_TAMPER_GPIO_IS_CLK_ENABLE()  __HAL_RCC_GPIOI_IS_CLK_ENABLED()
 #define BUTTON_TAMPER_EXTI_IRQn             EXTI2_2_IRQn
 #define BUTTON_TAMPER_EXTI_LINE             EXTI2_LINE_2
+#define BUTTON_TAMPER_RIF_RES_TYP_GPIO      RESMGR_RESOURCE_RIF_GPIOI
+#define BUTTON_TAMPER_RIF_RES_NUM_GPIO      RESMGR_GPIO_PIN(8)
 #endif
 /**
   * @}
@@ -322,6 +347,21 @@ typedef struct
 #define COM_CM33_RX_GPIO_CLK_ENABLE()       __HAL_RCC_GPIOG_CLK_ENABLE()
 #define COM_CM33_RX_GPIO_CLK_DISABLE()      __HAL_RCC_GPIOG_CLK_DISABLE()
 #define COM_CM33_RX_AF                      GPIO_AF5_UART5
+
+
+
+#define COM_CM33_RIF_RES_TYP_UART               RESMGR_RESOURCE_RIFSC
+#define COM_CM33_RIF_RES_NUM_UART				RESMGR_RIFSC_UART5_ID
+
+#define COM_CM33_RIF_RES_TYP_TX_PIN 		    RESMGR_RESOURCE_RIF_GPIOG
+#define COM_CM33_RIF_RES_NUM_TX_PIN			    RESMGR_GPIO_PIN(9)
+
+#define COM_CM33_RIF_RES_TYP_RX_PIN             RESMGR_RESOURCE_RIF_GPIOG
+#define COM_CM33_RIF_RES_NUM_RX_PIN             RESMGR_GPIO_PIN(10)
+
+#define COM_CM33_TX_GPIO_IS_CLK_ENABLED()       __HAL_RCC_GPIOG_IS_CLK_ENABLED()
+#define COM_CM33_RX_GPIO_IS_CLK_ENABLED()       __HAL_RCC_GPIOG_IS_CLK_ENABLED()
+
 
 #endif /* CORE_CA35 || CORE_CM33 */
 

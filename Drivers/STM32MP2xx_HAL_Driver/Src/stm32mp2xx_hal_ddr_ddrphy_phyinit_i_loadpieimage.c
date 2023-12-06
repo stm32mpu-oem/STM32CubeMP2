@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -251,6 +251,14 @@ static void traininghwreg_program(void)
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (C0 | TACSM | CSR_ACSMCTRL13_ADDR)), regdata);
 
 	/*
+	 * - Register: AcsmCtrl1
+	 *   - Fields: AcsmRepCnt
+	 *             Need 19 iterations @ 0.25ui increments to cover 4.5UI
+	 */
+	regdata = (0xEU << CSR_ACSMREPCNT_LSB);
+	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (C0 | TACSM | CSR_ACSMCTRL1_ADDR)), regdata);
+
+	/*
 	 * - Register: TsmByte1, TsmByte2
 	 *   - Dependencies: userinputbasic.numdbyte
 	 */
@@ -378,6 +386,11 @@ void ddrphy_phyinit_i_loadpieimage(bool skip_training)
 	dfiwrrddatacsconfig_program();
 #endif /* STM32MP_LPDDR4_TYPE */
 
+	/*
+	 * - Register: Seq0BGPR7
+	 *   - Program active CSx for MRS7 during D4 RDIMM frequency change
+	 */
+
 	seq0bdly_program();
 
 	seq0bdisableflag_program(skip_training);
@@ -411,13 +424,8 @@ void ddrphy_phyinit_i_loadpieimage(bool skip_training)
 	 * set for mission mode.  Additionally APB access is Isolated by setting
 	 * MicroContMuxSel.
 	 */
-#if STM32MP_DDR3_TYPE || STM32MP_DDR4_TYPE
 	/* Disabling Ucclk (PMU) and Hclk (training hardware) */
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TDRTUB | CSR_UCCLKHCLKENABLES_ADDR)), 0x0U);
-#elif STM32MP_LPDDR4_TYPE
-	/* Disabling Ucclk (PMU) */
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TDRTUB | CSR_UCCLKHCLKENABLES_ADDR)), 0x2U);
-#endif /* STM32MP_LPDDR4_TYPE */
 
 	/* Isolate the APB access from the internal CSRs by setting the MicroContMuxSel CSR to 1 */
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TAPBONLY | CSR_MICROCONTMUXSEL_ADDR)), 0x1U);

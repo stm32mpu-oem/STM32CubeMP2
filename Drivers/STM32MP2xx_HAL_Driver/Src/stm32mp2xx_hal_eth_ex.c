@@ -553,7 +553,7 @@ void HAL_ETHEx_ExitLPIMode(ETH_HandleTypeDef *heth)
   *         the configuration information for ETHERNET module
   * @retval ETH MAC WakeUp event
   */
-uint32_t HAL_ETHEx_GetMACLPIEvent(ETH_HandleTypeDef *heth)
+uint32_t HAL_ETHEx_GetMACLPIEvent(const ETH_HandleTypeDef *heth)
 {
   return heth->MACLPIEvent;
 }

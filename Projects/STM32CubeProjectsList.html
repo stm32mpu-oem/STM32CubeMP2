@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Projects Overview</title>
+    <style>
+      .descriptionColumn { min-width:550px;}
+      em{color:red;font-weight: bold;}
+      importantLink {font-size:10pt; font-family: "Verdana","sans-serif" color:black;}
+      article{border: 1px solid #828282;margin: 20px 0px 20px 9px;}
+      body{font-family: Verdana;font-size: 10pt; color: black;margin-left: 40px;}
+      .picture{text-align: center}
+      .copyright{text-align: center}
+      h1{text-align: center;font-size: 20pt; font-family: Verdana; color: rgb(51, 102, 255);}
+    </style>
+  </head>
+  <body>
+
+    <h1>STM32CubeMP2 Firmware Examples for STM32MP2xx Series</h1>
+
+    <p class="copyright">Copyright 2021 STMicroelectronics</p>
+
+    <div class="picture">
+      <img alt="" id="_x0000_i1025" src="../_htmresc/st_logo_2020.png" style="border: 0px solid ; width: 104px; height: 77px;"/>
+    </div>
+
+    <p>The STM32CubeMP2 Firmware package comes with a rich set of examples running on STMicroelectronics boards, organized by board and provided with preconfigured projects for the main supported toolchains.</p>
+
+
+    <p>The examples are classified depending on the STM32Cube level they apply to, and are named as follows:</p>
+
+    <ul>
+      <li id="Examples"><b>Examples</b> uses only the HAL and BSP drivers (Middleware not used), having as objective to demonstrate the product/peripherals features and usage. The examples are organized per peripheral (a folder for each peripheral, ex. TIM) and offers different complexity level from basic usage of a given peripheral (ex. PWM generation using timer) till integration of several peripherals(use DAC for signals generation with synchronization from TIM6 and DMA). Board resources usage is reduced to the strict minimum.</li>
+      <li id="Applications"><b>Applications</b> intends to demonstrate the product performance and how to use the different Middleware stacks available. The Applications are organized per Middleware (a folder for each Middleware, ex. USB Host) or product feature that need high level firmware bricks (ex. Audio). Integration Applications that use several Middleware stacks are provided as well.</li>
+      <li id="Demonstrations"><b>Demonstrations</b> aims to integrate and run the maximum of peripherals and Middleware stacks to showcase the product features and performance.</li>
+    </ul>
+
+    <p>The examples are located under STM32Cube_FW_MP2_VX.Y.Z\Projects\, and all of them have the same structure:</p>
+
+    <ul>
+      <li>\Inc folder that contains all header files.</li>
+      <li>\Src folder for the sources code.</li>
+      <li>\STM32CubeIDE folders contain the preconfigured project for each toolchain.</li>
+      <li>A readme describing the example behavior and the environment required to run the example.</li>
+    </ul>
+
+    <p>To run the example, you have to do the following:</p>
+
+    <ul>
+      <li>Open the example using your preferred toolchain.</li>
+      <li>Rebuild all files and load the image into target memory.</li>
+      <li>Run the example by following the readme instructions.</li>
+    </ul>
+
+    <p>The provided examples can be tailored to run on any compatible hardware; user simply need to update the BSP drivers for his board, if it has the same hardware functions (LED, LCD display, pushbuttons...etc.). The BSP is based on a modular architecture that allows it to be ported easily to any hardware by just implementing the low level routines.</p>
+
+    <p>
+      <div>The table below contains the list of examples provided within STM32Cube_FW_MP2 Firmware package.</div>
+    </p>
+
+    <p id="STM32MP2xxImportantLink">
+      <div>Reference materials available on <a href="http://www.st.com/stm32cubefw" target="_blank">www.st.com/stm32cubefw</a></div>
+    </p>
+		<table border='1' bgcolor='#f0f0fF' >
+			<tr align=center style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;">
+				<td><b>Level</b></td>
+				<td><b>Module Name</b></td>
+				<td><b>Project Name</b></td>
+				<td class="descriptionColumn"><b>Description</b></td>
+				<td>STM32MP257F-EV1</td>
+			</tr>
+
+      <tr align=center>
+        <td style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" rowspan=1><p id="Demonstrations">Demonstrations</p></td>
+        <td align=left rowspan=1><p id="USBPD">USBPD</p></td>
+        <td align=left><p id="CORTEXM_ModePrivilege">USBPD_DRP_UCSI</p></td>
+        <td align=left>
+Demonstrate usage of STM32MP25xx Cortex-M33 as a UCSI (USB Type-CTM Connector System Software Interface) Platform Policy Manager(PPM).
+The PPM is a combination of hardware and firmware that manages the USB Type-C connectors on the platform. The Cortex-A35 has a role of UCSI OS Policy Manager to interface with the PPM, via OpenAMP-rpmsg Virtual I2C with the UCSI interface.
+
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" align=center>
+        <td colspan="5"><b>Total number of Demonstrations: 1</b></td>
+      </tr>
+
+
+      <tr align=center>
+        <td style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" rowspan=14><p id="Applications">Applications</p></td>
+        <td align=left rowspan=6><p id="NetXDuo">NetXDuo</p></td>
+        <td align=left><p id="Nx_Iperf">Nx_Iperf</p></td>
+        <td align=left>
+This application provides an example of Azure RTOS NetXDuo stack usage. 
+It shows performance when using different modes : TCP_server, UDP_server, TCP_client and UDP_client.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+
+      <tr align=center>
+        <td align=left><p id="Nx_MQTT_Client">Nx_MQTT_Client</p></td>
+        <td align=left>
+This application provides an example of Azure RTOS NetX/NetXDuo stack usage. 
+It shows how to exchange data between client and server using MQTT protocol in an encrypted mode supporting TLS v1.2.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+      <tr align=center>
+        <td align=left><p id="Nx_TCP_Echo_Client">Nx_TCP_Echo_Client</p></td>
+        <td align=left>
+This application provides an example of Azure RTOS NetX/NetXDuo stack usage. 
+It shows how to develop a NetX TCP client to communicate with a remote sever using the NetX TCP socket API.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+      <tr align=center>
+        <td align=left><p id="Nx_TCP_Echo_Server">Nx_TCP_Echo_Server</p></td>
+        <td align=left>
+This application provides an example of Azure RTOS NetX/NetXDuo stack usage. 
+It shows how to develop a NetX TCP server to communicate with a remote client using the NetX TCP socket API.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+      <tr align=center>
+        <td align=left><p id="Nx_UDP_Echo_Client">Nx_UDP_Echo_Client</p></td>
+        <td align=left>
+This application provides an example of Azure RTOS NetX/NetXDuo stack usage .
+It shows how to develop a NetX udp client to communicate with a remote sever using the NetX UDP socket API.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+      <tr align=center>
+        <td align=left><p id="Nx_UDP_Echo_Server">Nx_UDP_Echo_Server</p></td>
+        <td align=left>
+This application provides an example of Azure RTOS NetX/NetXDuo stack usage . 
+It shows how to develop a NetX UDP server to communicate with a remote client using the NetX UDP socket API.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+
+<!------------------------------------------------------------------------------------------------------->
+      <tr align=center>
+        <td align=left rowspan=3><p id="ThreadX">Threadx</p></td>
+        <td align=left><p id="Tx_Thread_Creation">Tx_Thread_Creation</p></td>
+        <td align=left>
+It demonstrates how to create and destroy multiple threads using Azure RTOS ThreadX APIs.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+
+      <tr align=center>
+        <td align=left><p id="Tx_Thread_Sync">Tx_Thread_Sync</p></td>
+        <td align=left>
+An application to demonstrate usage of the ThreadX synchronization APIs.	
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+      <tr align=center>
+        <td align=left><p id="Tx_Thread_MsgQueue">Tx_Thread_MsgQueue</p></td>
+        <td align=left>
+It demonstrates how to send and receive messages between threads using ThreadX message queue APIs. In addition, it shows how to use the event chaining feature.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+
+<!------------------------------------------------------------------------------------------------------->
+
+      <tr align=center>
+        <td align=left rowspan=2><p id="FileX">Filex</p></td>
+        <td align=left><p id="Fx_NoR_Write_Read_File">Fx_NoR_Write_Read_File</p></td>
+        <td align=left>
+This application provides an example of Azure RTOS FileX and LevelX stacks usage on STM32MP257F-EV1 board, it demonstrates how to create a Fat File system on the NOR flash using FileX alongside LevelX.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+
+      <tr align=center>
+        <td align=left><p id="Fx_SRAM_File_Standalone">Fx_SRAM_File_Standalone</p></td>
+        <td align=left>
+An example of FileX stack usage on STM32MP257F-EV1 board, running in standalone mode (without ThreadX). It demonstrates how to create a Fat File system on the internal SRAM memory using FileX API.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+
+
+
+<!------------------------------------------------------------------------------------------------------->
+      <tr align=center>
+        <td align=left rowspan=1><p id="OpenAMP">OpenAMP</p></td>
+        <td align=left><p id="OpenAMP_TTY_echo">OpenAMP_TTY_echo</p></td>
+        <td align=left>
+It demonstrates How to use OpenAMP MW + Virtual UART to create an Inter-Processor Communication channel seen as TTY device in Linux OS.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+<!------------------------------------------------------------------------------------------------------->
+
+      <tr align=center>
+        <td align=left rowspan=1><p id="TFM">TFM</p></td>
+        <td align=left><p id="TFM_Protected_Storage">TFM_Protected_Storage</p></td>
+        <td align=left>
+It demonstrates an example of Protected Storage API (PSA) usage provided by the trusted firmware (TFM) middleware.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+<!------------------------------------------------------------------------------------------------------->
+      <tr align=center>
+        <td align=left rowspan=1><p id="USBPD">USBPD</p></td>
+        <td align=left><p id="USBPD_DRP_UCSI">USBPD_DRP_UCSI</p></td>
+        <td align=left>
+Demonstrate usage of STM32MP25xx Cortex-M33 as a UCSI (USB Type-CTM Connector System Software Interface) Platform Policy Manager(PPM).
+The PPM is a combination of hardware and firmware that manages the USB Type-C connectors on the platform. The Cortex-A35 has a role of UCSI OS Policy Manager to interface with the PPM, via OpenAMP-rpmsg Virtual I2C with the UCSI interface.
+	</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+<!------------------------------------------------------------------------------------------------------->
+
+
+
+      <tr style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" align=center>
+        <td colspan="5"><b>Total number of Applications: 14</b></td>
+      </tr>
+
+
+
+      <tr align=center>
+        <td style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" rowspan=17><p id="Examples">Examples</p></td>
+        <td align=left rowspan=1><p id="CORTEX">CORTEX</p></td>
+        <td align=left><p id="CORTEXM_ModePrivilege">CORTEXM_ModePrivilege</p></td>
+        <td align=left>
+How to modify the Thread mode privilege access and stack. Thread mode is entered
+on reset or when returning from an exception.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left rowspan=2><p id="CRC">CRC</p></td>
+        <td align=left><p id="CRC_Bytes_Stream_7bit_CRC">CRC_Bytes_Stream_7bit_CRC</p></td>
+        <td align=left>
+How to configure the CRC using the HAL API. The CRC (cyclic
+redundancy check) calculation unit computes 7-bit CRC codes derived from buffers
+of 8-bit data (bytes). The user-defined generating polynomial is manually set
+to 0x65, that is, X^7 + X^6 + X^5 + X^2 + 1, as used in the Train Communication
+Network, IEC 60870-5[17].
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="CRC_UserDefinedPolynomial">CRC_UserDefinedPolynomial</p></td>
+        <td align=left>
+How to configure the CRC using the HAL API. The CRC (cyclic redundancy check) calculation unit computes the 8-bit CRC code for a given
+buffer of 32-bit data words, based on a user-defined generating polynomial.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left rowspan=2><p id="CRYP">CRYP</p></td>
+        <td align=left><p id="CRYP_AESGCM">CRYP_AESGCM</p></td>
+        <td align=left>
+
+How to use the CRYPTO peripheral to encrypt/decrypt data(Plaintext/Ciphertext) using 
+AES Galois/counter mode (GCM)and generate the authentication TAG .
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="CRYP_AES_DMA">CRYP_AES_DMA</p></td>
+        <td align=left>
+This example provides a short description of how to use the CRYPTO peripheral to 
+encrypt and decrypt data using AES-128 Algorithm with ECB chaining mode.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left rowspan=2><p id="DMA">DMA</p></td>
+        <td align=left><p id="DMA_LinkedList">DMA_LinkedList</p></td>
+        <td align=left>
+-   How to use the DMA to perform a list of transfers. The transfer list is organized as linked-list,
+	each time the current transfer ends the DMA automatically reload the next transfer parameters, and starts it (without CPU intervention).
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="DMA_RepeatedBlock">DMA_RepeatedBlock</p></td>
+        <td align=left>
+This example describes how to configure and use the DMA HAL API to perform repeated
+block transactions.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left rowspan=1><p id="GPIO">GPIO</p></td>
+        <td align=left><p id="GPIO_EXTI">GPIO_EXTI</p></td>
+        <td align=left>
+How to configure external interrupt lines.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left rowspan=2><p id="I2C">I2C</p></td>
+        <td align=left><p id="I2C_TwoBoards_ComDMA">I2C_TwoBoards_ComDMA</p></td>
+        <td align=left>
+How to handle I2C data buffer transmission/reception between two boards, 
+via DMA.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="I2C_TwoBoards_ComPolling">I2C_TwoBoards_ComPolling</p></td>
+        <td align=left>
+How to handle I2C data buffer transmission/reception between two boards, 
+via Polling.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left rowspan=1><p id="I3C">I3C</p></td>
+        <td align=left><p id="I3C_Controller_I2C_ComDMA">I3C_Controller_I2C_ComDMA</p></td>
+        <td align=left>
+How to handle I2C communication as I3C Controller data buffer transmission/reception between two boards, using DMA.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left rowspan=1><p id="LPTIM">LPTIM</p></td>
+        <td align=left><p id="LPTIM_PulseCounter">LPTIM_PulseCounter</p></td>
+        <td align=left>
+This example describes how to configure and use LPTIM to count pulses through
+the LPTIM HAL API.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left rowspan=1><p id="SPI">SPI</p></td>
+        <td align=left><p id="SPI_FullDuplex_ComDMA">SPI_FullDuplex_ComDMA</p></td>
+        <td align=left>
+This example shows how to perform SPI data buffer transmission/reception between 
+two boards via DMA.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left rowspan=4><p id="TIM">TIM</p></td>
+        <td align=left><p id="TIM_DMABurst">TIM_DMABurst</p></td>
+        <td align=left>
+This example shows how to update the TIMER TIM8_CH4 period and the duty cycle 
+using the TIMER DMA burst feature.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="TIM_OnePulse">TIM_OnePulse</p></td>
+        <td align=left>
+This example shows how to use the TIMER peripheral to generate a single pulse when
+a rising edge of an external signal is received on the TIMER Input pin.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="TIM_PWMOutput">TIM_PWMOutput</p></td>
+        <td align=left>
+This example shows how to configure the TIM peripheral in PWM (Pulse Width Modulation)
+mode.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr align=center>
+        <td align=left><p id="TIM_TimeBase">TIM_TimeBase</p></td>
+        <td align=left>
+This example shows how to configure the TIM peripheral to generate a time base of
+one second with the corresponding Interrupt request.
+</td>
+        <td><font size="5" color=green>X</font></td>
+      </tr>
+      <tr style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" align=center>
+        <td colspan="5"><b>Total number of Examples: 17</b></td>
+      </tr>
+      <tr style="background-repeat: no-repeat;background-position: right center;background-color: #39A9DC;color: #FFF;" align=center>
+      	<td colspan="5"><b>Total number of projects: 32</b></td>
+      </tr>
+    </table>
+  </body>
+</html>

@@ -306,7 +306,7 @@ typedef struct
   * @{
   */
 #define  MPU_ACCESS_NOT_SHAREABLE    ((uint8_t)0x00)
-#define  MPU_ACCESS_OUTER_SHAREABLE  ((uint8_t)0x01)
+#define  MPU_ACCESS_OUTER_SHAREABLE  ((uint8_t)0x02)
 #define  MPU_ACCESS_INNER_SHAREABLE  ((uint8_t)0x03)
 /**
   * @}
@@ -336,6 +336,30 @@ typedef struct
 /**
   * @}
   */
+
+/** @defgroup CORTEX_MPU_Attributes CORTEX MPU Attributes
+  * @{
+  */
+#define  MPU_DEVICE_nGnRnE          0x0U  /*!< Device, noGather, noReorder, noEarly acknowledge. */
+#define  MPU_DEVICE_nGnRE           0x4U  /*!< Device, noGather, noReorder, Early acknowledge.   */
+#define  MPU_DEVICE_nGRE            0x8U  /*!< Device, noGather, Reorder, Early acknowledge.     */
+#define  MPU_DEVICE_GRE             0xCU  /*!< Device, Gather, Reorder, Early acknowledge.       */
+
+#define  MPU_WRITE_THROUGH          0x0U  /*!< Normal memory, write-through. */
+#define  MPU_NOT_CACHEABLE          0x4U  /*!< Normal memory, non-cacheable. */
+#define  MPU_WRITE_BACK             0x4U  /*!< Normal memory, write-back.    */
+
+#define  MPU_TRANSIENT              0x0U  /*!< Normal memory, transient.     */
+#define  MPU_NON_TRANSIENT          0x8U  /*!< Normal memory, non-transient. */
+
+#define  MPU_NO_ALLOCATE            0x0U  /*!< Normal memory, no allocate.         */
+#define  MPU_W_ALLOCATE             0x1U  /*!< Normal memory, write allocate.      */
+#define  MPU_R_ALLOCATE             0x2U  /*!< Normal memory, read allocate.       */
+#define  MPU_RW_ALLOCATE            0x3U  /*!< Normal memory, read/write allocate. */
+
+/**
+  * @}
+  */
 #endif /* CORE_CM33 */
 #endif /* __MPU_PRESENT */
 
@@ -347,6 +371,12 @@ typedef struct
 /* Exported Macros -----------------------------------------------------------*/
 /** @defgroup CORTEX_Exported_Macros CORTEX Exported Macros
   * @{
+  */
+#define OUTER(__ATTR__)        ((__ATTR__) << 4U)
+#define INNER_OUTER(__ATTR__)  ((__ATTR__) | ((__ATTR__) << 4U))
+
+/**
+  * @}
   */
 
 /** @defgroup HAL_CORTEX_Aliased_Defines HAL CORTEX Aliased Defines maintained for legacy purpose
@@ -409,6 +439,11 @@ void HAL_NVIC_ConfigInterruptSecurity(IRQn_Type IRQn, uint32_t IRQSecurityState)
 /* [MPU/FUNCTIONS] M0+ (ARMv6-M) / M33 (ARMv8-M) common prototypes */
 void HAL_MPU_Enable(uint32_t MPU_Control);
 void HAL_MPU_Disable(void);
+#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
+/* MPU_NS Control functions ***********************************************/
+void HAL_MPU_Enable_NS(uint32_t MPU_Control);
+void HAL_MPU_Disable_NS(void);
+#endif /* __ARM_FEATURE_CMSE */
 
 /* [MPU/FUNCTIONS] M0+ (ARMv6-M) specific prototypes */
 #ifdef CORE_CM0PLUS

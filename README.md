@@ -15,14 +15,15 @@ The **STM32CubeMP25 MCU Package** projects are directly running on the STM32MP25
 
 ## Release note
 
-Details about the content of this release are available in the release note [here](https://github.com/PRG-MPU-ALPHA/STM32CubeMP2/blob/main/Release_Notes.html).
+Details about the content of this release are available in the release note [here](https://htmlpreview.github.io/?https://github.com/STMicroelectronics/STM32CubeMP2/blob/master/Release_Notes.html).
 
 ## Boards available
 
   * STM32MP25
-    * [STM32MP257F-VALID3]
-    * [STM32MP257F-EV]
+    * [STM32MP257F-EV1]
 
 ## Troubleshooting
 
 **Caution** : The issues and the pull-requests are **strictly limited** to submit problems or suggestions related to the software delivered in this repository.
+
+**For any other question** related to the product, the hardware performance or characteristics, the tools, the environment, you can submit it to the **ST Community** on the STM32 MCUs related [page](https://community.st.com/s/group/0F90X000000AXsASAW/stm32-mcus).

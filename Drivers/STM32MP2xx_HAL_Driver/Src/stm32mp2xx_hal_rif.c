@@ -160,7 +160,7 @@ HAL_StatusTypeDef HAL_RISC_ConfigPeriphAttributes(RIF_Periph_Desc * PeriphAttrib
 
   return HAL_OK;
 }
-#endif
+#endif  /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 
 /**
  * @brief  Get RISC configuration on a single peripheral or on all peripherals.
@@ -186,13 +186,13 @@ HAL_StatusTypeDef HAL_RISC_GetConfigPeriphAttributes(uint32_t PeriphId, RIF_Peri
   }
 
   PeriphAttributes->PeriphId = PeriphId;
-  PeriphAttributes->SecEnable = (_Bool)HAL_RIF_IS_RISC_SEC(PeriphAttributes->PeriphId);
-  PeriphAttributes->PrivEnable = (_Bool)HAL_RIF_IS_RISC_PRIV(PeriphAttributes->PeriphId);
+  PeriphAttributes->SecEnable = (uint32_t)HAL_RIF_IS_RISC_SEC(PeriphAttributes->PeriphId);
+  PeriphAttributes->PrivEnable = (uint32_t)HAL_RIF_IS_RISC_PRIV(PeriphAttributes->PeriphId);
   PeriphAttributes->CidEnable = (_Bool)HAL_RIF_IS_RISC_CFEN(PeriphAttributes->PeriphId);
   PeriphAttributes->SemEnable = (_Bool)HAL_RIF_IS_RISC_SEMEN(PeriphAttributes->PeriphId);
   PeriphAttributes->Scid = HAL_RIF_READ_RISC_SCID(PeriphAttributes->PeriphId);
   PeriphAttributes->SemWl = HAL_RIF_READ_RISC_SEMWL(PeriphAttributes->PeriphId);
-  PeriphAttributes->LockEnable = (_Bool)HAL_RIF_IS_RISC_RLOCK(PeriphAttributes->PeriphId);
+  PeriphAttributes->LockEnable = (uint32_t)HAL_RIF_IS_RISC_RLOCK(PeriphAttributes->PeriphId);
 
   return HAL_OK;
 }
@@ -207,7 +207,7 @@ void HAL_RIF_PeriphGLock()
 {
   HAL_RIF_SET_RISC_GLOCK();
 }
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 
 /**
  * @brief  Get RIF peripheral global lock configuration.
@@ -250,7 +250,7 @@ HAL_StatusTypeDef HAL_RISAL_ConfigMemAttributes(RIF_MemRisal_Desc * MemAttribute
   {
   case RIF_LPSRAM1:
   {
-    if (MemAttributes->SubRegId == RIF_RISAL_MEM_SUBREGA) // SubRegA
+    if (MemAttributes->SubRegId == RIF_RISAL_MEM_SUBREGA) /* SubRegA */
     {
       /* Clear registers before configuration */
       HAL_RIF_CLEAR_RISAL1_SUBREGA_SREN();
@@ -277,7 +277,7 @@ HAL_StatusTypeDef HAL_RISAL_ConfigMemAttributes(RIF_MemRisal_Desc * MemAttribute
         HAL_RIF_SET_RISAL1_SUBREGA_RLOCK();
       }
     }
-    else // SubRegB
+    else /* SubRegB */
     {
       /* Clear registers before configuration */
       HAL_RIF_CLEAR_RISAL1_SUBREGB_SREN();
@@ -308,7 +308,7 @@ HAL_StatusTypeDef HAL_RISAL_ConfigMemAttributes(RIF_MemRisal_Desc * MemAttribute
   break;
   case RIF_LPSRAM2:
   {
-    if (MemAttributes->SubRegId == RIF_RISAL_MEM_SUBREGA) // SubRegA
+    if (MemAttributes->SubRegId == RIF_RISAL_MEM_SUBREGA) /* SubRegA */
     {
       /* Clear registers before configuration */
       HAL_RIF_CLEAR_RISAL2_SUBREGA_SREN();
@@ -335,7 +335,7 @@ HAL_StatusTypeDef HAL_RISAL_ConfigMemAttributes(RIF_MemRisal_Desc * MemAttribute
         HAL_RIF_SET_RISAL2_SUBREGA_RLOCK();
       }
     }
-    else // SubRegB
+    else /* SubRegB */
     {
       /* Clear registers before configuration */
       HAL_RIF_CLEAR_RISAL2_SUBREGB_SREN();
@@ -366,7 +366,7 @@ HAL_StatusTypeDef HAL_RISAL_ConfigMemAttributes(RIF_MemRisal_Desc * MemAttribute
   break;
   case RIF_LPSRAM3:
   {
-    if (MemAttributes->SubRegId == RIF_RISAL_MEM_SUBREGA) // SubRegA
+    if (MemAttributes->SubRegId == RIF_RISAL_MEM_SUBREGA) /* SubRegA */
     {
       /* Clear registers before configuration */
       HAL_RIF_CLEAR_RISAL3_SUBREGA_SREN();
@@ -395,7 +395,7 @@ HAL_StatusTypeDef HAL_RISAL_ConfigMemAttributes(RIF_MemRisal_Desc * MemAttribute
         HAL_RIF_SET_RISAL3_SUBREGA_RLOCK();
       }
     }
-    else // SubRegB
+    else /* SubRegB */
     {
       /* Clear registers before configuration */
       HAL_RIF_CLEAR_RISAL3_SUBREGB_SREN();
@@ -432,10 +432,9 @@ HAL_StatusTypeDef HAL_RISAL_ConfigMemAttributes(RIF_MemRisal_Desc * MemAttribute
   }
   break;
   }
-
   return HAL_OK;
 }
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 
 /**
  * @brief  Get RIF RISAL memory configuration.
@@ -445,7 +444,8 @@ HAL_StatusTypeDef HAL_RISAL_ConfigMemAttributes(RIF_MemRisal_Desc * MemAttribute
  *         This parameter can be a value of @ref RIF_MemRisal_Desc.
  * @retval HAL status.
  */
-HAL_StatusTypeDef HAL_RISAL_GetConfigMemAttributes(uint32_t Instance, uint32_t SubRegId, RIF_MemRisal_Desc *MemAttributes)
+HAL_StatusTypeDef HAL_RISAL_GetConfigMemAttributes(uint32_t Instance, uint32_t SubRegId,\
+                                                   RIF_MemRisal_Desc *MemAttributes)
 {
   /* Check RISAL instance */
   if (!IS_RISAL_INSTANCE(Instance))
@@ -470,92 +470,83 @@ HAL_StatusTypeDef HAL_RISAL_GetConfigMemAttributes(uint32_t Instance, uint32_t S
 
   switch (Instance)
   {
-  case RIF_LPSRAM1:
-  {
-    if (SubRegId == RIF_RISAL_MEM_SUBREGA)
-    {
-      MemAttributes->SecEnable = (_Bool)HAL_RIF_IS_RISAL1_SUBREGA_SEC();
-      MemAttributes->PrivEnable = (_Bool)HAL_RIF_IS_RISAL1_SUBREGA_PRIV();
-      MemAttributes->SubRegEnable = (_Bool)HAL_RIF_IS_RISAL1_SUBREGA_SREN();
-      MemAttributes->LockEnable = (_Bool)HAL_RIF_IS_RISAL1_SUBREGA_RLOCK();
-      MemAttributes->Srcid = HAL_RIF_READ_RISAL1_SUBREGA_SRCID();
-      MemAttributes->SubRegStart = 0x0;
-      MemAttributes->SubRegLength = 0x0;
-    }
-    else
-    {
-      MemAttributes->SecEnable = (_Bool)HAL_RIF_IS_RISAL1_SUBREGB_SEC();
-      MemAttributes->PrivEnable = (_Bool)HAL_RIF_IS_RISAL1_SUBREGB_PRIV();
-      MemAttributes->SubRegEnable = (_Bool)HAL_RIF_IS_RISAL1_SUBREGB_SREN();
-      MemAttributes->LockEnable = (_Bool)HAL_RIF_IS_RISAL1_SUBREGB_RLOCK();
-      MemAttributes->Srcid = HAL_RIF_READ_RISAL1_SUBREGB_SRCID();
-      MemAttributes->SubRegStart = 0x0;
-      MemAttributes->SubRegLength = 0x0;
-    }
-  }
-  break;
-  case RIF_LPSRAM2:
-  {
-    if (SubRegId == RIF_RISAL_MEM_SUBREGA)
-    {
-      MemAttributes->SecEnable = (_Bool)HAL_RIF_IS_RISAL2_SUBREGA_SEC();
-      MemAttributes->PrivEnable = (_Bool)HAL_RIF_IS_RISAL2_SUBREGA_PRIV();
-      MemAttributes->SubRegEnable = (_Bool)HAL_RIF_IS_RISAL2_SUBREGA_SREN();
-      MemAttributes->LockEnable = (_Bool)HAL_RIF_IS_RISAL2_SUBREGA_RLOCK();
-      MemAttributes->Srcid = HAL_RIF_READ_RISAL2_SUBREGA_SRCID();
-      MemAttributes->SubRegStart = 0x0;
-      MemAttributes->SubRegLength = 0x0;
-    }
-    else
-    {
-      MemAttributes->SecEnable = (_Bool)HAL_RIF_IS_RISAL2_SUBREGB_SEC();
-      MemAttributes->PrivEnable = (_Bool)HAL_RIF_IS_RISAL2_SUBREGB_PRIV();
-      MemAttributes->SubRegEnable = (_Bool)HAL_RIF_IS_RISAL2_SUBREGB_SREN();
-      MemAttributes->LockEnable = (_Bool)HAL_RIF_IS_RISAL2_SUBREGB_RLOCK();
-      MemAttributes->Srcid = HAL_RIF_READ_RISAL2_SUBREGB_SRCID();
-      MemAttributes->SubRegStart = 0x0;
-      MemAttributes->SubRegLength = 0x0;
-    }
-  }
-  break;
-  case RIF_LPSRAM3:
-  {
-    if (SubRegId == RIF_RISAL_MEM_SUBREGA)
-    {
-      MemAttributes->SecEnable = (_Bool)HAL_RIF_IS_RISAL3_SUBREGA_SEC();
-      MemAttributes->PrivEnable = (_Bool)HAL_RIF_IS_RISAL3_SUBREGA_PRIV();
-      MemAttributes->SubRegEnable = (_Bool)HAL_RIF_IS_RISAL3_SUBREGA_SREN();
-      MemAttributes->LockEnable = (_Bool)HAL_RIF_IS_RISAL3_SUBREGA_RLOCK();
-      MemAttributes->Srcid = HAL_RIF_READ_RISAL3_SUBREGA_SRCID();
-      MemAttributes->SubRegStart = HAL_RIF_READ_RISAL3_SUBREGA_SUBSTART();
-      MemAttributes->SubRegLength = HAL_RIF_READ_RISAL3_SUBREGA_SUBLENGTH();
-    }
-    else
-    {
-      MemAttributes->SecEnable = (_Bool)HAL_RIF_IS_RISAL3_SUBREGB_SEC();
-      MemAttributes->PrivEnable = (_Bool)HAL_RIF_IS_RISAL3_SUBREGB_PRIV();
-      MemAttributes->SubRegEnable = (_Bool)HAL_RIF_IS_RISAL3_SUBREGB_SREN();
-      MemAttributes->LockEnable = (_Bool)HAL_RIF_IS_RISAL3_SUBREGB_RLOCK();
-      MemAttributes->Srcid = HAL_RIF_READ_RISAL3_SUBREGB_SRCID();
-      MemAttributes->SubRegStart = (RIF_RISAL_MEM_GRANULARITY * HAL_RIF_READ_RISAL3_SUBREGB_SUBSTART());
-      MemAttributes->SubRegLength = (RIF_RISAL_MEM_GRANULARITY * HAL_RIF_READ_RISAL3_SUBREGB_SUBLENGTH());
-    }
-  }
-  break;
-  default:
-  {
-    return HAL_ERROR;
-  }
+    case RIF_LPSRAM1:
+      if (SubRegId == RIF_RISAL_MEM_SUBREGA)
+      {
+        MemAttributes->SecEnable = (uint32_t)HAL_RIF_IS_RISAL1_SUBREGA_SEC();
+        MemAttributes->PrivEnable = (uint32_t)HAL_RIF_IS_RISAL1_SUBREGA_PRIV();
+        MemAttributes->SubRegEnable = (uint32_t)HAL_RIF_IS_RISAL1_SUBREGA_SREN();
+        MemAttributes->LockEnable = (uint32_t)HAL_RIF_IS_RISAL1_SUBREGA_RLOCK();
+        MemAttributes->Srcid = HAL_RIF_READ_RISAL1_SUBREGA_SRCID();
+        MemAttributes->SubRegStart = 0x0;
+        MemAttributes->SubRegLength = 0x0;
+      }
+      else
+      {
+        MemAttributes->SecEnable = (uint32_t)HAL_RIF_IS_RISAL1_SUBREGB_SEC();
+        MemAttributes->PrivEnable = (uint32_t)HAL_RIF_IS_RISAL1_SUBREGB_PRIV();
+        MemAttributes->SubRegEnable = (uint32_t)HAL_RIF_IS_RISAL1_SUBREGB_SREN();
+        MemAttributes->LockEnable = (uint32_t)HAL_RIF_IS_RISAL1_SUBREGB_RLOCK();
+        MemAttributes->Srcid = HAL_RIF_READ_RISAL1_SUBREGB_SRCID();
+        MemAttributes->SubRegStart = 0x0;
+        MemAttributes->SubRegLength = 0x0;
+      }    
+    break;
+    case RIF_LPSRAM2:
+      if (SubRegId == RIF_RISAL_MEM_SUBREGA)
+      {
+        MemAttributes->SecEnable = (uint32_t)HAL_RIF_IS_RISAL2_SUBREGA_SEC();
+        MemAttributes->PrivEnable = (uint32_t)HAL_RIF_IS_RISAL2_SUBREGA_PRIV();
+        MemAttributes->SubRegEnable = (uint32_t)HAL_RIF_IS_RISAL2_SUBREGA_SREN();
+        MemAttributes->LockEnable = (uint32_t)HAL_RIF_IS_RISAL2_SUBREGA_RLOCK();
+        MemAttributes->Srcid = HAL_RIF_READ_RISAL2_SUBREGA_SRCID();
+        MemAttributes->SubRegStart = 0x0;
+        MemAttributes->SubRegLength = 0x0;
+      }
+      else
+      {
+        MemAttributes->SecEnable = (uint32_t)HAL_RIF_IS_RISAL2_SUBREGB_SEC();
+        MemAttributes->PrivEnable = (uint32_t)HAL_RIF_IS_RISAL2_SUBREGB_PRIV();
+        MemAttributes->SubRegEnable = (uint32_t)HAL_RIF_IS_RISAL2_SUBREGB_SREN();
+        MemAttributes->LockEnable = (uint32_t)HAL_RIF_IS_RISAL2_SUBREGB_RLOCK();
+        MemAttributes->Srcid = HAL_RIF_READ_RISAL2_SUBREGB_SRCID();
+        MemAttributes->SubRegStart = 0x0;
+        MemAttributes->SubRegLength = 0x0;
+      }    
+    break;
+    case RIF_LPSRAM3:
+      if (SubRegId == RIF_RISAL_MEM_SUBREGA)
+      {
+        MemAttributes->SecEnable = (uint32_t)HAL_RIF_IS_RISAL3_SUBREGA_SEC();
+        MemAttributes->PrivEnable = (uint32_t)HAL_RIF_IS_RISAL3_SUBREGA_PRIV();
+        MemAttributes->SubRegEnable = (uint32_t)HAL_RIF_IS_RISAL3_SUBREGA_SREN();
+        MemAttributes->LockEnable = (uint32_t)HAL_RIF_IS_RISAL3_SUBREGA_RLOCK();
+        MemAttributes->Srcid = HAL_RIF_READ_RISAL3_SUBREGA_SRCID();
+        MemAttributes->SubRegStart = HAL_RIF_READ_RISAL3_SUBREGA_SUBSTART();
+        MemAttributes->SubRegLength = HAL_RIF_READ_RISAL3_SUBREGA_SUBLENGTH();
+      }
+      else
+      {
+        MemAttributes->SecEnable = (uint32_t)HAL_RIF_IS_RISAL3_SUBREGB_SEC();
+        MemAttributes->PrivEnable = (uint32_t)HAL_RIF_IS_RISAL3_SUBREGB_PRIV();
+        MemAttributes->SubRegEnable = (uint32_t)HAL_RIF_IS_RISAL3_SUBREGB_SREN();
+        MemAttributes->LockEnable = (uint32_t)HAL_RIF_IS_RISAL3_SUBREGB_RLOCK();
+        MemAttributes->Srcid = HAL_RIF_READ_RISAL3_SUBREGB_SRCID();
+        MemAttributes->SubRegStart = (RIF_RISAL_MEM_GRANULARITY * HAL_RIF_READ_RISAL3_SUBREGB_SUBSTART());
+        MemAttributes->SubRegLength = (RIF_RISAL_MEM_GRANULARITY * HAL_RIF_READ_RISAL3_SUBREGB_SUBLENGTH());
+      }
+    break;
+    default:
+      return HAL_ERROR;    
   break;
   }
-
   return HAL_OK;
 }
 
 #if defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE)
 /**
  * @brief  RIF RIMC trusted attributes configuration.
- * @param  Attributes RIMC Trusted atttribute pointer.
+ * @param  Attributes RIMC Trusted attribute pointer.
  *         This parameter can be a value of @ref RIF_RIMC_TrustedDesc.
  * @retval HAL status.
  */
@@ -591,7 +582,7 @@ HAL_StatusTypeDef HAL_RIMC_ConfigTrustedAttributes(RIF_RIMC_TrustedDesc * Attrib
 
 /**
  * @brief  RIF RIMC master attributes configuration.
- * @param  Attributes RIMC Master atttribute pointer.
+ * @param  Attributes RIMC Master attribute pointer.
  *         This parameter can be a value of @ref RIF_RIMC_MasterDesc.
  * @retval HAL status.
  */
@@ -635,7 +626,7 @@ HAL_StatusTypeDef HAL_RIMC_ConfigMasterAttributes(RIF_RIMC_MasterDesc * Attribut
 
   return HAL_OK;
 }
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 
 /**
  * @brief  Get RIF RIMC trusted attributes configuration.
@@ -679,8 +670,8 @@ HAL_StatusTypeDef HAL_RIMC_GetConfigMasterAttributes(uint32_t MasterId, RIF_RIMC
   }
 
   /* Get RIMC Master attributes */
-  Attributes->SecEnable = (_Bool)HAL_RIF_IS_RIMC_SEC(Attributes->MasterId);
-  Attributes->PrivEnable = (_Bool)HAL_RIF_IS_RIMC_PRIV(Attributes->MasterId);
+  Attributes->SecEnable = (uint32_t)HAL_RIF_IS_RIMC_SEC(Attributes->MasterId);
+  Attributes->PrivEnable = (uint32_t)HAL_RIF_IS_RIMC_PRIV(Attributes->MasterId);
   Attributes->CidEnable = (_Bool)HAL_RIF_IS_RIMC_CIDSEL(Attributes->MasterId);
   Attributes->Mcid = HAL_RIF_READ_RIMC_MCID(Attributes->MasterId);
 
@@ -697,7 +688,7 @@ void HAL_RIMC_GLock()
 {
   HAL_RIF_SET_RIMC_GLOCK();
 }
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 
 /**
  * @brief  Get RIMC global lock configuration.
@@ -759,7 +750,7 @@ HAL_StatusTypeDef HAL_RISAB_ConfigMemAttributes(uint32_t PageId, RIF_MemRisab_De
   HAL_RIF_CLEAR_RISAB_PG_PRIV(MemAttributes->Instance, PageId);
 #if defined(CORE_CM33)
   HAL_RIF_CLEAR_RISAB_PG_C2_PRIV(MemAttributes->Instance, PageId);
-#endif
+#endif /* defined(CORE_CM33) */
   HAL_RIF_CLEAR_RISAB_PG_CX_PRIV(MemAttributes->Instance, cid, PageId);
   HAL_RIF_CLEAR_RISAB_PG_CX_READ(MemAttributes->Instance, cid, PageId);
   HAL_RIF_CLEAR_RISAB_PG_CX_WRITE(MemAttributes->Instance, cid, PageId);
@@ -784,7 +775,7 @@ HAL_StatusTypeDef HAL_RISAB_ConfigMemAttributes(uint32_t PageId, RIF_MemRisab_De
   {
     HAL_RIF_SET_RISAB_PG_C2_PRIV(MemAttributes->Instance, PageId);
   }
-#endif
+#endif /*defined(CORE_CM33) */
   if (MemAttributes->CidPagePrivEnable)
   {
     HAL_RIF_SET_RISAB_PG_CX_PRIV(MemAttributes->Instance, cid, PageId);
@@ -813,7 +804,7 @@ HAL_StatusTypeDef HAL_RISAB_ConfigMemAttributes(uint32_t PageId, RIF_MemRisab_De
 
   return HAL_OK;
 }
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 
 /**
  * @brief  Get RIF RISAB memory configuration.
@@ -824,7 +815,8 @@ HAL_StatusTypeDef HAL_RISAB_ConfigMemAttributes(uint32_t PageId, RIF_MemRisab_De
  *         This parameter can be a value of @ref RIF_MemRisab_Desc.
  * @retval HAL status.
  */
-HAL_StatusTypeDef HAL_RISAB_GetConfigMemAttributes(uint32_t Instance, uint32_t PageId, uint32_t Cid, RIF_MemRisab_Desc *MemAttributes)
+HAL_StatusTypeDef HAL_RISAB_GetConfigMemAttributes(uint32_t Instance, uint32_t PageId,\
+                                                   uint32_t Cid, RIF_MemRisab_Desc *MemAttributes)
 {
   /* Check RISAB instance */
   if (!IS_RISAB_INSTANCE(Instance))
@@ -863,13 +855,13 @@ HAL_StatusTypeDef HAL_RISAB_GetConfigMemAttributes(uint32_t Instance, uint32_t P
   /* Get RISAB parameters */
   MemAttributes->Instance = Instance;
   MemAttributes->Cid = Cid;
-  MemAttributes->SecAccessEnable = (_Bool)HAL_RIF_IS_RISAB_SRWIAD(MemAttributes->Instance);
+  MemAttributes->SecAccessEnable = (uint32_t)HAL_RIF_IS_RISAB_SRWIAD(MemAttributes->Instance);
   MemAttributes->CidPagePrivEnable = (_Bool)HAL_RIF_IS_RISAB_PG_CX_PRIV(MemAttributes->Instance, Cid, PageId);
   MemAttributes->CidPageReadEnable = (_Bool)HAL_RIF_IS_RISAB_PG_CX_READ(MemAttributes->Instance, Cid, PageId);
   MemAttributes->CidPageWriteEnable = (_Bool)HAL_RIF_IS_RISAB_PG_CX_WRITE(MemAttributes->Instance, Cid, PageId);
   MemAttributes->CidPageEnable = (_Bool)HAL_RIF_IS_RISAB_PG_CFEN(MemAttributes->Instance, PageId);
   MemAttributes->DccidPageEnable = (_Bool)HAL_RIF_IS_RISAB_PG_DCEN(MemAttributes->Instance, PageId);
-  MemAttributes->PageLockEnable = (_Bool)HAL_RIF_IS_RISAB_PG_LOCK(MemAttributes->Instance, PageId);
+  MemAttributes->PageLockEnable = (uint32_t)HAL_RIF_IS_RISAB_PG_LOCK(MemAttributes->Instance, PageId);
   MemAttributes->Dccid = HAL_RIF_READ_RISAB_PG_DCCID(MemAttributes->Instance, PageId);
   if (HAL_RIF_READ_RISAB_PG_SEC(MemAttributes->Instance, PageId) == RISAB_PGSECCFGR_SEC)
   {
@@ -901,7 +893,7 @@ void HAL_RISAB_MemGLock(uint32_t Instance)
     HAL_RIF_SET_RISAB_GLOCK(Instance);
   }
 }
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 
 /**
  * @brief  Get RISAB memory global lock configuration.
@@ -1053,7 +1045,7 @@ HAL_StatusTypeDef HAL_RISAF_ConfigMemSubRegionAttributes(uint32_t RegionId, RIF_
 
   if (MemAttributes->SubRegId == RIF_RISAF_MEM_SUBREGA)
   {
-    /* Check SubReg Ressource Lock */
+    /* Check SubReg Resource Lock */
     if(HAL_RIF_IS_RISAF_SUBREGA_RLOCK(MemAttributes->Instance, RegionId))
     {
       return HAL_ERROR;
@@ -1096,7 +1088,8 @@ HAL_StatusTypeDef HAL_RISAF_ConfigMemSubRegionAttributes(uint32_t RegionId, RIF_
     {
       /* Use absolute base address */
       HAL_RIF_SET_RISAF_SUBREGA_STARTR(MemAttributes->Instance, RegionId, MemAttributes->SubRegAddress);
-      HAL_RIF_SET_RISAF_SUBREGA_ENDR(MemAttributes->Instance, RegionId, MemAttributes->SubRegAddress+MemAttributes->SubRegSize-1);
+      HAL_RIF_SET_RISAF_SUBREGA_ENDR(MemAttributes->Instance, RegionId,\
+                                     MemAttributes->SubRegAddress+MemAttributes->SubRegSize-1);
     }
     else
     {
@@ -1115,7 +1108,7 @@ HAL_StatusTypeDef HAL_RISAF_ConfigMemSubRegionAttributes(uint32_t RegionId, RIF_
   }
   else
   {
-    /* Check SubReg Ressource Lock */
+    /* Check SubReg Resource Lock */
     if(HAL_RIF_IS_RISAF_SUBREGB_RLOCK(MemAttributes->Instance, RegionId))
     {
       return HAL_ERROR;
@@ -1158,7 +1151,8 @@ HAL_StatusTypeDef HAL_RISAF_ConfigMemSubRegionAttributes(uint32_t RegionId, RIF_
     {
       /* Use absolute base address */
       HAL_RIF_SET_RISAF_SUBREGB_STARTR(MemAttributes->Instance, RegionId, MemAttributes->SubRegAddress);
-      HAL_RIF_SET_RISAF_SUBREGB_ENDR(MemAttributes->Instance, RegionId, MemAttributes->SubRegAddress+MemAttributes->SubRegSize-1);
+      HAL_RIF_SET_RISAF_SUBREGB_ENDR(MemAttributes->Instance, RegionId,\
+                                     MemAttributes->SubRegAddress+MemAttributes->SubRegSize-1);
     }
     else
     {
@@ -1218,7 +1212,7 @@ HAL_StatusTypeDef HAL_RISAF_ConfigMemEncryptAttributes(RIF_MemRisafEncKey_Desc *
 
   return HAL_OK;
 }
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 
 /**
  * @brief  Get RIF RISAF memory configuration.
@@ -1228,7 +1222,8 @@ HAL_StatusTypeDef HAL_RISAF_ConfigMemEncryptAttributes(RIF_MemRisafEncKey_Desc *
  *         This parameter can be a value of @ref RIF_MemRisafReg_Desc.
  * @retval HAL status.
  */
-HAL_StatusTypeDef HAL_RISAF_GetConfigMemRegionAttributes(uint32_t Instance, uint32_t RegionId, RIF_MemRisafReg_Desc *MemAttributes)
+HAL_StatusTypeDef HAL_RISAF_GetConfigMemRegionAttributes(uint32_t Instance, uint32_t RegionId,\
+                                                         RIF_MemRisafReg_Desc *MemAttributes)
 {
   /* Check RISAF instance */
   if (!IS_RISAF_INSTANCE(Instance))
@@ -1250,14 +1245,14 @@ HAL_StatusTypeDef HAL_RISAF_GetConfigMemRegionAttributes(uint32_t Instance, uint
 
   /* Get RISAF parameters */
   MemAttributes->Instance = Instance;
-  MemAttributes->RegEnable = (_Bool)HAL_RIF_IS_RISAF_REG_BREN(MemAttributes->Instance, RegionId);
-  MemAttributes->RegSecEnable = (_Bool)HAL_RIF_IS_RISAF_REG_SEC(MemAttributes->Instance, RegionId);
-  MemAttributes->RegEncEnable = (_Bool)HAL_RIF_IS_RISAF_REG_ENC(MemAttributes->Instance, RegionId);
+  MemAttributes->RegEnable = (uint32_t)HAL_RIF_IS_RISAF_REG_BREN(MemAttributes->Instance, RegionId);
+  MemAttributes->RegSecEnable = (uint32_t)HAL_RIF_IS_RISAF_REG_SEC(MemAttributes->Instance, RegionId);
+  MemAttributes->RegEncEnable = (uint32_t)HAL_RIF_IS_RISAF_REG_ENC(MemAttributes->Instance, RegionId);
   MemAttributes->CidRegPriv = HAL_RIF_READ_RISAF_REG_CIDPRIV(MemAttributes->Instance, RegionId);
   MemAttributes->CidRegRead = HAL_RIF_READ_RISAF_REG_CIDREAD(MemAttributes->Instance, RegionId);
   MemAttributes->CidRegWrite = HAL_RIF_READ_RISAF_REG_CIDWRITE(MemAttributes->Instance, RegionId);
   MemAttributes->RegAddress = HAL_RIF_READ_RISAF_STARTR(MemAttributes->Instance, RegionId);
-  MemAttributes->RegSize = HAL_RIF_READ_RISAF_ENDR(MemAttributes->Instance, RegionId) + 1;
+  MemAttributes->RegSize = HAL_RIF_READ_RISAF_ENDR(MemAttributes->Instance, RegionId) + 1U;
 
   return HAL_OK;
 }
@@ -1271,7 +1266,9 @@ HAL_StatusTypeDef HAL_RISAF_GetConfigMemRegionAttributes(uint32_t Instance, uint
  *         This parameter can be a value of @ref RIF_MemRisafSubReg_Desc.
  * @retval HAL status.
  */
-HAL_StatusTypeDef HAL_RISAF_GetConfigMemSubRegionAttributes(uint32_t Instance, uint32_t RegionId, uint32_t SubRegionId, RIF_MemRisafSubReg_Desc *MemAttributes)
+HAL_StatusTypeDef HAL_RISAF_GetConfigMemSubRegionAttributes(uint32_t Instance, uint32_t RegionId,\
+                                                            uint32_t SubRegionId, \
+                                                            RIF_MemRisafSubReg_Desc *MemAttributes)
 {
   /* Check RISAF instance */
   if (!IS_RISAF_INSTANCE(Instance))
@@ -1303,31 +1300,31 @@ HAL_StatusTypeDef HAL_RISAF_GetConfigMemSubRegionAttributes(uint32_t Instance, u
 
   if (MemAttributes->SubRegId == RIF_RISAF_MEM_SUBREGA)
   {
-    MemAttributes->SubRegEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGA_SREN(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegSecEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGA_SEC(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegPrivEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGA_PRIV(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegReadEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGA_RDEN(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegWriteEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGA_WREN(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegDCidEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGA_DCEN(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGA_SREN(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegSecEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGA_SEC(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegPrivEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGA_PRIV(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegReadEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGA_RDEN(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegWriteEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGA_WREN(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegDCidEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGA_DCEN(MemAttributes->Instance, RegionId);
     MemAttributes->SubRegDccid = HAL_RIF_READ_RISAF_SUBREGA_DCCID(MemAttributes->Instance, RegionId);
     MemAttributes->SubRegSrcid = HAL_RIF_READ_RISAF_SUBREGA_SRCID(MemAttributes->Instance, RegionId);
     MemAttributes->SubRegAddress = HAL_RIF_READ_RISAF_ASTARTR(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegSize = HAL_RIF_READ_RISAF_AENDR(MemAttributes->Instance, RegionId) + 1;
-    MemAttributes->SubRegLockEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGA_RLOCK(MemAttributes->Instance, RegionId);;
+    MemAttributes->SubRegSize = HAL_RIF_READ_RISAF_AENDR(MemAttributes->Instance, RegionId) + 1U;
+    MemAttributes->SubRegLockEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGA_RLOCK(MemAttributes->Instance, RegionId);;
   }
   else
   {
-    MemAttributes->SubRegEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGB_SREN(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegSecEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGB_SEC(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegPrivEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGB_PRIV(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegReadEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGB_RDEN(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegWriteEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGB_WREN(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegDCidEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGB_DCEN(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGB_SREN(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegSecEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGB_SEC(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegPrivEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGB_PRIV(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegReadEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGB_RDEN(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegWriteEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGB_WREN(MemAttributes->Instance, RegionId);
+    MemAttributes->SubRegDCidEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGB_DCEN(MemAttributes->Instance, RegionId);
     MemAttributes->SubRegDccid = HAL_RIF_READ_RISAF_SUBREGB_DCCID(MemAttributes->Instance, RegionId);
     MemAttributes->SubRegSrcid = HAL_RIF_READ_RISAF_SUBREGB_SRCID(MemAttributes->Instance, RegionId);
     MemAttributes->SubRegAddress = HAL_RIF_READ_RISAF_BSTARTR(MemAttributes->Instance, RegionId);
-    MemAttributes->SubRegSize = HAL_RIF_READ_RISAF_BENDR(MemAttributes->Instance, RegionId) + 1;
-    MemAttributes->SubRegLockEnable = (_Bool)HAL_RIF_IS_RISAF_SUBREGB_RLOCK(MemAttributes->Instance, RegionId);;
+    MemAttributes->SubRegSize = HAL_RIF_READ_RISAF_BENDR(MemAttributes->Instance, RegionId) + 1U;
+    MemAttributes->SubRegLockEnable = (uint32_t)HAL_RIF_IS_RISAF_SUBREGB_RLOCK(MemAttributes->Instance, RegionId);;
   }
 
   return HAL_OK;
@@ -1347,7 +1344,7 @@ void HAL_RISAF_MemGLock(uint32_t Instance)
     HAL_RIF_SET_RISAF_GLOCK(Instance);
   }
 }
-#endif
+#endif /* defined(CORE_CA35) || defined(CORTEX_IN_SECURE_STATE) */
 
 /**
  * @brief  Get RISAF memory global lock configuration.
@@ -1392,7 +1389,7 @@ uint32_t HAL_RISAF_GetMemGLock(uint32_t Instance)
  */
 HAL_StatusTypeDef HAL_IAC_DisableIT(uint32_t PeriphId)
 {
-  uint32_t r;
+  uint32_t reg_index;
 
   /* check entry parameters */
   assert_param(IS_RIF_PERIPHERAL(PeriphId));
@@ -1400,15 +1397,16 @@ HAL_StatusTypeDef HAL_IAC_DisableIT(uint32_t PeriphId)
   if ((PeriphId & RIF_PERIPH_ALLIP_Msk) != 0U)
   {
     /* same configuration is applied to all peripherals */
-    for (r = 0; r < RIF_PERIPH_REG_MAX; r++)
+    for (reg_index = 0; reg_index < RIF_PERIPH_REG_MAX; reg_index++)
     {
-      CLEAR_REG(IAC->IER[r]);
+      CLEAR_REG(IAC->IER[reg_index]);
     }
   }
   else
   {
     /* common case where only one peripheral is configured */
-    CLEAR_BIT(IAC->IER[RIF_GET_REG_INDEX(PeriphId)], 1 << RIF_GET_PERIPH_POS(PeriphId));
+    CLEAR_BIT(IAC->IER[RIF_GET_REG_INDEX(PeriphId) % (sizeof(IAC->IER)/sizeof(IAC->IER[0]))]\
+              , 1U << RIF_GET_PERIPH_POS(PeriphId));
   }
 
   return HAL_OK;
@@ -1423,7 +1421,7 @@ HAL_StatusTypeDef HAL_IAC_DisableIT(uint32_t PeriphId)
  */
 HAL_StatusTypeDef HAL_IAC_EnableIT(uint32_t PeriphId)
 {
-  uint32_t r;
+  uint32_t reg_index;
 
   /* check entry parameters */
   assert_param(IS_RIF_PERIPHERAL(PeriphId));
@@ -1431,15 +1429,16 @@ HAL_StatusTypeDef HAL_IAC_EnableIT(uint32_t PeriphId)
   if ((PeriphId & RIF_PERIPH_ALLIP_Msk) != 0U)
   {
     /* same configuration is applied to all peripherals */
-    for (r = 0; r < RIF_PERIPH_REG_MAX; r++)
+    for (reg_index = 0; reg_index < RIF_PERIPH_REG_MAX; reg_index++)
     {
-      //      WRITE_REG(IAC->IER[r], RISC_PERIPH_REG_ALL[r]);
+      /* WRITE_REG(IAC->IER[reg_index], RISC_PERIPH_REG_ALL[reg_index]) */
     }
   }
   else
   {
     /* common case where only one peripheral is configured */
-    SET_BIT(IAC->IER[RIF_GET_REG_INDEX(PeriphId)], 1 << RIF_GET_PERIPH_POS(PeriphId));
+    SET_BIT(IAC->IER[RIF_GET_REG_INDEX(PeriphId)\
+                     % (sizeof(IAC->IER)/sizeof(IAC->IER[0]))], 1UL << RIF_GET_PERIPH_POS(PeriphId));
   }
 
   return HAL_OK;
@@ -1460,7 +1459,8 @@ HAL_StatusTypeDef HAL_IAC_EnableIT(uint32_t PeriphId)
  */
 HAL_StatusTypeDef HAL_IAC_GetFlag(uint32_t PeriphId, uint32_t *Flag)
 {
-  uint32_t i,r;
+  uint32_t i;
+  uint32_t reg_index;
   uint32_t reg_value;
 
   /* check entry parameters */
@@ -1474,19 +1474,20 @@ HAL_StatusTypeDef HAL_IAC_GetFlag(uint32_t PeriphId, uint32_t *Flag)
   if ((PeriphId & RIF_PERIPH_ALLIP_Msk) != 0U)
   {
     /* special case where it is applied to all peripherals */
-    for (r = 0; r < RIF_PERIPH_REG_MAX; r++)
+    for (reg_index = 0; reg_index < RIF_PERIPH_REG_MAX; reg_index++)
     {
-      reg_value = READ_REG(IAC->ISR[r]);
+      reg_value = READ_REG(IAC->ISR[reg_index]);
       for (i = 0U; i < 32U; i++)
       {
-        Flag[r*32+i] = (reg_value & (1UL << i)) >> i;
+        Flag[(reg_index * 32U)+i] = (reg_value & (1UL << i)) >> i;
       }
     }
   }
   else
   {
     /* common case where only one peripheral is concerned */
-    Flag[RIF_GET_ARRAY_INDEX(PeriphId)] = READ_BIT(IAC->ISR[RIF_GET_REG_INDEX(PeriphId)], 1 << RIF_GET_PERIPH_POS(PeriphId));
+    Flag[RIF_GET_ARRAY_INDEX(PeriphId)] = READ_BIT(IAC->ISR[RIF_GET_REG_INDEX(PeriphId)\
+                                                            % (sizeof(IAC->ISR)/sizeof(IAC->ISR[0]))], 1UL << RIF_GET_PERIPH_POS(PeriphId));
   }
 
   return HAL_OK;
@@ -1501,7 +1502,7 @@ HAL_StatusTypeDef HAL_IAC_GetFlag(uint32_t PeriphId, uint32_t *Flag)
  */
 HAL_StatusTypeDef HAL_IAC_ClearFlag(uint32_t PeriphId)
 {
-  uint32_t r;
+  uint32_t reg_index;
 
   /* check entry parameters */
   assert_param(IS_RIF_PERIPHERAL(PeriphId));
@@ -1509,15 +1510,16 @@ HAL_StatusTypeDef HAL_IAC_ClearFlag(uint32_t PeriphId)
   if ((PeriphId & RIF_PERIPH_ALLIP_Msk) != 0U)
   {
     /* same configuration is applied to all peripherals */
-    for (r = 0; r < RIF_PERIPH_REG_MAX; r++)
+    for (reg_index = 0; reg_index < RIF_PERIPH_REG_MAX; reg_index++)
     {
-      //      WRITE_REG(IAC->ICR[r], RISC_PERIPH_REG_ALL[r]);
+      /*      WRITE_REG(IAC->ICR[reg_index], RISC_PERIPH_REG_ALL[reg_index]) */
     }
   }
   else
   {
     /* common case where only one peripheral is configured */
-    SET_BIT(IAC->ICR[RIF_GET_REG_INDEX(PeriphId)], 1 << RIF_GET_PERIPH_POS(PeriphId));
+    SET_BIT((IAC->ICR[RIF_GET_REG_INDEX(PeriphId) % (sizeof(IAC->ICR)/sizeof(IAC->ICR[0]))] )\
+            , (1UL << (RIF_GET_PERIPH_POS(PeriphId))));
   }
 
   return HAL_OK;
@@ -1539,24 +1541,24 @@ HAL_StatusTypeDef HAL_IAC_ClearFlag(uint32_t PeriphId)
 void HAL_RIF_IRQHandler(void)
 {
   /* Get current IT Flags and IT sources value */
-  uint32_t r;
+  uint32_t reg_index;
   uint32_t flag;
   uint32_t position;
 
-  for (r = 0; r < RIF_PERIPH_REG_MAX; r++)
+  for (reg_index = 0; reg_index < RIF_PERIPH_REG_MAX; reg_index++)
   {
     /* Get Mask interrupt and then clear them */
-    flag = READ_REG(IAC->ISR[r]);
-    WRITE_REG(IAC->ICR[r], flag);
+    flag = READ_REG(IAC->ISR[reg_index]);
+    WRITE_REG(IAC->ICR[reg_index], flag);
 
     /* Loop on flag to check, which ones have been raised */
     position = 0;
-    while (((flag >> position) != 0x00u) && position < 32)
+    while ((position < 32U) && ((flag >> position) != 0x00u))
     {
-      if ((flag & (1u << position)) != 0x00u)
+      if ((flag & (1UL << position)) != 0x00u)
       {
         /* Callback with periph_id (add reg pos to find periph id) */
-        HAL_IAC_Callback(position | (r << RIF_PERIPH_REG_Pos));
+        HAL_IAC_Callback(position | (reg_index << RIF_PERIPH_REG_Pos));
       }
 
       /* Position bit to be updated */

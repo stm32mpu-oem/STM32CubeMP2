@@ -169,8 +169,8 @@ HAL_StatusTypeDef HAL_SMBUSEx_ConfigFastModePlus(SMBUS_HandleTypeDef *hsmbus, ui
   * @{
   */
 HAL_StatusTypeDef HAL_SMBUSEx_SetConfigAutonomousMode(SMBUS_HandleTypeDef *hsmbus,
-                                                      SMBUS_AutonomousModeConfTypeDef *sConfig);
-HAL_StatusTypeDef HAL_SMBUSEx_GetConfigAutonomousMode(SMBUS_HandleTypeDef *hsmbus,
+                                                      const SMBUS_AutonomousModeConfTypeDef *sConfig);
+HAL_StatusTypeDef HAL_SMBUSEx_GetConfigAutonomousMode(const SMBUS_HandleTypeDef *hsmbus,
                                                       SMBUS_AutonomousModeConfTypeDef *sConfig);
 HAL_StatusTypeDef HAL_SMBUSEx_ClearConfigAutonomousMode(SMBUS_HandleTypeDef *hsmbus);
 /**
@@ -215,6 +215,8 @@ HAL_StatusTypeDef HAL_SMBUSEx_ClearConfigAutonomousMode(SMBUS_HandleTypeDef *hsm
                                                 ((__SOURCE__) == SMBUS_GRP1_RTC_ALRA_TRG       ) || \
                                                 ((__SOURCE__) == SMBUS_GRP1_RTC_WUT_TRG        ))
 #endif /* I2C8 */
+
+#define IS_SMBUS_TRIG_INPUT_INSTANCE(__INSTANCE__)    IS_SMBUS_GRP1_INSTANCE(__INSTANCE__)
 
 #define IS_SMBUS_AUTO_MODE_TRG_POL(__POLARITY__)      (((__POLARITY__) == SMBUS_TRIG_POLARITY_RISING) ||               \
                                                        ((__POLARITY__) == SMBUS_TRIG_POLARITY_FALLING))

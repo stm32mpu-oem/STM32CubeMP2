@@ -293,7 +293,7 @@ static USBPD_UCSI_Status_t UCSI_I2C_Init(void (*ReceiveCommandCb)(uint8_t, uint8
   MX_I2C_UCSI_HANDLE_INIT();
   /* Start the listen I2C task for UCSI*/
 #if defined(USBPD_THREADX)
-  if (tx_semaphore_create(&sem_ucsi_i2c_cplt, "sem_ucsi_i2c_cplt" , 1U) != TX_SUCCESS)
+  if (tx_semaphore_create(&sem_ucsi_i2c_cplt, "sem_ucsi_i2c_cplt", 1U) != TX_SUCCESS)
   {
     /* Error occurred creating a Semaphore */
     return USBPD_UCSI_ERROR;
@@ -316,7 +316,8 @@ static USBPD_UCSI_Status_t UCSI_I2C_Init(void (*ReceiveCommandCb)(uint8_t, uint8
 #if defined(_RTOS) || defined(USBPD_THREADX)
   OS_INIT();
   OS_DEFINE_TASK(I2CTask, USBPD_UCSI_PPM_TaskListenI2C, OS_I2CTASK_PRIORITY, OS_I2CTASK_STACK_SIZE, NULL);
-  OS_CREATE_TASK(I2CTaskThread, I2CTask, USBPD_UCSI_PPM_TaskListenI2C, OS_I2CTASK_PRIORITY, OS_I2CTASK_STACK_SIZE, NULL);
+  OS_CREATE_TASK(I2CTaskThread, I2CTask, USBPD_UCSI_PPM_TaskListenI2C, OS_I2CTASK_PRIORITY,
+                 OS_I2CTASK_STACK_SIZE, NULL);
 #else
 #warning "NRTOS Version not implemented"
 #endif /* _RTOS || USBPD_THREADX */
@@ -410,7 +411,7 @@ static USBPD_StatusTypeDef USBPD_UCSI_PPM_ListenPort(uint8_t *pDirection, uint8_
 #warning "NRTOS Version not implemented"
 #endif /* USBPD_THREADX */
   {
-    switch(HAL_I2C_GetError(&UCSI_HANDLE_I2C))
+    switch (HAL_I2C_GetError(&UCSI_HANDLE_I2C))
     {
       case HAL_I2C_ERROR_NONE:
       case HAL_I2C_ERROR_AF:

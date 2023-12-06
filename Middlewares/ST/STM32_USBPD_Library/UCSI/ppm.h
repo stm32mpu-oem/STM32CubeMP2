@@ -20,6 +20,10 @@
 #ifndef PPM_H
 #define PPM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** @addtogroup STM32_USBPD_LIBRARY
   * @{
   */
@@ -104,5 +108,9 @@ void                USBPD_PPM_PostCommand(void);
 /**
   * @}
   */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* PPM_H */

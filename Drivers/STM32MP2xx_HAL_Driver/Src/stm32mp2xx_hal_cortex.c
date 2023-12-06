@@ -526,8 +526,7 @@ __weak void HAL_SYSTICK_Callback(void)
   */
 void HAL_MPU_Disable(void)
 {
-  /* Make sure outstanding transfers are done */
-  __DMB();
+  __DMB(); /* Data Memory Barrier operation to force any outstanding writes to memory before disabling the MPU */
 
 #ifdef CORE_CM33
   /* Disable fault exceptions on Cortex-M33 (not present on Cortex-M0+) */
@@ -540,7 +539,36 @@ void HAL_MPU_Disable(void)
   /* see Table 4-28 page 115 in [ARM DUI0605B]                  */
   /* ("Cortex-M0+ User Guide Reference Material")               */
   MPU->CTRL = 0x0;
+
+  /* Follow ARM recommendation with */
+  /* Data Synchronization and Instruction Synchronization Barriers to ensure MPU configuration */
+  __DSB(); /* Ensure that the subsequent instruction is executed only after the write to memory */
+  __ISB(); /* Flush and refill pipeline with updated MPU configuration settings */
 }
+
+#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
+/**
+  * @brief  Disable the non-secure MPU.
+  * @retval None
+  */
+void HAL_MPU_Disable_NS(void)
+{
+  __DMB(); /* Data Memory Barrier operation to force any outstanding writes to memory before disabling the MPU */
+
+  /* Disable fault exceptions */
+  SCB_NS->SHCSR &= ~SCB_SHCSR_MEMFAULTENA_Msk;
+
+#ifdef CORE_CM33
+  /* Disable the MPU */
+  MPU_NS->CTRL = 0x0;
+#endif /* CORE_CM33 */
+
+  /* Follow ARM recommendation with */
+  /* Data Synchronization and Instruction Synchronization Barriers to ensure MPU configuration */
+  __DSB(); /* Ensure that the subsequent instruction is executed only after the write to memory */
+  __ISB(); /* Flush and refill pipeline with updated MPU configuration settings */
+}
+#endif /* __ARM_FEATURE_CMSE */
 
 /**
   * @brief  Enable the MPU.
@@ -555,6 +583,8 @@ void HAL_MPU_Disable(void)
   */
 void HAL_MPU_Enable(uint32_t MPU_Control)
 {
+  __DMB(); /* Data Memory Barrier operation to force any outstanding writes to memory before enabling the MPU */
+
   /* Check input configuration */
   assert_param(IS_MPU_HFNMI_PRIVDEF_CONTROL(MPU_Control));
 
@@ -566,10 +596,45 @@ void HAL_MPU_Enable(uint32_t MPU_Control)
   SCB->SHCSR |= SCB_SHCSR_MEMFAULTENA_Msk;
 #endif /* CORE_CM33 */
 
-  /* Ensure MPU settings take effects */
-  __DSB();
-  __ISB();
+  /* Follow ARM recommendation with */
+  /* Data Synchronization and Instruction Synchronization Barriers to ensure MPU configuration */
+  __DSB(); /* Ensure that the subsequent instruction is executed only after the write to memory */
+  __ISB(); /* Flush and refill pipeline with updated MPU configuration settings */
 }
+
+#if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
+/**
+  * @brief  Enable the non-secure MPU.
+  * @param  MPU_Control: Specifies the control mode of the MPU during hard fault,
+  *          NMI, FAULTMASK and privileged access to the default memory
+  *          This parameter can be one of the following values:
+  *            @arg MPU_HFNMI_PRIVDEF_NONE
+  *            @arg MPU_HARDFAULT_NMI
+  *            @arg MPU_PRIVILEGED_DEFAULT
+  *            @arg MPU_HFNMI_PRIVDEF
+  * @retval None
+  */
+void HAL_MPU_Enable_NS(uint32_t MPU_Control)
+{
+  __DMB(); /* Data Memory Barrier operation to force any outstanding writes to memory before disabling the MPU */
+
+  /* Check input configuration */
+  assert_param(IS_MPU_HFNMI_PRIVDEF_CONTROL(MPU_Control));
+
+  /* Enable the MPU */
+  MPU_NS->CTRL   = MPU_Control | MPU_CTRL_ENABLE_Msk;
+
+#ifdef CORE_CM33
+  /* Enable fault exceptions */
+  SCB_NS->SHCSR |= SCB_SHCSR_MEMFAULTENA_Msk;
+#endif /* CORE_CM33 */
+
+  /* Follow ARM recommendation with */
+  /* Data Synchronization and Instruction Synchronization Barriers to ensure MPU configuration */
+  __DSB(); /* Ensure that the subsequent instruction is executed only after the write to memory */
+  __ISB(); /* Flush and refill pipeline with updated MPU configuration settings */
+}
+#endif /* __ARM_FEATURE_CMSE */
 
 #ifdef CORE_CM0PLUS
 /* [MPU/FUNCTIONS] M0+ (ARMv6-M) specific implementations */

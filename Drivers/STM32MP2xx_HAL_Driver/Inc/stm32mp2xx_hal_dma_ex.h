@@ -150,7 +150,7 @@ typedef struct
 #if defined CORTEX_IN_SECURE_STATE
   uint32_t                    SrcSecure;          /*!< Specifies the source security attribute                        */
   uint32_t                    DestSecure;         /*!< Specifies the destination security attribute                   */
-#endif /* defined CORTEX_IN_SECURE_STATE */
+#endif /* CORTEX_IN_SECURE_STATE */
 
 } DMA_NodeConfTypeDef;
 
@@ -236,10 +236,10 @@ typedef struct __DMA_QListTypeDef
                                                               destination data width                             */
 #define DMA_DATA_PACK                  DMA_CTR1_PAM_1 /*!< If source data width < destination data width
                                                            => Packed at the destination data width
-                                                              (Available only for GPDMA)                         */
+                                                              (Not available on LPDMA)                           */
 #define DMA_DATA_UNPACK                DMA_CTR1_PAM_1 /*!< If source data width > destination data width
                                                            => Unpacked at the destination data width
-                                                              (Available only for GPDMA)                         */
+                                                              (Not available on LPDMA)                           */
 /**
   * @}
   */
@@ -252,6 +252,7 @@ typedef struct __DMA_QListTypeDef
 #define DMA_EXCHANGE_DEST_BYTE     DMA_CTR1_DBX /*!< Destination Byte exchange when destination data width is > Byte           */
 #define DMA_EXCHANGE_DEST_HALFWORD DMA_CTR1_DHX /*!< Destination Half-Word exchange when destination data width is > Half-Word */
 #define DMA_EXCHANGE_SRC_BYTE      DMA_CTR1_SBX /*!< Source Byte endianness exchange when source data width is word            */
+#define DMA_EXCHANGE_DEST_WORD     DMA_CTR1_DWX /*!< Destination Word exchange when destination data width is > Word */
 /**
   * @}
   */
@@ -598,6 +599,8 @@ typedef struct
 #define NODE_CLLR_IDX                   (0x0700U) /* DMA channel node CLLR index mask      */
 #define NODE_CLLR_IDX_POS               (0x0008U) /* DMA channel node CLLR index position  */
 
+#define NODE_MAXIMUM_SIZE               (0x0008U) /* Amount of registers of the node       */
+
 #define NODE_STATIC_FORMAT              (0x0000U) /* DMA channel node static format        */
 #define NODE_DYNAMIC_FORMAT             (0x0001U) /* DMA channel node dynamic format       */
 
@@ -639,7 +642,8 @@ typedef struct
    ((ALIGNMENT) == DMA_DATA_PACK))
 
 #define IS_DMA_DATA_EXCHANGE(EXCHANGE) \
-  (((EXCHANGE) & (~(DMA_EXCHANGE_SRC_BYTE | DMA_EXCHANGE_DEST_BYTE | DMA_EXCHANGE_DEST_HALFWORD))) == 0U)
+  (((EXCHANGE) & (~(DMA_EXCHANGE_SRC_BYTE | DMA_EXCHANGE_DEST_BYTE | DMA_EXCHANGE_DEST_HALFWORD | \
+                    DMA_EXCHANGE_DEST_WORD))) == 0U)
 
 #define IS_DMA_REPEAT_COUNT(COUNT) \
   (((COUNT) > 0U) && ((COUNT) <= (DMA_CBR1_BRC >> DMA_CBR1_BRC_Pos)))

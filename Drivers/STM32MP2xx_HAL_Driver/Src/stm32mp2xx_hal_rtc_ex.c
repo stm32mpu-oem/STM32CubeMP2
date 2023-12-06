@@ -1771,8 +1771,8 @@ HAL_StatusTypeDef HAL_RTCEx_SetActiveTampers(RTC_HandleTypeDef *hrtc, RTC_Active
   {
     if (sAllTamper->TampInput[i].Enable != RTC_ATAMP_DISABLE)
     {
-      CR1 |= (TAMP_CR1_TAMP1E << i);
-      ATCR1 |= (TAMP_ATCR1_TAMP1AM << i);
+      CR1 |= ((uint32_t)TAMP_CR1_TAMP1E << i);
+      ATCR1 |= ((uint32_t)TAMP_ATCR1_TAMP1AM << i);
 
       if (sAllTamper->TampInput[i].Interrupt != RTC_ATAMP_INTERRUPT_DISABLE)
       {
@@ -1780,17 +1780,17 @@ HAL_StatusTypeDef HAL_RTCEx_SetActiveTampers(RTC_HandleTypeDef *hrtc, RTC_Active
         __HAL_RTC_TAMPER_EXTI_ENABLE_IT();
 
         /* Interrupt enable register */
-        IER |= (TAMP_IER_TAMP1IE << i);
+        IER |= ((uint32_t)TAMP_IER_TAMP1IE << i);
       }
 
       if (sAllTamper->TampInput[i].MaskFlag != RTC_TAMPERMASK_FLAG_DISABLE)
       {
-        CR2 |= (TAMP_CR2_TAMP1MSK << i);
+        CR2 |= ((uint32_t)TAMP_CR2_TAMP1MSK << i);
       }
 
       if (sAllTamper->TampInput[i].NoErase != RTC_TAMPER_ERASE_BACKUP_ENABLE)
       {
-        CR2 |= (TAMP_CR2_TAMP1NOER << i);
+        CR2 |= ((uint32_t)TAMP_CR2_TAMP1NOER << i);
       }
 
       /* Configure ATOSELx[] in case of output sharing */

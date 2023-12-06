@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -13,7 +13,7 @@
  * Please refer to the Training Firmware App Note for futher information about
  * the usage for Message Block.
  */
-typedef struct _pmu_smb_ddr_1d_t {
+struct pmu_smb_ddr_1d {
 	uint8_t reserved00;		/*
 					 * Byte offset 0x00, CSR Addr 0x54000, Direction=In
 					 * reserved00[0:4] RFU, must be zero
@@ -142,13 +142,14 @@ typedef struct _pmu_smb_ddr_1d_t {
 					 */
 	uint8_t bpznresval;		/*
 					 * Byte offset 0x09, CSR Addr 0x54004, Direction=In
-					 * Must be programmed to match the precision resistor
-					 * connected to Phy BP_ZN
+					 * Overwrite the value of precision resistor connected to
+					 * Phy BP_ZN
 					 *   0x00 = Do not program. Use current CSR value.
-					 *   0xf0 = 240 Ohm (recommended value)
+					 *   0xf0 = 240 Ohm
 					 *   0x78 = 120 Ohm
 					 *   0x28 = 40 Ohm
 					 *   All other values are reserved.
+					 * It is recommended to set this to 0x00.
 					 */
 	uint8_t phyodtimpedance;	/*
 					 * Byte offset 0x0a, CSR Addr 0x54005, Direction=In
@@ -831,8 +832,14 @@ typedef struct _pmu_smb_ddr_1d_t {
 					 * pstate
 					 */
 	uint8_t reserved64;		/*
-					 * Byte offset 0x64, CSR Addr 0x54032, Direction=N/A
-					 * This field is reserved and must be programmed to 0x00.
+					 * Byte offset 0x64, CSR Addr 0x54032, Direction=In
+					 * Reserved64[0] = protect memory reset
+					 *   0x0 = dfi_reset_n cannot control CP_MEMRESET_L to
+					 *	   devices after training. (Default value)
+					 *   0x1 = dfi_reset_n can control CP_MEMRESET_L to
+					 *	   devices after training.
+					 *
+					 * Reserved64[7:1] RFU, must be zero
 					 */
 	uint8_t reserved65;		/*
 					 * Byte offset 0x65, CSR Addr 0x54032, Direction=N/A
@@ -994,6 +1001,6 @@ typedef struct _pmu_smb_ddr_1d_t {
 	uint8_t reserveda1;		/* Byte offset 0xa1, CSR Addr 0x54050, Direction=N/A */
 	uint8_t reserveda2;		/* Byte offset 0xa2, CSR Addr 0x54051, Direction=N/A */
 	uint8_t reserveda3;		/* Byte offset 0xa3, CSR Addr 0x54051, Direction=N/A */
-} __attribute__ ((packed)) __attribute__ ((aligned(2))) pmu_smb_ddr_1d_t;
+} __attribute__ ((packed)) __attribute__ ((aligned(2)));
 
 #endif /* MNPMUSRAMMSGBLOCK_DDR3_H */

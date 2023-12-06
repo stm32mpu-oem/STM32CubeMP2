@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -12,7 +12,7 @@
  * Please refer to the Training Firmware App Note for futher information about
  * the usage for Message Block.
  */
-typedef struct _pmu_smb_ddr_1d_t {
+struct pmu_smb_ddr_1d {
 	uint8_t reserved00;		/*
 					 * Byte offset 0x00, CSR Addr 0x54000, Direction=In
 					 * reserved00[0:4] RFU, must be zero
@@ -135,13 +135,14 @@ typedef struct _pmu_smb_ddr_1d_t {
 					 */
 	uint8_t bpznresval;		/*
 					 * Byte offset 0x09, CSR Addr 0x54004, Direction=In
-					 * Must be programmed to match the precision resistor
-					 * connected to Phy BP_ZN
+					 * Overwrite the value of precision resistor connected to
+					 * Phy BP_ZN
 					 *   0x00 = Do not program. Use current CSR value.
-					 *   0xf0 = 240 Ohm (recommended value)
+					 *   0xf0 = 240 Ohm
 					 *   0x78 = 120 Ohm
 					 *   0x28 = 40 Ohm
 					 *   All other values are reserved.
+					 * It is recommended to set this to 0x00.
 					 */
 	uint8_t phyodtimpedance;	/*
 					 * Byte offset 0x0a, CSR Addr 0x54005, Direction=In
@@ -385,23 +386,27 @@ typedef struct _pmu_smb_ddr_1d_t {
 					 * register values for DRAM partial array self-refresh
 					 * features if desired.
 					 *
-					 *   0x0 = Use mr<0:17>_a0 for rank 0 channel A
-					 *	   Use mr<0:17>_b0 for rank 0 channel B
-					 *	   Use mr<0:17>_a1 for rank 1 channel A
-					 *	   Use mr<0:17>_b1 for rank 1 channel B
+					 *   0x0 = Use mr<1:4, 11:14, 16:17, 22, 24>_a0 for rank 0
+					 *	   channel A
+					 *	   Use mr<1:4, 11:14, 16:17, 22, 24>_b0 for rank 0
+					 *	   channel B
+					 *	   Use mr<1:4, 11:14, 16:17, 22, 24>_a1 for rank 1
+					 *	   channel A
+					 *	   Use mr<1:4, 11:14, 16:17, 22, 24>_b1 for rank 1
+					 *	   channel B
 					 *
-					 *   0x1 = Use mr<0:17>_a0 setting for all channels/ranks
+					 *   0x1 = Use mr<1:4, 11:14, 16:17, 22, 24>_a0 setting for
+					 *	   all channels/ranks
 					 *
 					 * It is recommended in most LPDDR4 system configurations
 					 * to set this to 1.
-					 *
-					 * Note: When set to 0, only mode registers associated with
-					 * Vref CA, Vref DQ, and DRAM partial array self-refresh may
-					 * differ between ranks and channels.
+					 * It is recommended in LPDDR4x system configurations to
+					 * set this to 0.
 					 */
 	uint8_t lp4quickboot;		/*
 					 * Byte offset 0x19, CSR Addr 0x5400c, Direction=In
-					 * Enable Quickboot.
+					 * Enable Quickboot. It must be set to 0x0 since Quickboot
+					 * is only supported in dedicated Quickboot firmware.
 					 */
 	uint8_t reserved1a;		/*
 					 * Byte offset 0x1a, CSR Addr 0x5400d, Direction=In
@@ -436,7 +441,11 @@ typedef struct _pmu_smb_ddr_1d_t {
 					 *  WARNING: catrainopt[0] must be set to the same value in
 					 *  1D and 2D training.
 					 *
-					 * [1-7] RFU must be zero
+					 * [1] Train terminated Rank only
+					 *   1 = Only train terminated rank in CA training
+					 *   0 = Train all ranks in CA training
+					 *
+					 * [2-7] RFU must be zero
 					 */
 	uint8_t x8mode;			/*
 					 * Byte offset 0x1c, CSR Addr 0x5400e, Direction=In
@@ -962,6 +971,6 @@ typedef struct _pmu_smb_ddr_1d_t {
 	uint8_t reserved87;		/* Byte offset 0x87, CSR Addr 0x54043, Direction=N/A */
 	uint8_t reserved88;		/* Byte offset 0x88, CSR Addr 0x54044, Direction=N/A */
 	uint8_t reserved89;		/* Byte offset 0x89, CSR Addr 0x54044, Direction=N/A */
-} __attribute__ ((packed)) __attribute__ ((aligned(2))) pmu_smb_ddr_1d_t;
+} __attribute__ ((packed)) __attribute__ ((aligned(2)));
 
 #endif /* MNPMUSRAMMSGBLOCK_LPDDR4_H */

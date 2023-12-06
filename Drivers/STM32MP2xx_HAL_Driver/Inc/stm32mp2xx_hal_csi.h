@@ -69,9 +69,9 @@ extern "C" {
 #define HAL_CSI_ERROR_ECC             (0x00000020U)    /*!< ECC error                                                */
 #define HAL_CSI_ERROR_CRC             (0x00000040U)    /*!< CRC error                                                */
 #define HAL_CSI_ERROR_SOF             (0x00000080U)    /*!< Start Of Frame error                                     */
-#define HAL_CSI_ERROR_SOFSYNC         (0x00000100U)    /*!< Start Of Frame Synchronisation error                     */
+#define HAL_CSI_ERROR_SOFSYNC         (0x00000100U)    /*!< Start Of Frame Synchronization error                     */
 #define HAL_CSI_ERROR_DPHY_ESC        (0x00000200U)    /*!< DPHY RX Escape entry error                               */
-#define HAL_CSI_ERROR_DPHY_LP_SYNC    (0x00000400U)    /*!< DPHY RX Low power data transmission synchonization error */
+#define HAL_CSI_ERROR_DPHY_LP_SYNC    (0x00000400U)    /*!< DPHY RX Low power data transmission synchronization error */
 #define HAL_CSI_ERROR_DPHY_CTRL       (0x00000800U)    /*!< DPHY RX control error                                    */
 
 /**
@@ -160,10 +160,10 @@ typedef enum
 /**
   * @brief HAL CSI lane merger configuration
   */
-#define HAL_CSI_LM_SINGLE_LANE  (1 << CSI_LMCFGR_LANENB_Pos)
-#define HAL_CSI_LM_DUAL_LANE    (2 << CSI_LMCFGR_LANENB_Pos)
-#define HAL_CSI_LM_LOGIC_LANE0  1
-#define HAL_CSI_LM_LOGIC_LANE1  2
+#define HAL_CSI_LM_SINGLE_LANE  (1U << CSI_LMCFGR_LANENB_Pos)
+#define HAL_CSI_LM_DUAL_LANE    (2U << CSI_LMCFGR_LANENB_Pos)
+#define HAL_CSI_LM_LOGIC_LANE0  (1U)
+#define HAL_CSI_LM_LOGIC_LANE1  (2U)
 
 /**
   * @brief HAL CSI Watchdog Counter configuration
@@ -187,8 +187,8 @@ typedef enum
 /**
   * @brief  HAL CSI Lane Merger structures definition
   */
-#define HAL_CSI_LANE_DISABLED  0
-#define HAL_CSI_LANE_ENABLED   1
+#define HAL_CSI_LANE_DISABLED  (0U)
+#define HAL_CSI_LANE_ENABLED   (1U)
 typedef struct
 {
   uint32_t PhysicalLane0_Status;  /*!< Enable or not the Physical Lane 0 */
@@ -291,17 +291,18 @@ typedef struct __CSI_HandleTypeDef
 /**
   * @brief  HAL CSI Virtual Channels (for HAL_CSI_Start and HAL_CSI_Stop functions only)
   */
-#define HAL_CSI_VIRTUAL_CHANNEL_0 (1 << 0)
-#define HAL_CSI_VIRTUAL_CHANNEL_1 (1 << 1)
-#define HAL_CSI_VIRTUAL_CHANNEL_2 (1 << 2)
-#define HAL_CSI_VIRTUAL_CHANNEL_3 (1 << 3)
-#define HAL_CSI_ALL_VIRTUAL_CHANNELS (HAL_CSI_VIRTUAL_CHANNEL_0 | HAL_CSI_VIRTUAL_CHANNEL_1 | HAL_CSI_VIRTUAL_CHANNEL_2 | HAL_CSI_VIRTUAL_CHANNEL_3)
-#define HAL_CSI_VIRTUAL_CHANNEL_NB  4
+#define HAL_CSI_VIRTUAL_CHANNEL_0 (1U << 0U)
+#define HAL_CSI_VIRTUAL_CHANNEL_1 (1U << 1U)
+#define HAL_CSI_VIRTUAL_CHANNEL_2 (1U << 2U)
+#define HAL_CSI_VIRTUAL_CHANNEL_3 (1U << 3U)
+#define HAL_CSI_ALL_VIRTUAL_CHANNELS (HAL_CSI_VIRTUAL_CHANNEL_0 | HAL_CSI_VIRTUAL_CHANNEL_1 | \
+                                      HAL_CSI_VIRTUAL_CHANNEL_2 | HAL_CSI_VIRTUAL_CHANNEL_3)
+#define HAL_CSI_VIRTUAL_CHANNEL_NB  (4U)
 
 /**
   * @brief  HAL CSI Virtual Channel configuration structure definition
   */
-#define HAL_CSI_DATATYPE_NB  7
+#define HAL_CSI_DATATYPE_NB  (7U)
 typedef struct
 {
   uint32_t NoDataTypeFiltering;                     /*!< 0 or 1 to enable or disable DataType filtering */
@@ -383,11 +384,14 @@ typedef enum
   */
 HAL_StatusTypeDef HAL_CSI_Init(CSI_HandleTypeDef *pHcsi);
 HAL_StatusTypeDef HAL_CSI_DeInit(CSI_HandleTypeDef *pHcsi);
-HAL_StatusTypeDef HAL_CSI_ConfigVirtualChan(CSI_HandleTypeDef *pHcsi, uint32_t vchan, CSI_VirtualChannelConfigTypeDef *Config);
-HAL_StatusTypeDef HAL_CSI_ConfigLineByteCounter(CSI_HandleTypeDef *pHcsi, uint32_t counter, CSI_LineByteCounterConfigTypeDef *Config);
-HAL_StatusTypeDef HAL_CSI_ConfigTimer(CSI_HandleTypeDef *pHcsi, uint32_t timer, CSI_TimerConfigTypeDef *Config);
+HAL_StatusTypeDef HAL_CSI_ConfigVirtualChan(CSI_HandleTypeDef *pHcsi, uint32_t vchan,
+                                            CSI_VirtualChannelConfigTypeDef *Config);
+HAL_StatusTypeDef HAL_CSI_ConfigLineByteCounter(CSI_HandleTypeDef *pHcsi, uint32_t counter,
+                                                const CSI_LineByteCounterConfigTypeDef *Config);
+HAL_StatusTypeDef HAL_CSI_ConfigTimer(CSI_HandleTypeDef *pHcsi, uint32_t timer,const CSI_TimerConfigTypeDef *Config);
 void HAL_CSI_MspInit(CSI_HandleTypeDef *pHcsi);
 void HAL_CSI_MspDeInit(CSI_HandleTypeDef *pHcsi);
+void HAL_CSI_WritePHYReg(CSI_HandleTypeDef *pHcsi, uint32_t reg_msb, uint32_t reg_lsb, uint32_t val);
 /**
   * @}
   */
@@ -404,7 +408,8 @@ HAL_StatusTypeDef HAL_CSI_Stop(CSI_HandleTypeDef *pHcsi, uint32_t vchans);
 /** @addtogroup CSI_Exported_Functions_Group3 Callback functions
   * @{
   */
-void HAL_CSI_ErrorEventCallback(CSI_HandleTypeDef *pHcsi, HAL_CSI_ErrorEventTypeDef error, uint32_t arg0, uint32_t arg1);
+void HAL_CSI_ErrorEventCallback(CSI_HandleTypeDef *pHcsi, HAL_CSI_ErrorEventTypeDef error,
+                                uint32_t arg0, uint32_t arg1);
 void HAL_CSI_EventCallback(CSI_HandleTypeDef *pHcsi, HAL_CSI_EventTypeDef event, uint32_t arg0, uint32_t arg1);
 /**
   * @}
@@ -413,8 +418,8 @@ void HAL_CSI_EventCallback(CSI_HandleTypeDef *pHcsi, HAL_CSI_EventTypeDef event,
 /** @addtogroup CSI_Exported_Functions_Group4 Peripheral State functions
 * @{
 */
-HAL_CSI_StateTypeDef HAL_CSI_GetState(CSI_HandleTypeDef *pHcsi);
-uint32_t HAL_CSI_GetError(CSI_HandleTypeDef *pHcsi);
+HAL_CSI_StateTypeDef HAL_CSI_GetState(const CSI_HandleTypeDef *pHcsi);
+uint32_t HAL_CSI_GetError(const CSI_HandleTypeDef *pHcsi);
 /**
   * @}
   */

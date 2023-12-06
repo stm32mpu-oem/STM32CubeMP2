@@ -22,8 +22,9 @@
   **********************************************************************************************************************
   @verbatim
   ======================================================================================================================
-                                 ############### How to use this driver ###############
+                       ##### How to use this driver #####
   ======================================================================================================================
+
     [..]
       DMA transfer modes are divided to 2 major categories :
           (+) Normal transfers (legacy)
@@ -58,28 +59,28 @@
 
           (+) Request               : Specifies the DMA channel request
               Request parameters    :
-              (++) can be a value of @ref DMA_Request_Selection
+              (++) can be a value of DMA_Request_Selection
 
           (+) BlkHWRequest          : Specifies the Block hardware request mode for DMA channel
-              (++) can be a value of @ref DMA_Block_Request
+              (++) can be a value of DMA_Block_Request
 
           (+) Direction             : Specifies the transfer direction for DMA channel
-              (++) can be a value of @ref DMA_Transfer_Direction
+              (++) can be a value of DMA_Transfer_Direction
 
           (+) SrcInc                : Specifies the source increment mode for the DMA channel
-              (++) can be a value of @ref DMA_Source_Increment_Mode
+              (++) can be a value of DMA_Source_Increment_Mode
 
           (+) DestInc               : Specifies the destination increment mode for the DMA channel
-              (++) can be a value of @ref DMA_Destination_Increment_Mode
+              (++) can be a value of DMA_Destination_Increment_Mode
 
           (+) SrcDataWidth          : Specifies the source data width for the DMA channel
-              (++) can be a value of @ref DMA_Source_Data_Width
+              (++) can be a value of DMA_Source_Data_Width
 
           (+) DestDataWidth         : Specifies the destination data width for the DMA channel
-              (++) can be a value of @ref DMA_Destination_Data_Width
+              (++) can be a value of DMA_Destination_Data_Width
 
           (+) Priority              : Specifies the priority for the DMA channel
-              (++) can be a value of @ref DMA_Priority_Level
+              (++) can be a value of DMA_Priority_Level
 
           (+) SrcBurstLength        : Specifies the source burst length (number of beats) for the DMA channel
               (++) can be a value of between 1 and 64
@@ -88,14 +89,15 @@
               (++) can be a value of between 1 and 64
 
           (+) TransferAllocatedPort : Specifies the source and destination allocated ports
-              (++) can be a value of @ref DMA_Transfer_Allocated_Port
+              (++) can be a value of DMA_Transfer_Allocated_Port
 
           (+) TransferEventMode     : Specifies the transfer event mode for the DMA channel
-              (++) can be a value of @ref DMA_Transfer_Event_Mode
+              (++) can be a value of DMA_Transfer_Event_Mode
 
           (+) Mode                  : Specifies the transfer mode for the DMA channel
-              (++) can be a value of @ref DMA_Transfer_Mode
-
+              (++) can be one of the following modes :
+                  (+++) DMA_NORMAL : Normal Mode
+                  (+++) DMA_PFCTRL : Peripheral Flow Control (peripheral early termination) Mode
 
     *** Polling mode IO operation ***
     =================================
@@ -155,8 +157,9 @@
               (++) Privilege : at channel level.
           (+) Use HAL_DMA_GetConfigChannelAttributes() function to get the DMA channel attributes.
           (+) Use HAL_DMA_LockChannelAttributes() function to lock the DMA channel security and privilege attributes
-              configuration. This API is called once after each system boot.
-              When this API is called, HAL_DMA_ConfigChannelAttributes() API cannot be used anymore.
+              configuration. This API can be called once after each system boot.
+              If called again, HAL_DMA_ConfigChannelAttributes() API has no effect.
+              Unlock is done either by a system boot or a by an RCC reset.
           (+) Use HAL_DMA_GetLockChannelAttributes() function to get the attributes lock status.
 
 
@@ -215,7 +218,7 @@ static void DMA_Init(DMA_HandleTypeDef const *const hdma);
   *
 @verbatim
   ======================================================================================================================
-                       ############### Initialization and de-initialization functions ###############
+                       ##### Initialization and de-initialization functions #####
   ======================================================================================================================
     [..]
       This section provides functions allowing to initialize and de-initialize the DMA channel in normal mode.
@@ -246,6 +249,33 @@ HAL_StatusTypeDef HAL_DMA_Init(DMA_HandleTypeDef *const hdma)
     return HAL_ERROR;
   }
 
+  /* Check the parameters */
+  assert_param(IS_DMA_ALL_INSTANCE(hdma->Instance));
+  assert_param(IS_DMA_DIRECTION(hdma->Init.Direction));
+  if (hdma->Init.Direction != DMA_MEMORY_TO_MEMORY)
+  {
+    assert_param(IS_DMA_REQUEST(hdma->Init.Request));
+  }
+  assert_param(IS_DMA_BLOCK_HW_REQUEST(hdma->Init.BlkHWRequest));
+  assert_param(IS_DMA_SOURCE_INC(hdma->Init.SrcInc));
+  assert_param(IS_DMA_DESTINATION_INC(hdma->Init.DestInc));
+  assert_param(IS_DMA_SOURCE_DATA_WIDTH(hdma->Init.SrcDataWidth));
+  assert_param(IS_DMA_DESTINATION_DATA_WIDTH(hdma->Init.DestDataWidth));
+  assert_param(IS_DMA_PRIORITY(hdma->Init.Priority));
+  assert_param(IS_DMA_TCEM_EVENT_MODE(hdma->Init.TransferEventMode));
+  assert_param(IS_DMA_MODE(hdma->Init.Mode));
+  if (hdma->Init.Mode == DMA_PFCTRL)
+  {
+    assert_param(IS_DMA_PFREQ_INSTANCE(hdma->Instance));
+  }
+  /* Check DMA channel instance */
+  if (IS_HPDMA_INSTANCE(hdma->Instance) != 0U)
+  {
+    assert_param(IS_DMA_BURST_LENGTH(hdma->Init.SrcBurstLength));
+    assert_param(IS_DMA_BURST_LENGTH(hdma->Init.DestBurstLength));
+    assert_param(IS_DMA_TRANSFER_ALLOCATED_PORT(hdma->Init.TransferAllocatedPort));
+  }
+
   /* Take Channel resource for current CID if Dynamic Resource isolation is enabled , else error */
   if (((hdma->Instance->CCIDCFGR & DMA_CCIDCFGR_CFEN) == DMA_CCIDCFGR_CFEN) &&
       ((hdma->Instance->CCIDCFGR & DMA_CCIDCFGR_SEMEN) == DMA_CCIDCFGR_SEMEN))
@@ -258,29 +288,6 @@ HAL_StatusTypeDef HAL_DMA_Init(DMA_HandleTypeDef *const hdma)
       /* Mutex not taken for current CID - it means that other authorized CID has control*/
       return HAL_ERROR;
     }
-  }
-
-  /* Check the parameters */
-  assert_param(IS_DMA_ALL_INSTANCE(hdma->Instance));
-  assert_param(IS_DMA_DIRECTION(hdma->Init.Direction));
-  if ((hdma->Init.Direction == DMA_MEMORY_TO_PERIPH) || (hdma->Init.Direction == DMA_PERIPH_TO_MEMORY))
-  {
-    assert_param(IS_DMA_REQUEST(hdma->Init.Request));
-  }
-  assert_param(IS_DMA_BLOCK_HW_REQUEST(hdma->Init.BlkHWRequest));
-  assert_param(IS_DMA_SOURCE_INC(hdma->Init.SrcInc));
-  assert_param(IS_DMA_DESTINATION_INC(hdma->Init.DestInc));
-  assert_param(IS_DMA_SOURCE_DATA_WIDTH(hdma->Init.SrcDataWidth));
-  assert_param(IS_DMA_DESTINATION_DATA_WIDTH(hdma->Init.DestDataWidth));
-  assert_param(IS_DMA_PRIORITY(hdma->Init.Priority));
-  assert_param(IS_DMA_TCEM_EVENT_MODE(hdma->Init.TransferEventMode));
-  assert_param(IS_DMA_MODE(hdma->Init.Mode));
-  /* Check DMA channel instance */
-  if (IS_HPDMA_INSTANCE(hdma->Instance) != 0U)
-  {
-    assert_param(IS_DMA_BURST_LENGTH(hdma->Init.SrcBurstLength));
-    assert_param(IS_DMA_BURST_LENGTH(hdma->Init.DestBurstLength));
-    assert_param(IS_DMA_TRANSFER_ALLOCATED_PORT(hdma->Init.TransferAllocatedPort));
   }
 
   /* Allocate lock resource */
@@ -341,8 +348,6 @@ HAL_StatusTypeDef HAL_DMA_DeInit(DMA_HandleTypeDef *const hdma)
 
   /* Check the parameters */
   assert_param(IS_DMA_ALL_INSTANCE(hdma->Instance));
-
-
   /* Disable the selected DMA Channel */
   __HAL_DMA_DISABLE(hdma);
 
@@ -426,7 +431,7 @@ HAL_StatusTypeDef HAL_DMA_DeInit(DMA_HandleTypeDef *const hdma)
   *
 @verbatim
   ======================================================================================================================
-                                ############### IO operation functions ###############
+                                ##### IO operation functions #####
   ======================================================================================================================
     [..]
       This section provides functions allowing to :
@@ -890,11 +895,19 @@ HAL_StatusTypeDef HAL_DMA_PollForTransfer(DMA_HandleTypeDef *const hdma,
   */
 void HAL_DMA_IRQHandler(DMA_HandleTypeDef *const hdma)
 {
-  DMA_TypeDef *p_dma_instance = GET_DMA_INSTANCE(hdma);
+  const DMA_TypeDef *p_dma_instance = GET_DMA_INSTANCE(hdma);
   uint32_t global_it_flag =  1UL << (GET_DMA_CHANNEL(hdma) & 0x1FU);
+  uint32_t global_active_flag_ns = IS_DMA_GLOBAL_ACTIVE_FLAG_NS(p_dma_instance, global_it_flag);
+#if defined CORTEX_IN_SECURE_STATE
+  uint32_t global_active_flag_s = IS_DMA_GLOBAL_ACTIVE_FLAG_S(p_dma_instance, global_it_flag);
+#endif /* CORTEX_IN_SECURE_STATE */
 
   /* Global Interrupt Flag management *********************************************************************************/
-  if (IS_DMA_GLOBAL_ACTIVE_FLAG(p_dma_instance, global_it_flag) == 0U)
+#if defined CORTEX_IN_SECURE_STATE
+  if ((global_active_flag_s == 0U) && (global_active_flag_ns == 0U))
+#else
+  if (global_active_flag_ns == 0U)
+#endif /* CORTEX_IN_SECURE_STATE */
   {
     return; /* the global interrupt flag for the current channel is down , nothing to do */
   }
@@ -991,22 +1004,17 @@ void HAL_DMA_IRQHandler(DMA_HandleTypeDef *const hdma)
         /* Reset the channel internal state and reset the FIFO */
         hdma->Instance->CCR |= DMA_CCR_RESET;
 
-        if ((hdma->Instance->CCR & DMA_CCR_EN) != 0U)
-        {
-          /* Update the DMA channel state */
-          hdma->State = HAL_DMA_STATE_ERROR;
-        }
-        else
-        {
-          /* Update the DMA channel state */
-          hdma->State = HAL_DMA_STATE_READY;
-        }
+        /* Update the DMA channel state */
+        hdma->State = HAL_DMA_STATE_READY;
 
         /* Check DMA channel transfer mode */
         if ((hdma->Mode & DMA_LINKEDLIST) == DMA_LINKEDLIST)
         {
           /* Update the linked-list queue state */
           hdma->LinkedListQueue->State = HAL_DMA_QUEUE_STATE_READY;
+
+          /* Clear remaining data size to ensure loading linked-list from memory next start */
+          hdma->Instance->CBR1 = 0U;
         }
 
         /* Process Unlocked */
@@ -1089,16 +1097,8 @@ void HAL_DMA_IRQHandler(DMA_HandleTypeDef *const hdma)
     /* Reset the channel internal state and reset the FIFO */
     hdma->Instance->CCR |= DMA_CCR_RESET;
 
-    if ((hdma->Instance->CCR & DMA_CCR_EN) != 0U)
-    {
-      /* Update the DMA channel state */
-      hdma->State = HAL_DMA_STATE_ERROR;
-    }
-    else
-    {
-      /* Update the DMA channel state */
-      hdma->State = HAL_DMA_STATE_READY;
-    }
+    /* Update the DMA channel state */
+    hdma->State = HAL_DMA_STATE_READY;
 
     /* Check DMA channel transfer mode */
     if ((hdma->Mode & DMA_LINKEDLIST) == DMA_LINKEDLIST)
@@ -1121,6 +1121,8 @@ void HAL_DMA_IRQHandler(DMA_HandleTypeDef *const hdma)
 
 /**
   * @brief  Register callback according to specified ID.
+  * @note   The HAL_DMA_RegisterCallback() may be called before HAL_DMA_Init() in HAL_DMA_STATE_RESET
+  *         to register callbacks for HAL_DMA_MSPINIT_CB_ID and HAL_DMA_MSPDEINIT_CB_ID.
   * @param  hdma       : Pointer to a DMA_HandleTypeDef structure that contains the configuration information for the
   *                      specified DMA Channel.
   * @param  CallbackID : User Callback identifier which could be a value of HAL_DMA_CallbackIDTypeDef enumeration.
@@ -1205,6 +1207,8 @@ HAL_StatusTypeDef HAL_DMA_RegisterCallback(DMA_HandleTypeDef *const hdma,
 
 /**
   * @brief  Unregister callback according to specified ID.
+  * @note   The HAL_DMA_UnRegisterCallback() may be called before HAL_DMA_Init() in HAL_DMA_STATE_RESET
+  *         to un-register callbacks for HAL_DMA_MSPINIT_CB_ID and HAL_DMA_MSPDEINIT_CB_ID.
   * @param  hdma       : Pointer to a DMA_HandleTypeDef structure that contains the configuration information for the
   *                      specified DMA Channel.
   * @param  CallbackID : User Callback identifier which could be a value of HAL_DMA_CallbackIDTypeDef enum.
@@ -1303,7 +1307,7 @@ HAL_StatusTypeDef HAL_DMA_UnRegisterCallback(DMA_HandleTypeDef *const hdma,
   *
 @verbatim
   ======================================================================================================================
-                              ############### State and Errors functions ###############
+                              ##### State and Errors functions #####
   ======================================================================================================================
     [..]
       This section provides functions allowing to :
@@ -1349,7 +1353,7 @@ uint32_t HAL_DMA_GetError(DMA_HandleTypeDef const *const hdma)
   *
 @verbatim
   ======================================================================================================================
-                           ############### DMA Attributes functions ###############
+                           ##### DMA Attributes functions #####
   ======================================================================================================================
     [..]
       This section provides functions allowing to :
@@ -1456,7 +1460,9 @@ HAL_StatusTypeDef HAL_DMA_ConfigChannelAttributes(DMA_HandleTypeDef *const hdma,
       hdma->Instance->CTR1 &= (~DMA_CTR1_DSEC);
     }
   }
-#endif /* defined CORTEX_IN_SECURE_STATE */
+#endif /* CORTEX_IN_SECURE_STATE */
+
+#if defined CORTEX_IN_SECURE_STATE
   hdma->Instance->CCIDCFGR = 0;  /*remove any CID filtering on channel*/
 
   /*static CID field value used ONLY and CID filtering not disable */
@@ -1474,6 +1480,7 @@ HAL_StatusTypeDef HAL_DMA_ConfigChannelAttributes(DMA_HandleTypeDef *const hdma,
     hdma->Instance->CCIDCFGR = ((ChannelAttributes & DMA_CHANNEL_ATTR_CID_DYNAMIC_MASK) | DMA_CCIDCFGR_SEMEN |
                                 DMA_CCIDCFGR_CFEN);
   }
+#endif /* CORTEX_IN_SECURE_STATE */
 
   return HAL_OK;
 }
@@ -1488,7 +1495,7 @@ HAL_StatusTypeDef HAL_DMA_ConfigChannelAttributes(DMA_HandleTypeDef *const hdma,
 HAL_StatusTypeDef HAL_DMA_GetConfigChannelAttributes(DMA_HandleTypeDef const *const hdma,
                                                      uint32_t *const pChannelAttributes)
 {
-  DMA_TypeDef *p_dma_instance;
+  const DMA_TypeDef *p_dma_instance;
   uint32_t attributes;
   uint32_t channel_idx;
 
@@ -1507,7 +1514,6 @@ HAL_StatusTypeDef HAL_DMA_GetConfigChannelAttributes(DMA_HandleTypeDef const *co
   /* Get DMA channel privilege attribute */
   attributes = ((p_dma_instance->PRIVCFGR & channel_idx) == 0U) ? DMA_CHANNEL_NPRIV : DMA_CHANNEL_PRIV;
 
-#if defined CORTEX_IN_SECURE_STATE
   /* Get DMA channel security attribute */
   attributes |= ((p_dma_instance->SECCFGR & channel_idx) == 0U) ? DMA_CHANNEL_NSEC : DMA_CHANNEL_SEC;
 
@@ -1517,7 +1523,6 @@ HAL_StatusTypeDef HAL_DMA_GetConfigChannelAttributes(DMA_HandleTypeDef const *co
   /* Get DMA channel destination security attribute */
   attributes |= ((hdma->Instance->CTR1 & DMA_CTR1_DSEC) == 0U) ? DMA_CHANNEL_DEST_NSEC : DMA_CHANNEL_DEST_SEC;
 
-#endif /* defined CORTEX_IN_SECURE_STATE */
   /* Get channel allocated CID(s) */
   if ((hdma->Instance->CCIDCFGR & DMA_CCIDCFGR_CFEN_Msk) == DMA_CCIDCFGR_CFEN)
   {
@@ -1531,7 +1536,7 @@ HAL_StatusTypeDef HAL_DMA_GetConfigChannelAttributes(DMA_HandleTypeDef const *co
     }
     else
     {
-      /* Get CIDs value from Static CID field and translate it in bitfield value as defined by DMA_Protection_Attributes definition */
+      /* Get CIDs value from Static CID and translate it in bitfield value as defined by DMA_Protection_Attributes */
       attributes |= (DMA_CHANNEL_ATTR_CID_STATIC_SELECT | (READ_REG(hdma->Instance->CCIDCFGR) & DMA_CCIDCFGR_SCID_Msk));
     }
   }
@@ -1545,6 +1550,7 @@ HAL_StatusTypeDef HAL_DMA_GetConfigChannelAttributes(DMA_HandleTypeDef const *co
 
   return HAL_OK;
 }
+
 
 #if defined CORTEX_IN_SECURE_STATE
 /**
@@ -1575,7 +1581,7 @@ HAL_StatusTypeDef HAL_DMA_LockChannelAttributes(DMA_HandleTypeDef const *const h
 
   return HAL_OK;
 }
-#endif /* defined CORTEX_IN_SECURE_STATE */
+#endif /* CORTEX_IN_SECURE_STATE */
 
 /**
   * @brief  Get the security and privilege attribute lock state of a DMA channel.
@@ -1627,13 +1633,13 @@ HAL_StatusTypeDef HAL_DMA_TakeChannelSemaphore(DMA_HandleTypeDef *hdma)
 
 #if defined(CORE_CM0PLUS)
   cidcurrent = RIF_CID_CPU3_CM0;
-#endif /* defined(CORE_CM0PLUS) */
+#endif /* CORE_CM0PLUS */
 #if defined(CORE_CM33)
   cidcurrent = RIF_CID_CPU2_CM33;
-#endif /* defined(CORE_CM33) */
+#endif /* CORE_CM33 */
 #if defined(CORE_CA35)
   cidcurrent = RIF_CID_CPU1_CA35;
-#endif /* defined(CORE_CA35) */
+#endif /* CORE_CA35 */
 
   /* Take Semaphore */
   hdma->Instance->CSEMCR |= DMA_CSEMCR_SEMMUTEX;
@@ -1727,7 +1733,6 @@ static void DMA_Init(DMA_HandleTypeDef const *const hdma)
   /* Write DMA Channel Control Register (CCR) */
   MODIFY_REG(hdma->Instance->CCR, DMA_CCR_PRIO | DMA_CCR_LAP | DMA_CCR_LSM, tmpreg);
 
-
   /* Prepare DMA Channel Transfer Register (CTR1) value ***************************************************************/
   tmpreg = hdma->Init.DestInc | hdma->Init.DestDataWidth | hdma->Init.SrcInc | hdma->Init.SrcDataWidth;
 
@@ -1740,7 +1745,11 @@ static void DMA_Init(DMA_HandleTypeDef const *const hdma)
   }
 
   /* Write DMA Channel Transfer Register 1 (CTR1) */
+#if defined CORTEX_IN_SECURE_STATE
   MODIFY_REG(hdma->Instance->CTR1, ~(DMA_CTR1_SSEC | DMA_CTR1_DSEC), tmpreg);
+#else
+  WRITE_REG(hdma->Instance->CTR1, tmpreg);
+#endif /* CORTEX_IN_SECURE_STATE */
 
   /* Prepare DMA Channel Transfer Register 2 (CTR2) value *************************************************************/
   tmpreg = hdma->Init.BlkHWRequest | (hdma->Init.Request & DMA_CTR2_REQSEL) | hdma->Init.TransferEventMode;
@@ -1763,14 +1772,17 @@ static void DMA_Init(DMA_HandleTypeDef const *const hdma)
     /* Nothing to do */
   }
 
+  /* Set DMA channel operation mode */
+  tmpreg |= hdma->Init.Mode;
+
   /* Write DMA Channel Transfer Register 2 (CTR2) */
   MODIFY_REG(hdma->Instance->CTR2, (DMA_CTR2_TCEM  | DMA_CTR2_TRIGPOL | DMA_CTR2_TRIGSEL | DMA_CTR2_TRIGM |
-                                    DMA_CTR2_BREQ  | DMA_CTR2_DREQ    | DMA_CTR2_SWREQ   | DMA_CTR2_REQSEL), tmpreg);
+                                    DMA_CTR2_PFREQ | DMA_CTR2_BREQ  | DMA_CTR2_DREQ    | DMA_CTR2_SWREQ   |
+                                    DMA_CTR2_REQSEL), tmpreg);
 
 
   /* Write DMA Channel Block Register 1 (CBR1) ************************************************************************/
   WRITE_REG(hdma->Instance->CBR1, 0U);
-
 
   /* If 2D Addressing is supported by current channel */
   if (IS_DMA_2D_ADDRESSING_INSTANCE(hdma->Instance) != 0U)
@@ -1778,11 +1790,9 @@ static void DMA_Init(DMA_HandleTypeDef const *const hdma)
     /* Write DMA Channel Transfer Register 3 (CTR3) *******************************************************************/
     WRITE_REG(hdma->Instance->CTR3, 0U);
 
-
     /* Write DMA Channel Block Register 2 (CBR2) **********************************************************************/
     WRITE_REG(hdma->Instance->CBR2, 0U);
   }
-
 
   /* Write DMA Channel linked-list address register (CLLR) ************************************************************/
   WRITE_REG(hdma->Instance->CLLR, 0U);

@@ -57,7 +57,7 @@ void LL_RCC_GetSystemClocksFreq(LL_RCC_ClocksTypeDef *RCC_Clocks)
   RCC_Clocks->MLAHB_Frequency = HSI_VALUE;
 
   /* Read LSMCUDIV */
-  lsmcudiv = LL_RCC_Get_LSMCUDIVR();
+  lsmcudiv = LL_RCC_Get_LSMCUDIVR() + 1;
 
   /*!< AHB1 clock frequency */
   RCC_Clocks->AHB1_Frequency = HSI_VALUE / lsmcudiv;
@@ -81,26 +81,31 @@ void LL_RCC_GetSystemClocksFreq(LL_RCC_ClocksTypeDef *RCC_Clocks)
 
   /*!< APB1 clock frequency */
   apb_div = LL_RCC_GetAPB1Prescaler();
-  RCC_Clocks->APB1_Frequency = (HSI_VALUE / lsmcudiv) / apb_div;
+  apb_div = ((uint32_t)(1UL << apb_div) * lsmcudiv);
+  RCC_Clocks->APB1_Frequency = HSI_VALUE / apb_div;
 
   /*!< APB2 clock frequency */
   apb_div = LL_RCC_GetAPB2Prescaler();
-  RCC_Clocks->APB2_Frequency = (HSI_VALUE / lsmcudiv) / apb_div;
+  apb_div = ((uint32_t)(1UL << apb_div) * lsmcudiv);
+  RCC_Clocks->APB2_Frequency = HSI_VALUE / apb_div;
 
   /*!< APB3 clock frequency */
   apb_div = LL_RCC_GetAPB3Prescaler();
-  RCC_Clocks->APB3_Frequency = (HSI_VALUE / lsmcudiv) / apb_div;
+  apb_div = ((uint32_t)(1UL << apb_div) * lsmcudiv);
+  RCC_Clocks->APB3_Frequency = HSI_VALUE / apb_div;
 
   /*!< APB4 clock frequency */
   apb_div = LL_RCC_GetAPB4Prescaler();
-  RCC_Clocks->APB4_Frequency = (HSI_VALUE / lsmcudiv) / apb_div;
+  apb_div = ((uint32_t)(1UL << apb_div) * lsmcudiv);
+  RCC_Clocks->APB4_Frequency = HSI_VALUE / apb_div;
 
   /*!< APBSR clock frequency */
   RCC_Clocks->APBSR_Frequency = (HSI_VALUE / lsmcudiv);
 
   /*!< APBDBG clock frequency */
   apb_div = LL_RCC_GetAPBDBGPrescaler();
-  RCC_Clocks->APBDBG_Frequency = (HSI_VALUE / lsmcudiv) / apb_div;
+  apb_div = ((uint32_t)(1UL << apb_div) * lsmcudiv);
+  RCC_Clocks->APBDBG_Frequency = HSI_VALUE / apb_div;
 }
 
 /** @addtogroup RCC_LL

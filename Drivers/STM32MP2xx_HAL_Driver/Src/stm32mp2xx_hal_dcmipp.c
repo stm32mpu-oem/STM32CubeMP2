@@ -352,7 +352,7 @@ static HAL_StatusTypeDef ConfigureDumpPipe(DCMIPP_HandleTypeDef *pHdcmipp, DCMIP
   {
     return HAL_ERROR;
   }
-  
+
   if (pConfPipe == NULL)
   {
     pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NULL_POINTER;
@@ -380,7 +380,7 @@ static HAL_StatusTypeDef ConfigureDumpPipe(DCMIPP_HandleTypeDef *pHdcmipp, DCMIP
   {
     pHdcmipp->Instance->P0DCLMTR &= ~DCMIPP_P0DCLMTR_ENABLE;
   }
-  
+
   /* Set destination addresses */
   p_dest_buffer0 = pConfPipe->PixelPacker.pDestinationMemory0;
   if ( p_dest_buffer0 != NULL)
@@ -406,6 +406,16 @@ static HAL_StatusTypeDef ConfigureDumpPipe(DCMIPP_HandleTypeDef *pHdcmipp, DCMIP
   else
   {
     pHdcmipp->Instance->P0PPCR &= ~DCMIPP_P0PPCR_HEADEREN_Msk;
+  }
+
+  /* Set the PAD bit */
+  if (pConfPipe->PixelPacker.PAD)
+  {
+    pHdcmipp->Instance->P0PPCR |= DCMIPP_P0PPCR_PAD;
+  }
+  else
+  {
+    pHdcmipp->Instance->P0PPCR &= ~DCMIPP_P0PPCR_PAD_Msk;
   }
 
   /* Pipe ready to be started */
@@ -496,6 +506,7 @@ static HAL_StatusTypeDef ConfigureMainPipe(DCMIPP_HandleTypeDef *pHdcmipp, DCMIP
   pHdcmipp->Instance->P1PPM2AR1 = (uint32_t)p_dest_buffer2;
 
   /* Configure the pixel packer */
+  pHdcmipp->Instance->P1PPCR &= ~DCMIPP_P1PPCR_FORMAT_Msk;
   pHdcmipp->Instance->P1PPCR |= pConfPipe->PixelPacker.Format;
   pHdcmipp->Instance->P1PPM0PR = pConfPipe->PixelPacker.Pitch;
   if ((pConfPipe->PixelPacker.Format == DCMIPP_PIXEL_PACKER_FORMAT_YUV422_2) ||
@@ -579,6 +590,7 @@ static HAL_StatusTypeDef ConfigureAncillaryPipe(DCMIPP_HandleTypeDef *pHdcmipp, 
    }
 
   /* Configure the pixel packer */
+  pHdcmipp->Instance->P2PPCR &= ~DCMIPP_P2PPCR_FORMAT_Msk;
   pHdcmipp->Instance->P2PPCR |= pConfPipe->PixelPacker.Format;
   pHdcmipp->Instance->P2PPM0PR = pConfPipe->PixelPacker.Pitch;
 
@@ -775,8 +787,8 @@ HAL_StatusTypeDef HAL_DCMIPP_Init(DCMIPP_HandleTypeDef *pHdcmipp)
   if (pHdcmipp->Init.DCMIControl.ExtendedDataMode != DCMIPP_INTERFACE_CSI)
   {
     /* Configure the parallel interface */
-	  pHdcmipp->Instance->CMCR |= pHdcmipp->Init.DCMIControl.SwapRB;
-	  pHdcmipp->Instance->PRCR |= (uint32_t)((pHdcmipp->Init.DCMIControl.Format)            | \
+      pHdcmipp->Instance->CMCR |= pHdcmipp->Init.DCMIControl.SwapRB;
+      pHdcmipp->Instance->PRCR |= (uint32_t)((pHdcmipp->Init.DCMIControl.Format)          | \
                                            (pHdcmipp->Init.DCMIControl.VPolarity)         | \
                                            (pHdcmipp->Init.DCMIControl.HPolarity)         | \
                                            (pHdcmipp->Init.DCMIControl.PCKPolarity)       | \
@@ -787,9 +799,9 @@ HAL_StatusTypeDef HAL_DCMIPP_Init(DCMIPP_HandleTypeDef *pHdcmipp)
     if (pHdcmipp->Init.DCMIControl.EmbeddedSynchro == DCMIPP_EMBEDDED_SYNCHRO)
     {
       uint32_t embeddedSynchroCodes = (pHdcmipp->Init.DCMIControl.EmbeddedSynchroCodes.FEC << DCMIPP_PRESCR_FEC_Pos) | \
-                                     (pHdcmipp->Init.DCMIControl.EmbeddedSynchroCodes.LEC << DCMIPP_PRESCR_LEC_Pos) | \
-                                     (pHdcmipp->Init.DCMIControl.EmbeddedSynchroCodes.FSC << DCMIPP_PRESCR_FSC_Pos) | \
-                                     (pHdcmipp->Init.DCMIControl.EmbeddedSynchroCodes.LSC << DCMIPP_PRESCR_LSC_Pos);
+                                      (pHdcmipp->Init.DCMIControl.EmbeddedSynchroCodes.LEC << DCMIPP_PRESCR_LEC_Pos) | \
+                                      (pHdcmipp->Init.DCMIControl.EmbeddedSynchroCodes.FSC << DCMIPP_PRESCR_FSC_Pos) | \
+                                      (pHdcmipp->Init.DCMIControl.EmbeddedSynchroCodes.LSC << DCMIPP_PRESCR_LSC_Pos);
       pHdcmipp->Instance->PRESCR = embeddedSynchroCodes;
 
       /* TODO: All codes are unmasked: more accurate config must be managed */
@@ -838,8 +850,13 @@ HAL_StatusTypeDef HAL_DCMIPP_FrameCounter_Config(DCMIPP_HandleTypeDef *pHdcmipp,
   }
 
   cmcr_tmp = pHdcmipp->Instance->CMCR;
-  cmcr_tmp &= ~(DCMIPP_CMCR_FCRS_Msk | DCMIPP_CMCR_PSFC_Msk);
-  cmcr_tmp |= ((Pipe << DCMIPP_CMCR_PSFC_Pos) | (Reset << DCMIPP_CMCR_FCRS_Pos));
+  cmcr_tmp &= ~DCMIPP_CMCR_PSFC_Msk;
+  cmcr_tmp |= (Pipe << DCMIPP_CMCR_PSFC_Pos);
+#ifdef STM32MP25XX_SI_CUT1_X
+  cmcr_tmp &= ~DCMIPP_CMCR_FCRS_Msk;
+  cmcr_tmp |= (Reset << DCMIPP_CMCR_FCRS_Pos);
+#endif
+
   pHdcmipp->Instance->CMCR = cmcr_tmp;
 
   return HAL_OK;
@@ -1100,7 +1117,7 @@ HAL_StatusTypeDef HAL_DCMIPP_Stop(DCMIPP_HandleTypeDef *pHdcmipp, HAL_DCMIPP_Pip
 HAL_StatusTypeDef HAL_DCMIPP_ConfigPipe(DCMIPP_HandleTypeDef *pHdcmipp, DCMIPP_ConfPipeTypeDef *pConfPipe, HAL_DCMIPP_PipeTypeDef Pipe)
 {
   HAL_StatusTypeDef err = HAL_ERROR;
-  
+
   if (IS_DCMIPP_DUMP_PIPE(Pipe))
   {
     err = ConfigureDumpPipe(pHdcmipp, pConfPipe);
@@ -2088,11 +2105,11 @@ HAL_StatusTypeDef HAL_DCMIPP_ConfigIPPlug(DCMIPP_HandleTypeDef *pHdcmipp, int Me
     else
       pHdcmipp->Instance->IPC1R3 |= DPREG_END_0 << DCMIPP_IPC1R3_DPREGEND_Pos;
 
-  	if (Wlru != -1)
-	    pHdcmipp->Instance->IPC1R2 = Wlru << DCMIPP_IPC1R2_WLRU_Pos;
-  	else
+    if (Wlru != -1)
+      pHdcmipp->Instance->IPC1R2 = Wlru << DCMIPP_IPC1R2_WLRU_Pos;
+    else
       pHdcmipp->Instance->IPC1R2 = WLRU_DEFAULT << DCMIPP_IPC1R2_WLRU_Pos;
-  	break;
+    break;
   /* Pipe Main */
   case 2:
     if (Traffic != -1)
@@ -2240,6 +2257,127 @@ HAL_StatusTypeDef HAL_DCMIPP_Pipe1_ConfigDecimation(DCMIPP_HandleTypeDef *pHdcmi
 
   return HAL_OK;
 }
+
+/**
+  * @}
+  */
+/**
+  * @brief  Get DCMIPP Pipe1 Decimation parameters.
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *               the configuration information for DCMIPP.
+  * @param  pvdec pointer to receive the vertical decimation
+  * @param  phdec pointer to receive the horizontal decimation
+  * @param  pEnable pointer receiving the status of the Decimation function
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_Pipe1_GetConfigDecimation(DCMIPP_HandleTypeDef *pHdcmipp,
+                                                       HAL_DCMIPP_P1_VerticalDecimationModeTypeDef *pvdec,
+                                                       HAL_DCMIPP_P1_HorizontalDecimationModeTypeDef *phdec,
+                                                       uint8_t *pEnable)
+{
+  /* Check handles validity */
+  if ((pHdcmipp == NULL) || (pvdec == NULL) || (phdec == NULL) || (pEnable == NULL))
+  {
+    return HAL_ERROR;
+  }
+
+  *pEnable = (pHdcmipp->Instance->P1DECR & DCMIPP_P1DECR_ENABLE_Msk) >> DCMIPP_P1DECR_ENABLE_Pos;
+  *pvdec = pHdcmipp->Instance->P1DECR & DCMIPP_P1DECR_VDEC_Msk;
+  *phdec = pHdcmipp->Instance->P1DECR & DCMIPP_P1DECR_HDEC_Msk;
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
+
+  return HAL_OK;
+}
+
+/**
+  * @}
+  */
+/**
+  * @brief  Configure the DCMIPP Decimation bloc parameters.
+  *         There are several blocs available within the DCMIPP depending on the IP version
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *               the configuration information for DCMIPP.
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_ConfigDecimation(DCMIPP_HandleTypeDef *pHdcmipp, HAL_DCMIPP_PipeTypeDef Pipe, HAL_DCMIPP_DecimationBlocTypeDef Bloc, HAL_DCMIPP_VerticalDecimationModeTypeDef vdec, HAL_DCMIPP_HorizontalDecimationModeTypeDef hdec)
+{
+  HAL_StatusTypeDef ret = HAL_OK;
+
+  /* Check handle validity */
+  if (pHdcmipp == NULL)
+  {
+    return HAL_ERROR;
+  }
+
+  switch(Pipe)
+  {
+  case HAL_DCMIPP_DUMP_PIPE:
+    /* Pipe0 Decimation is still to be done via the HAL_DCMIPP_Pipe0ConfigDecimation function */
+    ret = HAL_ERROR;
+    break;
+  case HAL_DCMIPP_MAIN_PIPE:
+    if (Bloc == DCMIPP_ISP_DECIMATION)
+    {
+      /* Vertical decimation */
+      pHdcmipp->Instance->P1DECR &= ~(DCMIPP_P1DECR_VDEC_Msk);
+      pHdcmipp->Instance->P1DECR |= (uint32_t)vdec;
+
+      /* Horizontal decimation */
+      pHdcmipp->Instance->P1DECR &= ~(DCMIPP_P1DECR_HDEC_Msk);
+      pHdcmipp->Instance->P1DECR |= (uint32_t)hdec;
+
+      /* Enable decimation */
+      pHdcmipp->Instance->P1DECR |= DCMIPP_P1DECR_ENABLE;
+#ifdef STM32MP25XX_SI_CUT1_X
+    } else {
+      ret = HAL_ERROR;
+    }
+#else
+    } else {
+      /* Vertical decimation */
+      pHdcmipp->Instance->P1DCCR &= ~(DCMIPP_P1DCCR_VDEC_Msk);
+      pHdcmipp->Instance->P1DCCR |= (uint32_t)vdec;
+
+      /* Horizontal decimation */
+      pHdcmipp->Instance->P1DCCR &= ~(DCMIPP_P1DCCR_HDEC_Msk);
+      pHdcmipp->Instance->P1DCCR |= (uint32_t)hdec;
+
+      /* Enable decimation */
+      pHdcmipp->Instance->P1DCCR |= DCMIPP_P1DCCR_ENABLE;
+    }
+#endif
+    break;
+  case HAL_DCMIPP_ANCILLARY_PIPE:
+#ifdef STM32MP25XX_SI_CUT1_X
+    ret = HAL_ERROR;
+#else
+    if (Bloc == DCMIPP_POSTPROC_DECIMATION)
+    {
+      /* Vertical decimation */
+      pHdcmipp->Instance->P2DCCR &= ~(DCMIPP_P2DCCR_VDEC_Msk);
+      pHdcmipp->Instance->P2DCCR |= (uint32_t)vdec;
+
+      /* Horizontal decimation */
+      pHdcmipp->Instance->P2DCCR &= ~(DCMIPP_P2DCCR_HDEC_Msk);
+      pHdcmipp->Instance->P2DCCR |= (uint32_t)hdec;
+
+      /* Enable decimation */
+      pHdcmipp->Instance->P2DCCR |= DCMIPP_P2DCCR_ENABLE;
+    } else {
+      ret = HAL_ERROR;
+    }
+#endif
+    break;
+  default:
+    ret = HAL_ERROR;
+    break;
+  }
+
+  return ret;
+}
+
 /**
   * @brief  Configure the DCMIPP Downsize parameters.
   * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
@@ -2492,6 +2630,35 @@ HAL_StatusTypeDef HAL_DCMIPP_DisableRawBayer2RGB(DCMIPP_HandleTypeDef *pHdcmipp)
 }
 
 /**
+  * @brief  Get the DCMIPP Raw Bayer to RGB parameters for the main pipe
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *               the configuration information for DCMIPP.
+  * @param  pRawBayer2RGBConfig pointer receiving the RawBayer to RGB parameters
+  * @param  pEnable pointer receiving the status of the Raw Bayer to RGB function
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_GetConfigRawBayer2RGB(DCMIPP_HandleTypeDef *pHdcmipp, DCMIPP_RawBayer2RGBTypeDef *pRawBayer2RGBConfig, uint8_t *pEnable)
+{
+  /* Check handles validity */
+  if ((pHdcmipp == NULL) || (pRawBayer2RGBConfig == NULL) || (pEnable == NULL))
+  {
+    return HAL_ERROR;
+  }
+
+  *pEnable = (pHdcmipp->Instance->P1DMCR & DCMIPP_P1DMCR_ENABLE_Msk) >> DCMIPP_P1DMCR_ENABLE_Pos;
+  pRawBayer2RGBConfig->Type = (pHdcmipp->Instance->P1DMCR & DCMIPP_P1DMCR_TYPE_Msk) >> DCMIPP_P1DMCR_TYPE_Pos;
+  pRawBayer2RGBConfig->Peak = (pHdcmipp->Instance->P1DMCR & DCMIPP_P1DMCR_PEAK_Msk) >> DCMIPP_P1DMCR_PEAK_Pos;
+  pRawBayer2RGBConfig->LineV = (pHdcmipp->Instance->P1DMCR & DCMIPP_P1DMCR_LINEV_Msk) >> DCMIPP_P1DMCR_LINEV_Pos;
+  pRawBayer2RGBConfig->LineH = (pHdcmipp->Instance->P1DMCR & DCMIPP_P1DMCR_LINEH_Msk) >> DCMIPP_P1DMCR_LINEH_Pos;
+  pRawBayer2RGBConfig->Edge = (pHdcmipp->Instance->P1DMCR & DCMIPP_P1DMCR_EDGE_Msk) >> DCMIPP_P1DMCR_EDGE_Pos;
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
+
+  return HAL_OK;
+}
+
+/**
   * @brief  Enable the Stat Removal feature
   * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
   *               the configuration information for DCMIPP.
@@ -2536,6 +2703,34 @@ HAL_StatusTypeDef HAL_DCMIPP_DisableStatRemoval(DCMIPP_HandleTypeDef *pHdcmipp)
   }
 
   pHdcmipp->Instance->P1SRCR &= ~(uint32_t)(DCMIPP_P1SRCR_CROPEN_Msk);
+
+  return HAL_OK;
+}
+
+/**
+  * @brief  Get the Stat Removal parameters
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *               the configuration information for DCMIPP.
+  *         pNbHeadLines pointer receiving the number of lines to skip at the top of the image
+  *         pNbValidLines pointer receiving the number of valid image line to keep after the skipped
+  *                      head lines
+  *         pEnable pointer receiving the status of the statistic removal function
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_GetConfigStatRemoval(DCMIPP_HandleTypeDef *pHdcmipp, uint32_t *NbHeadLines, uint32_t *NbValidLines, uint8_t *pEnable)
+{
+  /* Check handles validity */
+  if ((pHdcmipp == NULL) || (NbHeadLines == NULL) || (NbValidLines == NULL) || (pEnable == NULL))
+  {
+    return HAL_ERROR;
+  }
+
+  *pEnable =  (pHdcmipp->Instance->P1SRCR & DCMIPP_P1SRCR_CROPEN_Msk) >> DCMIPP_P1SRCR_CROPEN_Pos;
+  *NbHeadLines = (pHdcmipp->Instance->P1SRCR & DCMIPP_P1SRCR_FIRSTLINEDEL_Msk) >> DCMIPP_P1SRCR_FIRSTLINEDEL_Pos;
+  *NbValidLines = (pHdcmipp->Instance->P1SRCR & DCMIPP_P1SRCR_LASTLINE_Msk) >> DCMIPP_P1SRCR_LASTLINE_Pos;
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
 
   return HAL_OK;
 }
@@ -2602,7 +2797,32 @@ HAL_StatusTypeDef HAL_DCMIPP_GetBadPixelCount(DCMIPP_HandleTypeDef *pHdcmipp, ui
     return HAL_ERROR;
   }
 
-  *pCount = (pHdcmipp->Instance->P1BPRCR & DCMIPP_P1BPRSR_BADCNT_Msk) >> DCMIPP_P1BPRSR_BADCNT_Pos;
+  *pCount = (pHdcmipp->Instance->P1BPRSR & DCMIPP_P1BPRSR_BADCNT_Msk) >> DCMIPP_P1BPRSR_BADCNT_Pos;
+
+  return HAL_OK;
+}
+
+/**
+  * @brief  Get Bad Pixel Removal strength
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *               the configuration information for DCMIPP.
+  *         pStrength pointer receiving the strength of the removal algorithm
+  *         pEnable pointer receiving the status of the bad pixel function
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_GetConfigBadPixelRemoval(DCMIPP_HandleTypeDef *pHdcmipp, uint32_t *pStrength, uint8_t *pEnable)
+{
+  /* Check handles validity */
+  if ((pHdcmipp == NULL) || (pStrength == NULL))
+  {
+    return HAL_ERROR;
+  }
+
+  *pEnable =  (pHdcmipp->Instance->P1BPRCR & DCMIPP_P1BPRCR_ENABLE_Msk) >> DCMIPP_P1BPRCR_ENABLE_Pos;
+  *pStrength = (pHdcmipp->Instance->P1BPRCR & DCMIPP_P1BPRCR_STRENGTH_Msk) >> DCMIPP_P1BPRCR_STRENGTH_Pos;
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
 
   return HAL_OK;
 }
@@ -2707,6 +2927,56 @@ HAL_StatusTypeDef HAL_DCMIPP_DisableColorConversion(DCMIPP_HandleTypeDef *pHdcmi
   if (IS_DCMIPP_MAIN_PIPE(Pipe))
   {
     pHdcmipp->Instance->P1CCCR &= ~(uint32_t)DCMIPP_P1CCCR_ENABLE;
+  }
+  else
+  {
+    pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_PIPE_ID;
+    return HAL_ERROR;
+  }
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
+
+  return HAL_OK;
+}
+
+/**
+  * @brief  Get the DCMIPP color Conversion configuration for the main pipe
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *               the configuration information for DCMIPP.
+  * @param  Pipe pipe where color conversion is configured (Main or Ancillary)
+  * @param  pColorConversionConfig pointer receiving the color conversion parameters
+  * @param  pEnable pointer receiving the status of the color conversion function
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_GetConfigColorConversion(DCMIPP_HandleTypeDef *pHdcmipp,
+                                                      HAL_DCMIPP_PipeTypeDef Pipe,
+                                                      DCMIPP_ColorConversionTypeDef *pColorConversionConfig,
+                                                      uint8_t *pEnable)
+{
+  /* Check handles validity */
+  if ((pHdcmipp == NULL) || (pColorConversionConfig == NULL) || (pEnable == NULL))
+  {
+    return HAL_ERROR;
+  }
+
+  if (IS_DCMIPP_MAIN_PIPE(Pipe))
+  {
+	*pEnable = (pHdcmipp->Instance->P1CCCR & DCMIPP_P1CCCR_ENABLE_Msk) >> DCMIPP_P1CCCR_ENABLE_Pos;
+    pColorConversionConfig->Clamp = (pHdcmipp->Instance->P1CCCR & DCMIPP_P1CCCR_CLAMP_Msk) >> DCMIPP_P1CCCR_CLAMP_Pos;
+    pColorConversionConfig->Type = (pHdcmipp->Instance->P1CCCR & DCMIPP_P1CCCR_TYPE_Msk) >> DCMIPP_P1CCCR_TYPE_Pos;
+    pColorConversionConfig->RR = (pHdcmipp->Instance->P1CCRR1 & DCMIPP_P1CCRR1_RR_Msk) >> DCMIPP_P1CCRR1_RR_Pos;
+    pColorConversionConfig->RG = (pHdcmipp->Instance->P1CCRR1 & DCMIPP_P1CCRR1_RG_Msk) >> DCMIPP_P1CCRR1_RG_Pos;
+    pColorConversionConfig->RB = (pHdcmipp->Instance->P1CCRR2 & DCMIPP_P1CCRR2_RB_Msk) >> DCMIPP_P1CCRR2_RB_Pos;
+    pColorConversionConfig->RA = (pHdcmipp->Instance->P1CCRR2 & DCMIPP_P1CCRR2_RA_Msk) >> DCMIPP_P1CCRR2_RA_Pos;
+    pColorConversionConfig->GR = (pHdcmipp->Instance->P1CCGR1 & DCMIPP_P1CCGR1_GR_Msk) >> DCMIPP_P1CCGR1_GR_Pos;
+    pColorConversionConfig->GG = (pHdcmipp->Instance->P1CCGR1 & DCMIPP_P1CCGR1_GG_Msk) >> DCMIPP_P1CCGR1_GG_Pos;
+    pColorConversionConfig->GB = (pHdcmipp->Instance->P1CCGR2 & DCMIPP_P1CCGR2_GB_Msk) >> DCMIPP_P1CCGR2_GB_Pos;
+    pColorConversionConfig->GA = (pHdcmipp->Instance->P1CCGR2 & DCMIPP_P1CCGR2_GA_Msk) >> DCMIPP_P1CCGR2_GA_Pos;
+    pColorConversionConfig->BR = (pHdcmipp->Instance->P1CCBR1 & DCMIPP_P1CCBR1_BR_Msk) >> DCMIPP_P1CCBR1_BR_Pos;
+    pColorConversionConfig->BG = (pHdcmipp->Instance->P1CCBR1 & DCMIPP_P1CCBR1_BG_Msk) >> DCMIPP_P1CCBR1_BG_Pos;
+    pColorConversionConfig->BB = (pHdcmipp->Instance->P1CCBR2 & DCMIPP_P1CCBR2_BB_Msk) >> DCMIPP_P1CCBR2_BB_Pos;
+    pColorConversionConfig->BA = (pHdcmipp->Instance->P1CCBR2 & DCMIPP_P1CCBR2_BA_Msk) >> DCMIPP_P1CCBR2_BA_Pos;
   }
   else
   {
@@ -2930,6 +3200,45 @@ HAL_StatusTypeDef HAL_DCMIPP_DisableBlackLevelCalibration(DCMIPP_HandleTypeDef *
 }
 
 /**
+  * @brief  Get black level calibration value on each component
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *         the configuration information for DCMIPP.
+  * @param  Pipe pipe where statistic extraction is performed (Main only)
+  * @param  pBlackLevelConfig pointer to receive the calibration values
+  * @param  pEnable pointer receiving the status of the black level function
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_GetConfigBlackLevelCalibration(DCMIPP_HandleTypeDef *pHdcmipp,
+                                                            HAL_DCMIPP_PipeTypeDef Pipe,
+                                                            DCMIPP_BlackLevelTypeDef *pBlackLevelConfig,
+                                                            uint8_t *pEnable)
+{
+  /* Check handles validity */
+  if ((pHdcmipp == NULL) || (pBlackLevelConfig == NULL) || (pEnable == NULL))
+  {
+    return HAL_ERROR;
+  }
+
+  if (IS_DCMIPP_MAIN_PIPE(Pipe))
+  {
+    *pEnable =  (pHdcmipp->Instance->P1BLCCR & DCMIPP_P1BLCCR_ENABLE_Msk) >> DCMIPP_P1BLCCR_ENABLE_Pos;
+    pBlackLevelConfig->BLCR = (pHdcmipp->Instance->P1BLCCR & DCMIPP_P1BLCCR_BLCR_Msk) >> DCMIPP_P1BLCCR_BLCR_Pos;
+    pBlackLevelConfig->BLCG = (pHdcmipp->Instance->P1BLCCR & DCMIPP_P1BLCCR_BLCG_Msk) >> DCMIPP_P1BLCCR_BLCG_Pos;
+    pBlackLevelConfig->BLCB = (pHdcmipp->Instance->P1BLCCR & DCMIPP_P1BLCCR_BLCB_Msk) >> DCMIPP_P1BLCCR_BLCB_Pos;
+  }
+  else
+  {
+    pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_PIPE_ID;
+    return HAL_ERROR;
+  }
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
+
+  return HAL_OK;
+}
+
+/**
   * @brief  Configure the statistic extraction module
   * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
   *         the configuration information for DCMIPP.
@@ -2966,6 +3275,60 @@ HAL_StatusTypeDef HAL_DCMIPP_ConfigStatExtraction(DCMIPP_HandleTypeDef *pHdcmipp
     break;
   case 2:
     pHdcmipp->Instance->P1ST3CR = tmp;
+    break;
+  }
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
+
+  return HAL_OK;
+}
+
+/**
+  * @brief  Get the statistic extraction module configuration
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *         the configuration information for DCMIPP.
+  * @param  Pipe pipe where statistic extraction is performed (Main only)
+  * @param  moduleId (1,2 or 3), there are 3 modules available
+  * @param  pStatExtractionConfig pointer receiving the configuration structure
+  * @param  pEnable pointer receiving the status of the statistic extraction module configuration
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_GetConfigStatExtraction(DCMIPP_HandleTypeDef *pHdcmipp,
+                                                     HAL_DCMIPP_PipeTypeDef Pipe,
+                                                     uint32_t moduleId,
+                                                     HAL_DCMIPP_StatConfigTypeDef *pStatExtractionConfig,
+                                                     uint8_t *pEnable)
+{
+  /* Check handle validity */
+  if ((pHdcmipp == NULL) || (pStatExtractionConfig == NULL))
+  {
+    return HAL_ERROR;
+  }
+
+  if (!IS_DCMIPP_MAIN_PIPE(Pipe) || (moduleId > 2))
+  {
+    return HAL_ERROR;
+  }
+
+  switch(moduleId) {
+  case 0:
+    *pEnable = pHdcmipp->Instance->P1ST1CR & DCMIPP_P1ST1CR_ENABLE_Msk;
+    pStatExtractionConfig->mode = pHdcmipp->Instance->P1ST1CR & DCMIPP_P1ST1CR_MODE_Msk;
+    pStatExtractionConfig->src = pHdcmipp->Instance->P1ST1CR & DCMIPP_P1ST1CR_SRC_Msk;
+    pStatExtractionConfig->bins = pHdcmipp->Instance->P1ST1CR & DCMIPP_P1ST1CR_BINS_Msk;
+    break;
+  case 1:
+    *pEnable = pHdcmipp->Instance->P1ST2CR & DCMIPP_P1ST2CR_ENABLE_Msk;
+    pStatExtractionConfig->mode = pHdcmipp->Instance->P1ST2CR & DCMIPP_P1ST1CR_MODE_Msk;
+    pStatExtractionConfig->src = pHdcmipp->Instance->P1ST2CR & DCMIPP_P1ST1CR_SRC_Msk;
+    pStatExtractionConfig->bins = pHdcmipp->Instance->P1ST2CR & DCMIPP_P1ST1CR_BINS_Msk;
+    break;
+  case 2:
+    *pEnable = pHdcmipp->Instance->P1ST3CR & DCMIPP_P1ST3CR_ENABLE_Msk;
+    pStatExtractionConfig->mode = pHdcmipp->Instance->P1ST3CR & DCMIPP_P1ST1CR_MODE_Msk;
+    pStatExtractionConfig->src = pHdcmipp->Instance->P1ST3CR & DCMIPP_P1ST1CR_SRC_Msk;
+    pStatExtractionConfig->bins = pHdcmipp->Instance->P1ST3CR & DCMIPP_P1ST1CR_BINS_Msk;
     break;
   }
 
@@ -3013,6 +3376,50 @@ HAL_StatusTypeDef HAL_DCMIPP_ConfigStatExtractionArea(DCMIPP_HandleTypeDef *pHdc
   pHdcmipp->Instance->P1STSZR = ((XSize << DCMIPP_P1STSZR_HSIZE_Pos) & DCMIPP_P1STSZR_HSIZE_Msk) |
                                 ((YSize << DCMIPP_P1STSZR_VSIZE_Pos) & DCMIPP_P1STSZR_VSIZE_Msk) |
                                 DCMIPP_P1STSZR_CROPEN;
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
+
+  return HAL_OK;
+}
+
+/**
+  * @brief  Get the statistic extraction area configuration(common for all modules)
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *         the configuration information for DCMIPP.
+  * @param  Pipe pipe where statistic extraction is performed (Main only)
+  * @param  X0 top left position
+  * @param  Y0 top left position
+  * @param  XSize width of the area
+  * @param  YSize height of the area
+  * @param  pEnable pointer receiving the status of the statistic area configuration
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_GetConfigStatExtractionArea(DCMIPP_HandleTypeDef *pHdcmipp,
+                                                      HAL_DCMIPP_PipeTypeDef Pipe,
+                                                      uint32_t *pX0,
+                                                      uint32_t *pY0,
+                                                      uint32_t *pXSize,
+                                                      uint32_t *pYSize,
+                                                      uint8_t *pEnable)
+{
+  /* Check handles validity */
+  if ((pHdcmipp == NULL) || (pX0 == NULL) || (pY0 == NULL) || (pXSize == NULL) || (pYSize == NULL))
+  {
+    return HAL_ERROR;
+  }
+
+  if (!IS_DCMIPP_MAIN_PIPE(Pipe))
+  {
+    pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_PIPE_ID;
+    return HAL_ERROR;
+  }
+
+  *pEnable = (pHdcmipp->Instance->P1STSZR & DCMIPP_P1STSZR_CROPEN_Msk) >> DCMIPP_P1STSZR_CROPEN_Pos;
+  *pX0 = (pHdcmipp->Instance->P1STSTR & DCMIPP_P1STSTR_HSTART_Msk) >> DCMIPP_P1STSTR_HSTART_Pos;
+  *pY0 = (pHdcmipp->Instance->P1STSTR & DCMIPP_P1STSTR_VSTART_Msk) >> DCMIPP_P1STSTR_VSTART_Pos;
+  *pXSize = (pHdcmipp->Instance->P1STSZR & DCMIPP_P1STSZR_HSIZE_Msk) >> DCMIPP_P1STSZR_HSIZE_Pos;
+  *pYSize = (pHdcmipp->Instance->P1STSZR & DCMIPP_P1STSZR_VSIZE_Msk) >> DCMIPP_P1STSZR_VSIZE_Pos;
 
   /* Process Unlocked */
   pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
@@ -3122,13 +3529,13 @@ HAL_StatusTypeDef HAL_DCMIPP_GetStatAccuValue(DCMIPP_HandleTypeDef *pHdcmipp, HA
 
   switch(moduleId) {
   case 0:
-    *pAccu = (pHdcmipp->Instance->P1ST1SR & DCMIPP_P1ST1SR_ACCU_Msk) * 256;
+    *pAccu = pHdcmipp->Instance->P1ST1SR & DCMIPP_P1ST1SR_ACCU_Msk;
     break;
   case 1:
-    *pAccu = (pHdcmipp->Instance->P1ST2SR & DCMIPP_P1ST2SR_ACCU_Msk) * 256;
+    *pAccu = pHdcmipp->Instance->P1ST2SR & DCMIPP_P1ST2SR_ACCU_Msk;
     break;
   case 2:
-    *pAccu = (pHdcmipp->Instance->P1ST3SR & DCMIPP_P1ST3SR_ACCU_Msk) * 256;
+    *pAccu = pHdcmipp->Instance->P1ST3SR & DCMIPP_P1ST3SR_ACCU_Msk;
     break;
   }
 
@@ -3227,6 +3634,48 @@ HAL_StatusTypeDef HAL_DCMIPP_DisableExposureControl(DCMIPP_HandleTypeDef *pHdcmi
   }
 
   pHdcmipp->Instance->P1EXCR1 &= ~DCMIPP_P1EXCR1_ENABLE_Msk;
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
+
+  return HAL_OK;
+}
+
+/**
+  * @brief  Get the Exposure Control settings
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *         the configuration information for DCMIPP.
+  * @param  Pipe pipe where statistic extraction is performed (Main only)
+  * @param  pExposureControl pointer receiving the structure of config for exposure
+  * @param  pEnable pointer receiving the status of the exposure function
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_GetConfigExposureControl(DCMIPP_HandleTypeDef *pHdcmipp,
+                                                      HAL_DCMIPP_PipeTypeDef Pipe,
+                                                      HAL_DCMIPP_ExposureControlTypeDef *pExposureControl,
+                                                      uint8_t *pEnable)
+{
+  /* Check handle validity */
+  if ((pHdcmipp == NULL) || (pExposureControl == NULL) || (pEnable == NULL))
+  {
+    return HAL_ERROR;
+  }
+
+  if (IS_DCMIPP_MAIN_PIPE(Pipe))
+  {
+    *pEnable = (pHdcmipp->Instance->P1EXCR1 & DCMIPP_P1EXCR1_ENABLE_Msk) >> DCMIPP_P1EXCR1_ENABLE_Pos;
+    pExposureControl->R.shift = (pHdcmipp->Instance->P1EXCR1 & DCMIPP_P1EXCR1_SHFR_Msk) >> DCMIPP_P1EXCR1_SHFR_Pos;
+    pExposureControl->R.multiply = (pHdcmipp->Instance->P1EXCR1 & DCMIPP_P1EXCR1_MULTR_Msk) >> DCMIPP_P1EXCR1_MULTR_Pos;
+    pExposureControl->G.shift = (pHdcmipp->Instance->P1EXCR2 & DCMIPP_P1EXCR2_SHFG_Msk) >> DCMIPP_P1EXCR2_SHFG_Pos;
+    pExposureControl->G.multiply = (pHdcmipp->Instance->P1EXCR2 & DCMIPP_P1EXCR2_MULTG_Msk) >> DCMIPP_P1EXCR2_MULTG_Pos;
+    pExposureControl->B.shift = (pHdcmipp->Instance->P1EXCR2 & DCMIPP_P1EXCR2_SHFB_Msk) >> DCMIPP_P1EXCR2_SHFB_Pos;
+    pExposureControl->B.multiply = (pHdcmipp->Instance->P1EXCR2 & DCMIPP_P1EXCR2_MULTB_Msk) >> DCMIPP_P1EXCR2_MULTB_Pos;
+  }
+  else
+  {
+    pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_PIPE_ID;
+    return HAL_ERROR;
+  }
 
   /* Process Unlocked */
   pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
@@ -3336,6 +3785,109 @@ HAL_StatusTypeDef HAL_DCMIPP_DisableContrastControl(DCMIPP_HandleTypeDef *pHdcmi
   return HAL_OK;
 }
 
+/**
+  * @brief  Get the Contrast Control configuration
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *         the configuration information for DCMIPP.
+  * @param  Pipe pipe where statistic extraction is performed (Main only)
+  * @param  pContrastControl pointer receiving the contrast control structure
+  * @param  pEnable pointer receiving the status of the contrast function
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_GetConfigContrastControl(DCMIPP_HandleTypeDef *pHdcmipp,
+                                                      HAL_DCMIPP_PipeTypeDef Pipe,
+                                                      HAL_DCMIPP_ContrastControlTypeDef *pContrastControl,
+                                                      uint8_t *pEnable)
+{
+  /* Check handle validity */
+  if ((pHdcmipp == NULL) || (pContrastControl == NULL) || (pEnable == NULL))
+  {
+    return HAL_ERROR;
+  }
+
+
+  if (IS_DCMIPP_MAIN_PIPE(Pipe))
+  {
+    *pEnable = (pHdcmipp->Instance->P1CTCR1 & DCMIPP_P1CTCR1_ENABLE_Msk) >> DCMIPP_P1CTCR1_ENABLE_Pos;
+    pContrastControl->LUM_0 = (pHdcmipp->Instance->P1CTCR1 & DCMIPP_P1CTCR1_LUM0_Msk) >> DCMIPP_P1CTCR1_LUM0_Pos;
+    pContrastControl->LUM_32 = (pHdcmipp->Instance->P1CTCR2 & DCMIPP_P1CTCR2_LUM1_Msk) >> DCMIPP_P1CTCR2_LUM1_Pos;
+    pContrastControl->LUM_64 = (pHdcmipp->Instance->P1CTCR2 & DCMIPP_P1CTCR2_LUM2_Msk) >> DCMIPP_P1CTCR2_LUM2_Pos;
+    pContrastControl->LUM_96 = (pHdcmipp->Instance->P1CTCR2 & DCMIPP_P1CTCR2_LUM3_Msk) >> DCMIPP_P1CTCR2_LUM3_Pos;
+    pContrastControl->LUM_128 = (pHdcmipp->Instance->P1CTCR2 & DCMIPP_P1CTCR2_LUM4_Msk) >> DCMIPP_P1CTCR2_LUM4_Pos;
+    pContrastControl->LUM_160 = (pHdcmipp->Instance->P1CTCR3 & DCMIPP_P1CTCR3_LUM5_Msk) >> DCMIPP_P1CTCR3_LUM5_Pos;
+    pContrastControl->LUM_192 = (pHdcmipp->Instance->P1CTCR3 & DCMIPP_P1CTCR3_LUM6_Msk) >> DCMIPP_P1CTCR3_LUM6_Pos;
+    pContrastControl->LUM_224 = (pHdcmipp->Instance->P1CTCR3 & DCMIPP_P1CTCR3_LUM7_Msk) >> DCMIPP_P1CTCR3_LUM7_Pos;
+    pContrastControl->LUM_256 = (pHdcmipp->Instance->P1CTCR3 & DCMIPP_P1CTCR3_LUM8_Msk) >> DCMIPP_P1CTCR3_LUM8_Pos;
+  }
+  else
+  {
+    pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_PIPE_ID;
+    return HAL_ERROR;
+  }
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
+
+  return HAL_OK;
+}
+
+
+
+/**
+  * @brief  Config and Enable the Test Pattern Generator
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *         the configuration information for DCMIPP.
+  * @param  Config Config of the generated data
+  * @param  Flags Additional informations
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_EnableTestPatternGenerator(DCMIPP_HandleTypeDef *pHdcmipp, DCMIPP_TPGConfigTypeDef *Config)
+{
+  /* Check handle validity */
+  if (pHdcmipp == NULL)
+  {
+    return HAL_ERROR;
+  }
+
+  /* Set Width & Height */
+  if ((Config->Width > (DCMIPP_CMTPGCR1_WIDTH_Msk >> DCMIPP_CMTPGCR1_WIDTH_Pos)) ||
+      (Config->Height > (DCMIPP_CMTPGCR1_HEIGHT_Msk >> DCMIPP_CMTPGCR1_HEIGHT_Pos)))
+  {
+    return HAL_ERROR;
+  }
+
+  pHdcmipp->Instance->CMTPGCR1 = (Config->Width << DCMIPP_CMTPGCR1_WIDTH_Pos) |
+	  			 (Config->Height << DCMIPP_CMTPGCR1_HEIGHT_Pos);
+
+  pHdcmipp->Instance->CMTPGCR2 = Config->Mode | DCMIPP_CMTPGCR2_TPGEN;
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
+
+  return HAL_OK;
+}
+
+/**
+  * @brief  Disable the Test Pattern Generator
+  * @param  pHdcmipp pointer to a DCMIPP_HandleTypeDef structure that contains
+  *         the configuration information for DCMIPP.
+  * @retval HAL status
+  */
+HAL_StatusTypeDef HAL_DCMIPP_DisableTestPatternGenerator(DCMIPP_HandleTypeDef *pHdcmipp)
+{
+  /* Check handle validity */
+  if (pHdcmipp == NULL)
+  {
+    return HAL_ERROR;
+  }
+
+  pHdcmipp->Instance->CMTPGCR2 &= ~DCMIPP_CMTPGCR2_TPGEN_Msk;
+
+  /* Process Unlocked */
+  pHdcmipp->ErrorCode = HAL_DCMIPP_ERROR_NONE;
+
+  return HAL_OK;
+}
 
 /**
   * @}

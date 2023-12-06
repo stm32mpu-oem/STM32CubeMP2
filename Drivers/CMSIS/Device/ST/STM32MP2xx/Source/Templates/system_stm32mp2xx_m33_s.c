@@ -32,21 +32,21 @@
 #if !defined  (HSI_VALUE)
  #if defined (USE_STM32MP257CXX_EMU)
    #define HSI_VALUE             ((uint32_t)200000U)     /*!< Value of the Internal High Speed oscillator in Hz*/
- #elif defined (USE_STM32MP257CXX_FPGA)
+ #elif defined (USE_STM32MP257CXX_FPGA) || defined (USE_STM32MP235FXX_FPGA)
    #define HSI_VALUE             ((uint32_t)32000000U)   /*!< Value of the Internal High Speed oscillator in Hz*/
  #else /* USE_STM32MP257CXX_EMU | USE_STM32MP257CXX_FPGA */
    #define HSI_VALUE             ((uint32_t)64000000U)   /*!< Value of the Internal High Speed oscillator in Hz*/
- #endif /* else USE_STM32MP257CXX_EMU | USE_STM32MP257CXX_FPGA */
+ #endif /* else USE_STM32MP257CXX_EMU | USE_STM32MP257CXX_FPGA | USE_STM32MP235FXX_FPGA*/
 #endif /* HSI_VALUE */
 
 #if !defined  (HSE_VALUE)
  #if defined (USE_STM32MP257CXX_EMU)
    #define HSE_VALUE             ((uint32_t)48000000U)   /*!< Value of the External High Speed oscillator in Hz*/
- #elif defined (USE_STM32MP257CXX_FPGA)
+ #elif defined (USE_STM32MP257CXX_FPGA) || defined (USE_STM32MP235FXX_FPGA)
    #define HSE_VALUE             ((uint32_t)32000000U)   /*!< Value of the External High Speed oscillator in Hz*/
  #else /* USE_STM32MP257CXX_EMU | USE_STM32MP257CXX_FPGA */
    #define HSE_VALUE             ((uint32_t)40000000U)   /*!< Value of the External High Speed oscillator in Hz*/
- #endif /* else USE_STM32MP257CXX_EMU | USE_STM32MP257CXX_FPGA */
+ #endif /* else USE_STM32MP257CXX_EMU | USE_STM32MP257CXX_FPGA | USE_STM32MP235FXX_FPGA */
 #endif /* HSE_VALUE */
 
 #if !defined  (LSI_VALUE)
@@ -167,7 +167,7 @@ static uint32_t ComputePLLClockFreq(PLLInitTypeDef *pll)
   uint32_t source_freq;
   uint64_t pll_output;
 
-#if defined(USE_STM32MP257CXX_FPGA)
+#if defined(USE_STM32MP257CXX_FPGA) || defined (USE_STM32MP235FXX_FPGA)
   source_freq = 32000000UL;
 #else /* USE_STM32MP257CXX_FPGA */
   switch (pll->PLLSource)
@@ -185,7 +185,7 @@ static uint32_t ComputePLLClockFreq(PLLInitTypeDef *pll)
       source_freq = 0;
       break;
   }
-#endif /* else USE_STM32MP257CXX_FPGA */
+#endif /* else USE_STM32MP257CXX_FPGA | USE_STM32MP235FXX_FPGA */
 
   /* Compute PLL frequency from PLL parameters according to fractional mode selection */
   /* Note : keep maximum computing precision by doubling integer resolution */

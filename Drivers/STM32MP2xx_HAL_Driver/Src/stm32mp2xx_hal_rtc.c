@@ -300,9 +300,8 @@ HAL_StatusTypeDef HAL_RTC_Init(RTC_HandleTypeDef *hrtc)
   /* Check the RTC peripheral state */
   if (hrtc != NULL)
   {
-    status = HAL_OK;
     /* Check the parameters */
-    //assert_param(IS_RTC_ALL_INSTANCE(hrtc->Instance));
+    //assert_param(IS_RTC_ALL_INSTANCE(hrtc->Instance))
     assert_param(IS_RTC_HOUR_FORMAT(hrtc->Init.HourFormat));
     assert_param(IS_RTC_ASYNCH_PREDIV(hrtc->Init.AsynchPrediv));
     assert_param(IS_RTC_SYNCH_PREDIV(hrtc->Init.SynchPrediv));
@@ -484,7 +483,7 @@ HAL_StatusTypeDef HAL_RTC_DeInit(RTC_HandleTypeDef *hrtc)
       WRITE_REG(TAMP->ATCR1, TAMP_ATCR1_ATCKSEL);
       CLEAR_REG(TAMP->ATOR);
       CLEAR_REG(TAMP->ATCR2);
-      WRITE_REG(TAMP->SCR, 0xFFFFFFFF);  //clear all flag
+      WRITE_REG(TAMP->SCR, 0xFFFFFFFFU);  //clear all flag
 #if defined (CORTEX_IN_SECURE_STATE)
       CLEAR_REG(TAMP->SECCFGR);
 #endif
@@ -1194,7 +1193,7 @@ HAL_StatusTypeDef HAL_RTC_SetTime(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef *sTim
   *            @arg RTC_FORMAT_BCD: BCD format
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_RTC_GetTime(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef *sTime, uint32_t Format)
+HAL_StatusTypeDef HAL_RTC_GetTime(const RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef *sTime, uint32_t Format)
 {
   uint32_t tmpreg;
 
@@ -1238,7 +1237,7 @@ HAL_StatusTypeDef HAL_RTC_GetTime(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef *sTim
   * @param  hrtc RTC handle
   * @retval None
   */
-void HAL_RTC_DST_Add1Hour(RTC_HandleTypeDef *hrtc)
+void HAL_RTC_DST_Add1Hour(const RTC_HandleTypeDef *hrtc)
 {
   UNUSED(hrtc);
   __HAL_RTC_WRITEPROTECTION_DISABLE(hrtc);
@@ -1252,7 +1251,7 @@ void HAL_RTC_DST_Add1Hour(RTC_HandleTypeDef *hrtc)
   * @param  hrtc RTC handle
   * @retval None
   */
-void HAL_RTC_DST_Sub1Hour(RTC_HandleTypeDef *hrtc)
+void HAL_RTC_DST_Sub1Hour(const RTC_HandleTypeDef *hrtc)
 {
   UNUSED(hrtc);
   __HAL_RTC_WRITEPROTECTION_DISABLE(hrtc);
@@ -1266,7 +1265,7 @@ void HAL_RTC_DST_Sub1Hour(RTC_HandleTypeDef *hrtc)
   * @param  hrtc RTC handle
   * @retval None
   */
-void HAL_RTC_DST_SetStoreOperation(RTC_HandleTypeDef *hrtc)
+void HAL_RTC_DST_SetStoreOperation(const RTC_HandleTypeDef *hrtc)
 {
   UNUSED(hrtc);
   __HAL_RTC_WRITEPROTECTION_DISABLE(hrtc);
@@ -1279,7 +1278,7 @@ void HAL_RTC_DST_SetStoreOperation(RTC_HandleTypeDef *hrtc)
   * @param  hrtc RTC handle
   * @retval None
   */
-void HAL_RTC_DST_ClearStoreOperation(RTC_HandleTypeDef *hrtc)
+void HAL_RTC_DST_ClearStoreOperation(const RTC_HandleTypeDef *hrtc)
 {
   UNUSED(hrtc);
   __HAL_RTC_WRITEPROTECTION_DISABLE(hrtc);
@@ -1292,7 +1291,7 @@ void HAL_RTC_DST_ClearStoreOperation(RTC_HandleTypeDef *hrtc)
   * @param  hrtc RTC handle
   * @retval operation see RTC_StoreOperation_Definitions
   */
-uint32_t HAL_RTC_DST_ReadStoreOperation(RTC_HandleTypeDef *hrtc)
+uint32_t HAL_RTC_DST_ReadStoreOperation(const RTC_HandleTypeDef *hrtc)
 {
   UNUSED(hrtc);
   return READ_BIT(RTC->CR, RTC_CR_BKP);
@@ -1392,7 +1391,7 @@ HAL_StatusTypeDef HAL_RTC_SetDate(RTC_HandleTypeDef *hrtc, RTC_DateTypeDef *sDat
   *            @arg RTC_FORMAT_BCD: BCD format
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_RTC_GetDate(RTC_HandleTypeDef *hrtc, RTC_DateTypeDef *sDate, uint32_t Format)
+HAL_StatusTypeDef HAL_RTC_GetDate(const RTC_HandleTypeDef *hrtc, RTC_DateTypeDef *sDate, uint32_t Format)
 {
   uint32_t datetmpreg;
 
@@ -1916,7 +1915,7 @@ HAL_StatusTypeDef HAL_RTC_DeactivateAlarm(RTC_HandleTypeDef *hrtc, uint32_t Alar
   *             @arg RTC_FORMAT_BCD: BCD format
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_RTC_GetAlarm(RTC_HandleTypeDef *hrtc, RTC_AlarmTypeDef *sAlarm, uint32_t Alarm, uint32_t Format)
+HAL_StatusTypeDef HAL_RTC_GetAlarm(const RTC_HandleTypeDef *hrtc, RTC_AlarmTypeDef *sAlarm, uint32_t Alarm, uint32_t Format)
 {
   uint32_t tmpreg, subsecondtmpreg;
 
@@ -2151,7 +2150,7 @@ HAL_StatusTypeDef HAL_RTC_PollForAlarmAEvent(RTC_HandleTypeDef *hrtc, uint32_t T
   * @param  hrtc RTC handle
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_RTC_WaitForSynchro(RTC_HandleTypeDef *hrtc)
+HAL_StatusTypeDef HAL_RTC_WaitForSynchro(const RTC_HandleTypeDef *hrtc)
 {
   uint32_t tickstart;
 
@@ -2196,7 +2195,7 @@ HAL_StatusTypeDef HAL_RTC_WaitForSynchro(RTC_HandleTypeDef *hrtc)
   * @param  hrtc RTC handle
   * @retval HAL state
   */
-HAL_RTCStateTypeDef HAL_RTC_GetState(RTC_HandleTypeDef *hrtc)
+HAL_RTCStateTypeDef HAL_RTC_GetState(const RTC_HandleTypeDef *hrtc)
 {
   /* Return RTC handle state */
   return hrtc->State;

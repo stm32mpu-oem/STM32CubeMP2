@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -444,20 +444,20 @@ static int txodtdrvstren_program(void)
 
 		odtstrenp_state = ddrphy_phyinit_mapdrvstren(
 							(int)userinputadvanced.odtimpedance[pstate],
-							odtstrenp);
+							ODTSTRENP);
 		if (odtstrenp_state < 0) {
 			return odtstrenp_state;
 		}
 
 		odtstrenn_state = ddrphy_phyinit_mapdrvstren(
 							(int)userinputadvanced.odtimpedance[pstate],
-							odtstrenn);
-
-		txodtdrvstren = (uint16_t)((odtstrenn_state << CSR_ODTSTRENN_LSB) |
-					   odtstrenp_state);
+							ODTSTRENN);
 		if (odtstrenn_state < 0) {
 			return odtstrenn_state;
 		}
+
+		txodtdrvstren = (uint16_t)((odtstrenn_state << CSR_ODTSTRENN_LSB) |
+					   odtstrenp_state);
 
 		for (byte = 0; byte < userinputbasic.numdbyte; byte++) {
 			int c_addr;
@@ -505,20 +505,20 @@ static int tximpedancectrl1_program(void)
 
 		drvstrenfsdqp_state = ddrphy_phyinit_mapdrvstren(
 							(int)userinputadvanced.tximpedance[pstate],
-							drvstrenfsdqp);
+							DRVSTRENFSDQP);
 		if (drvstrenfsdqp_state < 0) {
 			return drvstrenfsdqp_state;
 		}
 
 		drvstrenfsdqn_state = ddrphy_phyinit_mapdrvstren(
 							(int)userinputadvanced.tximpedance[pstate],
-							drvstrenfsdqn);
-
-		tximpedancectrl1 = (uint16_t)((drvstrenfsdqn_state << CSR_DRVSTRENFSDQN_LSB) |
-					      (drvstrenfsdqp_state << CSR_DRVSTRENFSDQP_LSB));
+							DRVSTRENFSDQN);
 		if (drvstrenfsdqn_state < 0) {
 			return drvstrenfsdqn_state;
 		}
+
+		tximpedancectrl1 = (uint16_t)((drvstrenfsdqn_state << CSR_DRVSTRENFSDQN_LSB) |
+					      (drvstrenfsdqp_state << CSR_DRVSTRENFSDQP_LSB));
 
 		for (byte = 0; byte < userinputbasic.numdbyte; byte++) {
 			int c_addr;
@@ -559,13 +559,13 @@ static int atximpedance_program(void)
 	uint16_t atximpedance;
 
 	adrvstrenp_state = ddrphy_phyinit_mapdrvstren((int)userinputadvanced.atximpedance,
-						      adrvstrenp);
+						      ADRVSTRENP);
 	if (adrvstrenp_state < 0) {
 		return adrvstrenp_state;
 	}
 
 	adrvstrenn_state = ddrphy_phyinit_mapdrvstren((int)userinputadvanced.atximpedance,
-						      adrvstrenn);
+						      ADRVSTRENN);
 	if (adrvstrenn_state < 0) {
 		return adrvstrenn_state;
 	}
@@ -1232,7 +1232,7 @@ static void aforcetricont_acx4anibdis_program(void)
  */
 int ddrphy_phyinit_c_initphyconfig(void)
 {
-	int twotckrxdqspre[NB_PS] = {0};
+	int twotckrxdqspre[NB_PS] = { };
 	int ret;
 
 	/*

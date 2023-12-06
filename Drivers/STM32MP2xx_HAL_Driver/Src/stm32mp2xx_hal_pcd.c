@@ -1460,13 +1460,13 @@ HAL_StatusTypeDef HAL_PCD_EP_Open_Periodic(PCD_HandleTypeDef *hpcd, uint8_t ep_a
   ep->maxpacket = ep_mps;
   ep->type = ep_type;
 
-  ep->trb_dma_addr = (uint32_t)PCD_GetDmaAddr((void *)&ep->trb, sizeof(ep->trb), 1);
+  ep->trb_dma_addr = (uint32_t)PCD_GetDmaAddr((void *)ep->trb, sizeof(ep->trb), 1);
   if (ep->trb_dma_addr == 0U)
   {
     return HAL_ERROR;
   }
 
-  ep->trb_addr = (USB_DWC3_Trb *)PCD_MapCoherentAddr((void *)&ep->trb, sizeof(ep->trb));
+  ep->trb_addr = (USB_DWC3_Trb *)PCD_MapCoherentAddr((void *)ep->trb, sizeof(ep->trb));
   if (ep->trb_addr == 0)
   {
     return HAL_ERROR;

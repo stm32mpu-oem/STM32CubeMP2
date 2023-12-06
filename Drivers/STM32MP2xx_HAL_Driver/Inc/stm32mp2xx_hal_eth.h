@@ -160,7 +160,7 @@ typedef struct
 
   void *pData;                     /*!< Specifies Application packet pointer to save   */
 
-} ETH_TxPacketConfig;
+} ETH_TxPacketConfig_t;
 /**
   *
   */
@@ -470,6 +470,7 @@ typedef struct
   uint32_t                    TimestampFilter;              /*!< Enable MAC Address for PTP Packet Filtering */
   uint32_t
   TimestampChecksumCorrection;  /*!< Enable checksum correction during OST for PTP over UDP/IPv4 packets */
+  uint32_t                    TimestampExternalSystemTime;  /*!< External System Time Input */
   uint32_t                    TimestampStatusMode;          /*!< Transmit Timestamp Status Mode */
   uint32_t                    TimestampAddend;              /*!< Timestamp addend value */
   uint32_t                    TimestampSubsecondInc;        /*!< Subsecond Increment */
@@ -1182,7 +1183,10 @@ typedef struct
 /** @defgroup ETH_DMA_Arbitration ETH DMA Arbitration
   * @{
   */
-#define ETH_DMAARBITRATION_TX        (ETH_DMAMR_TXPR)
+#define ETH_DMAARBITRATION_TX_FIXED_PRIORITY         (0x00000000U)
+#define ETH_DMAARBITRATION_TX_STRICT_PRIORITY        (ETH_DMAMR_TAA_0)
+#define ETH_DMAARBITRATION_TX_ROUNDROBIN_PRIORITY    (ETH_DMAMR_TAA_1)
+#define ETH_DMAARBITRATION_TX        (ETH_DMAARBITRATION_TX_FIXED_PRIORITY)
 /**
   * @}
   */
@@ -1199,13 +1203,13 @@ typedef struct
 /** @defgroup ETH_BLEN_Size ETH Blen size
  * @{
  */
-#define ETH_BLEN_MAX_SIZE_256             ETH_DMASBMR_BLEN256 | ETH_BLEN_MAX_SIZE_128;
-#define ETH_BLEN_MAX_SIZE_128             ETH_DMASBMR_BLEN128 | ETH_BLEN_MAX_SIZE_64;
-#define ETH_BLEN_MAX_SIZE_64              ETH_DMASBMR_BLEN64 | ETH_BLEN_MAX_SIZE_32;
-#define ETH_BLEN_MAX_SIZE_32              ETH_DMASBMR_BLEN32 | ETH_BLEN_MAX_SIZE_16;
-#define ETH_BLEN_MAX_SIZE_16              ETH_DMASBMR_BLEN16 | ETH_BLEN_MAX_SIZE_8;
-#define ETH_BLEN_MAX_SIZE_8               ETH_DMASBMR_BLEN8 | ETH_BLEN_MAX_SIZE_4;
-#define ETH_BLEN_MAX_SIZE_4               ETH_DMASBMR_BLEN4;
+#define ETH_BLEN_MAX_SIZE_256             (ETH_DMASBMR_BLEN256 | ETH_BLEN_MAX_SIZE_128)
+#define ETH_BLEN_MAX_SIZE_128             (ETH_DMASBMR_BLEN128 | ETH_BLEN_MAX_SIZE_64)
+#define ETH_BLEN_MAX_SIZE_64              (ETH_DMASBMR_BLEN64 | ETH_BLEN_MAX_SIZE_32)
+#define ETH_BLEN_MAX_SIZE_32              (ETH_DMASBMR_BLEN32 | ETH_BLEN_MAX_SIZE_16)
+#define ETH_BLEN_MAX_SIZE_16              (ETH_DMASBMR_BLEN16 | ETH_BLEN_MAX_SIZE_8)
+#define ETH_BLEN_MAX_SIZE_8               (ETH_DMASBMR_BLEN8 | ETH_BLEN_MAX_SIZE_4)
+#define ETH_BLEN_MAX_SIZE_4               ETH_DMASBMR_BLEN4
 
 /**
   * @}
@@ -1214,9 +1218,9 @@ typedef struct
 /** @defgroup ETH_RX_OSR_LIMIT ETH Rx maximum read outstanding request limit
   * @{
   */
-#define ETH_RX_OSR_LIMIT_1 ETH_DMASBMR_RD_OSR_LMT_0;
-#define ETH_RX_OSR_LIMIT_2 ETH_DMASBMR_RD_OSR_LMT_1;
-#define ETH_RX_OSR_LIMIT_3 ETH_DMASBMR_RD_OSR_LMT_1 | ETH_DMASBMR_RD_OSR_LMT_0;
+#define ETH_RX_OSR_LIMIT_1 ETH_DMASBMR_RD_OSR_LMT_0
+#define ETH_RX_OSR_LIMIT_2 ETH_DMASBMR_RD_OSR_LMT_1
+#define ETH_RX_OSR_LIMIT_3 (ETH_DMASBMR_RD_OSR_LMT_1 | ETH_DMASBMR_RD_OSR_LMT_0)
 
 /**
   * @}
@@ -1225,9 +1229,9 @@ typedef struct
 /** @defgroup ETH_TX_OSR_LIMIT ETH Tx maximum write outstanding request limit
   * @{
   */
-#define ETH_TX_OSR_LIMIT_1 ETH_DMASBMR_WR_OSR_LMT_0;
-#define ETH_TX_OSR_LIMIT_2 ETH_DMASBMR_WR_OSR_LMT_1;
-#define ETH_TX_OSR_LIMIT_3 ETH_DMASBMR_WR_OSR_LMT_1 | ETH_DMASBMR_WR_OSR_LMT_0;
+#define ETH_TX_OSR_LIMIT_1 ETH_DMASBMR_WR_OSR_LMT_0
+#define ETH_TX_OSR_LIMIT_2 ETH_DMASBMR_WR_OSR_LMT_1
+#define ETH_TX_OSR_LIMIT_3 (ETH_DMASBMR_WR_OSR_LMT_1 | ETH_DMASBMR_WR_OSR_LMT_0)
 /**
   * @}
   */
@@ -1305,6 +1309,9 @@ typedef struct
 /** @defgroup ETH_Transmit_Mode ETH Transmit Mode
   * @{
   */
+#define ETH_TRANSMITQUEUE_ENABLE_AV    ETH_MTLTXQ0OMR_TXQEN_0
+#define ETH_TRANSMITQUEUE_ENABLE_ALL   ETH_MTLTXQ0OMR_TXQEN_1
+
 #define ETH_TRANSMITSTOREFORWARD       ETH_MTLTXQ0OMR_TSF
 #define ETH_TRANSMITTHRESHOLD_32       ETH_MTLTXQ0OMR_TTC_32BITS
 #define ETH_TRANSMITTHRESHOLD_64       ETH_MTLTXQ0OMR_TTC_64BITS
@@ -1321,6 +1328,9 @@ typedef struct
 /** @defgroup ETH_Receive_Mode ETH Receive Mode
   * @{
   */
+#define ETH_RECEIVEQUEUE_ENABLE_AV     ETH_MACRXQC0R_RXQ0EN_0
+#define ETH_RECEIVEQUEUE_ENABLE_ALL    ETH_MACRXQC0R_RXQ0EN_1
+
 #define ETH_RECEIVESTOREFORWARD        ETH_MTLRXQ0OMR_RSF
 #define ETH_RECEIVETHRESHOLD8_64       ETH_MTLRXQ0OMR_RTC_64BITS
 #define ETH_RECEIVETHRESHOLD8_32       ETH_MTLRXQ0OMR_RTC_32BITS
@@ -1385,7 +1395,7 @@ typedef struct
   */
 #define ETH_SPEED_10M        0x00000000U
 #define ETH_SPEED_100M       ETH_MACCR_FES
-#define ETH_SPEED_1000M      0x00000000U //In 1000M configuration, this bit is RO
+#define ETH_SPEED_1000M      0x00000000U
 /**
   * @}
   */
@@ -1514,11 +1524,8 @@ typedef struct
 /** @defgroup ETH_PTP_Config_Status ETH PTP Config Status
   * @{
   */
-#define HAL_ETH_PTP_NOT_CONFIGURATED       0x00000000U    /*!< ETH PTP Configuration not done */
-#define HAL_ETH_PTP_CONFIGURATED           0x00000001U    /*!< ETH PTP Configuration done     */
-/**
-  * @}
-  */
+#define HAL_ETH_PTP_NOT_CONFIGURED        0x00000000U    /*!< ETH PTP Configuration not done */
+#define HAL_ETH_PTP_CONFIGURED            0x00000001U    /*!< ETH PTP Configuration done     */
 /**
   * @}
   */
@@ -1790,8 +1797,8 @@ HAL_StatusTypeDef HAL_ETH_RegisterTxPtpCallback(ETH_HandleTypeDef *heth, pETH_tx
 HAL_StatusTypeDef HAL_ETH_UnRegisterTxPtpCallback(ETH_HandleTypeDef *heth);
 #endif /* HAL_ETH_USE_PTP */
 
-HAL_StatusTypeDef HAL_ETH_Transmit(ETH_HandleTypeDef *heth, ETH_TxPacketConfig *pTxConfig, uint32_t Timeout);
-HAL_StatusTypeDef HAL_ETH_Transmit_IT(ETH_HandleTypeDef *heth, ETH_TxPacketConfig *pTxConfig);
+HAL_StatusTypeDef HAL_ETH_Transmit(ETH_HandleTypeDef *heth, ETH_TxPacketConfig_t *pTxConfig, uint32_t Timeout);
+HAL_StatusTypeDef HAL_ETH_Transmit_IT(ETH_HandleTypeDef *heth, ETH_TxPacketConfig_t *pTxConfig);
 
 HAL_StatusTypeDef HAL_ETH_WritePHYRegister(const ETH_HandleTypeDef *heth, uint32_t PHYAddr, uint32_t PHYReg,
                                            uint32_t RegValue);

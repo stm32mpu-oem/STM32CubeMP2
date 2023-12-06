@@ -33,6 +33,7 @@ extern "C" {
 /** @addtogroup STM32MP2xx_HAL_Driver
   * @{
   */
+#if defined (SDMMC1) || defined (SDMMC2)
 
 /** @defgroup SD SD
   * @brief SD HAL module driver
@@ -783,6 +784,7 @@ HAL_StatusTypeDef HAL_SD_Abort_IT(SD_HandleTypeDef *hsd);
 /**
   * @}
   */
+#endif /* SDMMC1 || SDMMC2 */
 
 /**
   * @}

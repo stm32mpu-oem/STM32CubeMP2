@@ -94,22 +94,22 @@ typedef struct
 #define BUS_I2C2_CLK_ENABLE()                  __HAL_RCC_I2C2_CLK_ENABLE()
 #define BUS_I2C2_CLK_DISABLE()                 __HAL_RCC_I2C2_CLK_DISABLE()
 
-#define BUS_I2C2_SCL_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOJ_CLK_ENABLE()
-#define BUS_I2C2_SCL_GPIO_CLK_DISABLE()        __HAL_RCC_GPIOJ_CLK_DISABLE()
+#define BUS_I2C2_SCL_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOB_CLK_ENABLE()
+#define BUS_I2C2_SCL_GPIO_CLK_DISABLE()        __HAL_RCC_GPIOB_CLK_DISABLE()
 
-#define BUS_I2C2_SDA_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOJ_CLK_ENABLE()
-#define BUS_I2C2_SDA_GPIO_CLK_DISABLE()        __HAL_RCC_GPIOJ_CLK_DISABLE()
+#define BUS_I2C2_SDA_GPIO_CLK_ENABLE()         __HAL_RCC_GPIOB_CLK_ENABLE()
+#define BUS_I2C2_SDA_GPIO_CLK_DISABLE()        __HAL_RCC_GPIOB_CLK_DISABLE()
 
 #define BUS_I2C2_FORCE_RESET()                 __HAL_RCC_I2C2_FORCE_RESET()
 #define BUS_I2C2_RELEASE_RESET()               __HAL_RCC_I2C2_RELEASE_RESET()
 
 /* Definition for I2C2 Pins */
-#define BUS_I2C2_SCL_PIN                       GPIO_PIN_12
-#define BUS_I2C2_SCL_GPIO_PORT                 GPIOJ
+#define BUS_I2C2_SCL_PIN                       GPIO_PIN_5
+#define BUS_I2C2_SCL_GPIO_PORT                 GPIOB
 #define BUS_I2C2_SCL_AF                        GPIO_AF9_I2C2
 
-#define BUS_I2C2_SDA_PIN                       GPIO_PIN_13
-#define BUS_I2C2_SDA_GPIO_PORT                 GPIOJ
+#define BUS_I2C2_SDA_PIN                       GPIO_PIN_4
+#define BUS_I2C2_SDA_GPIO_PORT                 GPIOB
 #define BUS_I2C2_SDA_AF                        GPIO_AF9_I2C2
 
 #ifndef BUS_I2C2_FREQUENCY

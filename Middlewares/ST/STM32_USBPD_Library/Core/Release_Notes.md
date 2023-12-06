@@ -9,8 +9,9 @@ header-includes: <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png
 
 
 <center>
-# Release Notes for STM32 USB-C Power Delivery Core Stack Library
-Copyright &copy; 2017(-2022) STMicroelectronics\
+# Release Notes for
+# <mark>STM32 USB-C Power Delivery Core Stack Library</mark>
+Copyright &copy; 2017 STMicroelectronics\
 
 [![ST logo](_htmresc/st_logo_2020.png)](https://www.st.com){.logo}
 </center>
@@ -26,7 +27,7 @@ This implementation covers features of modules as :
 
 The library is provided in binary format, comes on top of the STM32Cube HAL driver and offers all the APIs required to develop an USB PD application.
 
-The USB-PD library is developed following the Universal Serial Bus Power Delivery Specification Revision 3.0, V2.0 (August 29, 2019) and Universal Serial Bus type-C Cable 
+The USB-PD library is developed following the Universal Serial Bus Power Delivery Specification Revision 3.1, V1.7 (January 2023) and Universal Serial Bus type-C Cable 
 and Connector Specification, Revision 2.0 (August, 2019). It has passed successfully the official certification.
 
 Here is the list of references to user documents:
@@ -41,7 +42,148 @@ Here is the list of references to user documents:
 # Update History
 
 ::: {.collapse}
-<input type="checkbox" id="collapse-section33" checked aria-hidden="true">
+<input type="checkbox" id="collapse-section36" checked aria-hidden="true">
+<label for="collapse-section36" aria-hidden="true">V5.1.0 / 09-Nov-2023</label>
+<div>
+
+## Main Changes
+
+### Maintenance Release
+
+
+## Contents
+**Fixed bugs list**
+
+  Headline
+  --------
+    Add AMETimeout management
+    Add CM55 support
+    Reduce BIST timing to improve certification tests
+    Fix COMMON.CHECK.PD.9 by adding missing VDM minor version field
+    Implement source_info message
+    Improve SenderResponseTimer and PSTransitionTimer timings 
+    Correct Size value when storing received EPR PDOs
+    Trig Hard Reset when SPR SRC Capabilities is received while in EPR mode
+    Update tTypeCSinkWaitCap timer duration
+    Update library content for MINSNK, MINSRC and MINDRP versions
+    Reduce maximum ports number to 1 for MINSNK, MINSRC and MINDRP versions
+
+
+
+  
+## Known limitations
+
+## Development Toolchains and Compilers
+
+- IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.6
+- Keil Microcontroller Development Kit (MDK-ARM) toolchain V5.31
+- STM32CubeIDE V1.11.0
+
+## Supported Devices and boards
+
+## Backward compatibility
+
+NA
+
+## Dependencies
+
+NA
+
+</div>
+:::
+
+::: {.collapse}
+<input type="checkbox" id="collapse-section35" aria-hidden="true">
+<label for="collapse-section35" aria-hidden="true">V5.0.0 / 26-Jan-2023</label>
+<div>
+
+## Main Changes
+
+### Official support of Universal Serial Bus Power Delivery Specification Revision 3.1
+
+
+## Contents
+**Fixed bugs list**
+
+  Headline
+  --------
+    Test PD.EPR.SRC3.07 : EPR_Get_Sink_Cap message received during EPR Entry Mode process should trigger Soft Reset message sending
+    HardReset shall be sent by DUT SRC when Request is received in EPR mode
+    HardReset shall be sent if no keepalive is received from sink, while in EPR mode
+    epr_exit shall be followed by src_cap and not HardReset
+    Correct Hard reset procedure in case of SNK role
+    Avoid compilation issue with keil not really compiling in C99 but in C90 (error #268)
+    EPR SRC state machine should check conditions on PDO and RDO are fulfilled prior answering Enter Acknowlegded
+    HardReset shall be sent if no keepalive is received from sink, while in EPR mode
+    get_source_cap shall be answered by source_cap even while in EPR_mode
+    Mcuastyle corrections
+    EPR Mode Entry message sent by SNK, should contain EPR SNK Operational PDP value in Data field
+    Fix response to not supported instead of soft reset when receiving an epr mode enter when epr not supported
+    Fix TEST.PD.USB4.DRST.1–Data_Reset command response of UFP UUT - answer not supported instead of reject
+  
+## Known limitations
+
+## Development Toolchains and Compilers
+
+- IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.6
+- Keil Microcontroller Development Kit (MDK-ARM) toolchain V5.31
+- STM32CubeIDE V1.11.0
+
+## Supported Devices and boards
+
+## Backward compatibility
+
+NA
+
+## Dependencies
+
+NA
+
+</div>
+:::
+
+::: {.collapse}
+<input type="checkbox" id="collapse-section34" aria-hidden="true">
+<label for="collapse-section34" aria-hidden="true">V4.3.1 / 16-Dec-2022</label>
+<div>
+
+## Main Changes
+
+### Maintenance release
+
+
+## Contents
+**Fixed bugs list**
+
+  Headline
+  --------
+  Codespell corrections
+  Fix USBPD_RevisionDO_TypeDef structure bitfield inversion
+  tPSSourceOn timing reduced
+  
+## Known limitations
+
+## Development Toolchains and Compilers
+
+- IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.6
+- Keil Microcontroller Development Kit (MDK-ARM) toolchain V5.31
+- STM32CubeIDE V1.8.0
+
+## Supported Devices and boards
+
+## Backward compatibility
+
+NA
+
+## Dependencies
+
+NA
+
+</div>
+:::
+
+::: {.collapse}
+<input type="checkbox" id="collapse-section33" aria-hidden="true">
 <label for="collapse-section33" aria-hidden="true">V4.3.0 / 31-Aug-2022</label>
 <div>
 
@@ -585,7 +727,7 @@ Dependencies with TRACER_EMB V1.4.0
 In order to use this version of USBPD Core module, please ensure version of USBPD Device driver module mentions compatibility with this v3.0.0 USBPD Core.
 (Example for STM32G4xx => use g4_v4.0.0 or higher version of USBPD Device
          for STM32L5xx => use l5_v2.0.0 or higher version of USBPD Device
-		 ...
+         ...
 
 ## Dependencies
 

@@ -93,7 +93,7 @@
   * @brief CMSIS Device version number
   */
 #define __STM32MP2xx_CMSIS_VERSION_MAIN   (0x00U) /*!< [31:24] main version */
-#define __STM32MP2xx_CMSIS_VERSION_SUB1   (0x02U) /*!< [23:16] sub1 version */
+#define __STM32MP2xx_CMSIS_VERSION_SUB1   (0x03U) /*!< [23:16] sub1 version */
 #define __STM32MP2xx_CMSIS_VERSION_SUB2   (0x00U) /*!< [15:8]  sub2 version */
 #define __STM32MP2xx_CMSIS_VERSION_RC     (0x00U) /*!< [7:0]  release candidate */
 #define __STM32MP2xx_CMSIS_VERSION        ((__CMSIS_DEVICE_VERSION_MAIN     << 24)\
@@ -113,6 +113,20 @@
     #include "stm32mp257cxx_ca35.h"
   #elif defined(STM32MP235Cxx)
     #include "stm32mp235cxx_ca35.h"
+  #elif defined(STM32MP235Fxx)
+    #include "stm32mp235fxx_ca35.h"
+  #elif defined(STM32MP235Axx)
+    #include "stm32mp235axx_ca35.h"
+  #elif defined(STM32MP235Dxx)
+    #include "stm32mp235dxx_ca35.h"
+   #elif defined(STM32MP233Cxx)
+    #include "stm32mp233cxx_ca35.h"
+  #elif defined(STM32MP233Fxx)
+    #include "stm32mp233fxx_ca35.h"
+  #elif defined(STM32MP233Axx)
+    #include "stm32mp233axx_ca35.h"
+  #elif defined(STM32MP233Dxx)
+    #include "stm32mp233dxx_ca35.h"
   #else
    #error "Please select first the target STM32MP2xx device used in your application (in stm32mp2xx.h file or IDE preprocessor defines)"
   #endif
@@ -153,6 +167,18 @@
     #include "stm32mp235axx_cm33.h"
   #elif defined(STM32MP235Cxx)
     #include "stm32mp235cxx_cm33.h"
+  #elif defined(STM32MP235Fxx)
+    #include "stm32mp235fxx_cm33.h"
+  #elif defined(STM32MP235Dxx)
+    #include "stm32mp235dxx_cm33.h"
+  #elif defined(STM32MP233Cxx)
+    #include "stm32mp233cxx_cm33.h"
+  #elif defined(STM32MP233Fxx)
+    #include "stm32mp233fxx_cm33.h"
+  #elif defined(STM32MP233Axx)
+    #include "stm32mp233axx_cm33.h"
+  #elif defined(STM32MP233Dxx)
+    #include "stm32mp233dxx_cm33.h"
   #else
     #error "Please select first the target STM32MP2xx device used in your application (in stm32mp2xx.h file or IDE preprocessor defines)"
   #endif

@@ -8,7 +8,8 @@ header-includes: <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png
 ::: {.col-sm-12 .col-lg-4}
 
 <center>
-# Release Notes for STM32 USB-C Power Delivery MP2 Device Driver
+# Release Notes for
+# <mark>STM32 USB-C Power Delivery MP2 Device Driver</mark>
 Copyright &copy; 2022 STMicroelectronics\
 
 [![ST logo](_htmresc/st_logo_2020.png)](https://www.st.com){.logo}

@@ -120,7 +120,8 @@ int ddrphy_phyinit_calcmb(void)
 			return ret;
 		}
 
-		ret = ddrphy_phyinit_softsetmb(myps, "dramfreq", userinputbasic.frequency[myps] * 2);
+		ret = ddrphy_phyinit_softsetmb(myps, "dramfreq",
+					       userinputbasic.frequency[myps] * 2);
 		if (ret != 0) {
 			return ret;
 		}
@@ -164,6 +165,7 @@ int ddrphy_phyinit_calcmb(void)
 			disableddbyte |= (ddrphy_phyinit_isdbytedisabled(dbyte) ?
 									(0x1U << dbyte) : 0x0U);
 		}
+
 		ret = ddrphy_phyinit_softsetmb(myps, "disableddbyte", disableddbyte);
 		if (ret != 0) {
 			return ret;
@@ -175,15 +177,16 @@ int ddrphy_phyinit_calcmb(void)
 			return ret;
 		}
 #else
-		ret = ddrphy_phyinit_softsetmb(myps, "phycfg", (mb_ddr_1d[myps].mr3 & 0x8U) ?
-							0 : userinputadvanced.is2ttiming[myps]);
+		ret = ddrphy_phyinit_softsetmb(myps, "phycfg",
+					       (mb_ddr_1d[myps].mr3 & 0x8U) ?
+					       0 : userinputadvanced.is2ttiming[myps]);
 		if (ret != 0) {
 			return ret;
 		}
 
 		ret = ddrphy_phyinit_softsetmb(myps, "x16present",
-					 (0x10 == userinputbasic.dramdatawidth) ?
-								mb_ddr_1d[myps].cspresent : 0x0);
+					       (0x10 == userinputbasic.dramdatawidth) ?
+					       mb_ddr_1d[myps].cspresent : 0x0);
 		if (ret != 0) {
 			return ret;
 		}
@@ -194,8 +197,9 @@ int ddrphy_phyinit_calcmb(void)
 			return ret;
 		}
 
-		ret = ddrphy_phyinit_softsetmb(myps, "cspresentcha", (2 == userinputbasic.numrank_dfi0) ?
-								0x3 : userinputbasic.numrank_dfi0);
+		ret = ddrphy_phyinit_softsetmb(myps, "cspresentcha",
+					       (2 == userinputbasic.numrank_dfi0) ?
+					       0x3 : userinputbasic.numrank_dfi0);
 		if (ret != 0) {
 			return ret;
 		}
@@ -205,8 +209,9 @@ int ddrphy_phyinit_calcmb(void)
 			return ret;
 		}
 
-		ret = ddrphy_phyinit_softsetmb(myps, "cspresentchb", (2 == userinputbasic.numrank_dfi1) ?
-								0x3 : userinputbasic.numrank_dfi1);
+		ret = ddrphy_phyinit_softsetmb(myps, "cspresentchb",
+					       (2 == userinputbasic.numrank_dfi1) ?
+					       0x3 : userinputbasic.numrank_dfi1);
 		if (ret != 0) {
 			return ret;
 		}

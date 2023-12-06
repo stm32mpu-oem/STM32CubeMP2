@@ -180,7 +180,7 @@ int ddrphy_phyinit_usercustom_g_waitfwdone(void)
 			return ret;
 		}
 
-		VERBOSE("fw_major_message = %x\n", fw_major_message);
+		VERBOSE("fw_major_message = %x\n", (unsigned int)fw_major_message);
 
 		if (fw_major_message == FW_MAJ_MSG_START_STREAMING) {
 			int i;
@@ -200,7 +200,7 @@ int ddrphy_phyinit_usercustom_g_waitfwdone(void)
 					return ret;
 				}
 
-				VERBOSE("streaming message = %x\n", read_data);
+				VERBOSE("streaming message = %x\n", (unsigned int)read_data);
 			}
 		}
 	} while ((fw_major_message != FW_MAJ_MSG_TRAINING_SUCCESS) &&

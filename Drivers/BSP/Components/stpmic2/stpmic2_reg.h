@@ -98,6 +98,10 @@
  #define BUCKS_MRST_CR        0x1D
  #define LDOS_MRST_CR         0x1E
 
+#define STANDBY_PWRCTRL_SEL_0 0x00  /* 00: No source (PMIC operates in RUN state) */
+#define STANDBY_PWRCTRL_SEL_1 0x20  /* 01: PWRCTRL1 control source */
+#define STANDBY_PWRCTRL_SEL_2 0x40  /* 10: PWRCTRL2 control source */
+#define STANDBY_PWRCTRL_SEL_3 0x60  /* 11: PWRCTRL3 control source */
  /*
   * Buck CR
   */
@@ -167,6 +171,35 @@
  #define REFDDR_MAIN_CR       0x64
  #define REFDDR_ALT_CR        0x65
  #define REFDDR_PWRCTRL_CR    0x66
+
+ /* MAIN_CR bits definition */
+
+#define MAIN_CR_EN              0x01  /* MAIN control register enable bit */
+#define MAIN_CR_BYPASS          0x40  /* Select bypass mode operation */
+#define MAIN_CR_SNK_SRC         0x80  /* select sink/source mode operation */
+#define MAIN_CR_INPUT_SRC_VOUT4 0x80  /* VOUT4 as inputsource */
+#define MAIN_CR_PREG_MODE0      0x00  /* MAIN control register2 select regulation mode bit: BUCKx operates in high power mode (HP) */
+#define MAIN_CR_PREG_MODE1      0x02  /* MAIN control register2 select regulation mode bit: BUCKx operates in low power mode (LP) */
+#define MAIN_CR_PREG_MODE2      0x04  /* MAIN control register2 select regulation mode bit: BUCKx operates in Forced PWM mode (CCM) */
+
+#define ALT_CR_EN              0x01  /* ALTERNATE control register enable bit */
+#define ALT_CR_BYPASS          0x40  /* Select bypass mode operation */
+#define ALT_CR_INPUT_SRC_VOUT4 0x80  /* VOUT4 as inputsource */
+
+#define PWRCTRL_CR_EN          0x01  /* PWRCTRL_CR enable bit */
+#define PWRCTRL_CR_RST         0x02  /* PWRCTRL_CR reset enable bit */
+#define PWRCTRL_CR_SEL0        0x00  /* PWRCTRL_CR no control source bit */
+#define PWRCTRL_CR_SEL1        0x04  /* PWRCTRL_CR PWRCTRL1 control source bit */
+#define PWRCTRL_CR_SEL2        0x08  /* PWRCTRL_CR PWRCTRL2 control source bit */
+#define PWRCTRL_CR_SEL3        0x0C  /* PWRCTRL_CR PWRCTRL3 control source bit */
+#define PWRCTRL_CR_DLY_L0      0x00  /* PWRCTRL_CR LDOx control/reset source shift delay from high to Low level bit: no delay */
+#define PWRCTRL_CR_DLY_L1      0x10  /* PWRCTRL_CR LDOx control/reset source shift delay from high to Low level bit: 1.5 ms delay */
+#define PWRCTRL_CR_DLY_L2      0x20  /* PWRCTRL_CR LDOx control/reset source shift delay from high to Low level bit: 3 ms delay */
+#define PWRCTRL_CR_DLY_L3      0x30  /* PWRCTRL_CR LDOx control/reset source shift delay from high to Low level bit: 6 ms delay */
+#define PWRCTRL_CR_DLY_H0      0x00  /* PWRCTRL_CR LDOx control/reset source shift delay from low to High level bit: no delay */
+#define PWRCTRL_CR_DLY_H1      0x40  /* PWRCTRL_CR LDOx control/reset source shift delay from low to High level bit: 1.5 ms delay */
+#define PWRCTRL_CR_DLY_H2      0x80  /* PWRCTRL_CR LDOx control/reset source shift delay from low to High level bit: 3 ms delay */
+#define PWRCTRL_CR_DLY_H3      0xC0  /* PWRCTRL_CR LDOx control/reset source shift delay from low to High level bit: 6 ms delay */
 
  /*
   * INTERRUPT CR
@@ -240,9 +273,8 @@
 #define NVM_BUCK_COMP_SHR1    0xB8      //R/W   NVM_BUCK4_COMP[1:0] NVM_BUCK3_COMP[1:0] NVM_BUCK2_COMP[1:0] NVM_BUCK1_COMP[1:0]
 #define NVM_BUCK_COMP_SHR2    0xB9      //R/W   - - NVM_BUCK7_COMP[1:0] NVM_BUCK6_COMP[1:0] NVM_BUCK5_COMP[1:0]
 
-
  /*
-  * BUCKS_MRST_CR bits definition
+  * BUCKS_MRST_CR: Mask reset buck control register bits definition
   */
  #define BUCK1_MRST           BIT(0)
  #define BUCK2_MRST           BIT(1)
@@ -254,7 +286,7 @@
  #define REFDDR_MRST          BIT(7)
 
  /*
-  * LDOS_MRST_CR bits definition
+  * LDOS_MRST_CR: Mask reset LDO control register bits definition
   */
  #define LDO1_MRST            BIT(0)
  #define LDO2_MRST            BIT(1)
@@ -330,7 +362,11 @@
   */
  #define REFDDR_PD           BIT(0)
 
- /*
+ /* FS_OCP_CRx
+  * 0: OCP hiccup mode (Level 0)
+  * 1: OCP fail-safe PMIC turn-off (Level 1)
+  */
+/*
   * FS_OCP_CR1
   */
  #define FS_OCP_BUCK1        BIT(0)
@@ -357,6 +393,14 @@
  /* IRQ definitions */
  #define IT_PONKEY_F         0
  #define IT_PONKEY_R         1
+ #define IT_WKP_FA           2
+ #define IT_WKP_RI           3
+ #define IT_VINLOW_FA        4
+ #define IT_VINLOW_RI        5
+ #define IT_VBUS_FA          6
+ #define IT_VBUS_RI          7
+ #define IT_THW_FA           8
+ #define IT_THW_RI           9
  #define IT_BUCK1_OCP        16
  #define IT_BUCK2_OCP        17
  #define IT_BUCK3_OCP        18

@@ -374,7 +374,7 @@ int32_t STPMIC2_DeInit(STPMIC2_Object_t *pObj)
   */
 int32_t STPMIC2_ReadID(STPMIC2_Object_t *pObj, uint8_t *pId)
 {
-  int32_t ret;
+  int32_t ret=STPMIC2_OK;
 
   /* Initialize I2C */
   pObj->IO.Init();

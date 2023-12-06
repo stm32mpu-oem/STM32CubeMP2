@@ -36,7 +36,45 @@ Here is the list of references to user documents:
 # Update History
 
 ::: {.collapse}
-<input type="checkbox" id="collapse-section1" checked aria-hidden="true">
+<input type="checkbox" id="collapse-section2" checked aria-hidden="true">
+<label for="collapse-section2" aria-hidden="true">V1.1.0 / 06-June-2023</label>
+<div>
+
+## Main Changes
+
+### Initial release
+
+## Contents
+
+  Headline
+  --------
+  Update for ThreadX support
+  MISRA corrections
+  MCUAstyle & Codespell corections
+
+## Known limitations
+
+## Development Toolchains and Compilers
+
+- IAR Embedded Workbench for ARM (EWARM) toolchain V8.50.6 + ST-Link
+- RealView Microcontroller Development Kit (MDK-ARM) toolchain V5.32 + ST-Link
+- STM32CubeIDE [V1.9.0](https://www.st.com/en/development-tools/stm32cubeide.html) + ST-Link
+
+## Supported Devices and boards
+
+## Backward compatibility
+
+NA
+
+## Dependencies
+
+NA
+
+</div>
+:::
+
+::: {.collapse}
+<input type="checkbox" id="collapse-section1" aria-hidden="true">
 <label for="collapse-section1" aria-hidden="true">V1.0.0 / 30-June-2022</label>
 <div>
 

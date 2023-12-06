@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -47,7 +47,6 @@ int ddrphy_phyinit_sequence(bool skip_training, bool reten)
 	if (ret != 0) {
 		return ret;
 	}
-
 	/*
 	 * Customize any register write desired; This can include any CSR not covered by PhyInit
 	 * or user wish to override values calculated in step_C
@@ -55,7 +54,7 @@ int ddrphy_phyinit_sequence(bool skip_training, bool reten)
 	ddrphy_phyinit_usercustom_custompretrain();
 
 	/* Stop retention register tracking for training firmware related registers */
-	ret = ddrphy_phyinit_reginterface(stoptrack, 0, 0);
+	ret = ddrphy_phyinit_reginterface(STOPTRACK, 0, 0);
 	if (ret != 0) {
 		return ret;
 	}
@@ -108,7 +107,7 @@ int ddrphy_phyinit_sequence(bool skip_training, bool reten)
 	}
 
 	/* Start retention register tracking for training firmware related registers */
-	ret = ddrphy_phyinit_reginterface(starttrack, 0, 0);
+	ret = ddrphy_phyinit_reginterface(STARTTRACK, 0, 0);
 	if (ret != 0) {
 		return ret;
 	}

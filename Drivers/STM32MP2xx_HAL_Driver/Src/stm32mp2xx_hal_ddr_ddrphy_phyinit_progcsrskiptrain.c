@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -340,9 +340,9 @@ static void rxendly_program(__attribute__((unused))bool skip_train)
 		/* Compensate for pptenrxenbackoff */
 		zerobackoff_x1000 = (1000 * 24) / 32;
 		if (userinputadvanced.lp4rxpreamblemode[pstate] == 1) {
-			backoff_x1000 = (1000 * 1) - ((1000 * 4) / 32);
+			backoff_x1000 = (1000 * 1) - ((1000 * 2) / 32);
 		} else {
-			backoff_x1000 = (1000 * userinputadvanced.rxenbackoff) - ((1000 * 4) / 32);
+			backoff_x1000 = (1000 * userinputadvanced.rxenbackoff) - ((1000 * 2) / 32);
 		}
 
 		if (skip_train && !userinputadvanced.disableretraining) {
@@ -907,15 +907,46 @@ static void acsmctrl23_program(void)
 static void pllforcecal_plldacvalin_program(void)
 {
 	int dacval_in = 0x10;
-	int force_cal = 1;
+	int force_cal = 0x1;
+	int pllencal = 0x1;
 	int maxrange = 0x1f;
-	uint16_t pllctrl3;
+	int pstate;
+	uint16_t pllctrl3_gpr;
+	uint16_t pllctrl3_startup;
 
-	pllctrl3 = (uint16_t)((dacval_in << CSR_PLLDACVALIN_LSB) |
-			      (force_cal << CSR_PLLFORCECAL_LSB) |
-			      (maxrange << CSR_PLLMAXRANGE_LSB));
+	for (pstate = 0; pstate < userinputbasic.numpstates; pstate++) {
+		int p_addr = pstate << 20;
 
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TMASTER | CSR_PLLCTRL3_ADDR)), pllctrl3);
+		/* Just to test */
+		switch (pstate) {
+		case 0:
+			dacval_in = 0x10;
+			break;
+		case 1:
+			dacval_in = 0x11;
+			break;
+		case 2:
+			dacval_in = 0x12;
+			break;
+		case 3:
+			dacval_in = 0x13;
+			break;
+		default:
+			dacval_in = 0x14;
+			break;
+		}
+
+		pllctrl3_startup = (uint16_t)((dacval_in << CSR_PLLDACVALIN_LSB) |
+					      (maxrange << CSR_PLLMAXRANGE_LSB));
+		pllctrl3_gpr = pllctrl3_startup |
+			       (uint16_t)((force_cal << CSR_PLLFORCECAL_LSB) |
+					  (pllencal << CSR_PLLENCAL_LSB));
+
+		mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TMASTER | CSR_PLLCTRL3_ADDR)),
+			      pllctrl3_startup);
+		mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (p_addr | TINITENG |
+							      CSR_SEQ0BGPR6_ADDR)), pllctrl3_gpr);
+	}
 }
 
 /*
@@ -943,7 +974,7 @@ static void pllforcecal_plldacvalin_program(void)
  */
 void ddrphy_phyinit_progcsrskiptrain(bool skip_train)
 {
-	uint16_t txdqsdly[NB_PS] = {0};
+	uint16_t txdqsdly[NB_PS] = { };
 
 	VERBOSE("%s Start\n", __func__);
 

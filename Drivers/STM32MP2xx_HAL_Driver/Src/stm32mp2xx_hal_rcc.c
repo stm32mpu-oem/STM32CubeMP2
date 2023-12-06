@@ -967,7 +967,29 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
   }
 
   assert_param(IS_RCC_CLOCKTYPE(pRCC_ClkInitStruct->ClockType));
+  
+  /* Process LSMCUDIV to avoid potential crash, because ck_icn_ls_mcu exceeds his limit, 
+     when maximum frequency is applied to ck_icn_hs_mcu."
+  */
+  if ((pRCC_ClkInitStruct->ClockType & RCC_CLOCKTYPE_ICN_LS_MCU) == RCC_CLOCKTYPE_ICN_LS_MCU)
+  {
+    /* Cross bar is inherited from ICN_HS_MCU */
 
+    /* Set LSMCUDIV */
+    RCC->LSMCUDIVR = pRCC_ClkInitStruct->ICN_LSMCU_Div;
+
+    /* Wait for divider to be ready */
+    tickstart = HAL_GetTick();
+
+    while ((RCC->LSMCUDIVR & RCC_LSMCUDIVR_LSMCUDIVRDY) == RESET)
+    {
+      if ((HAL_GetTick() - tickstart) > LSMCUDIV_TIMEOUT_VALUE)
+      {
+        return HAL_TIMEOUT;
+      }
+    }
+  }
+  
   if ((pRCC_ClkInitStruct->ClockType & RCC_CLOCKTYPE_ICN_HS_MCU) == RCC_CLOCKTYPE_ICN_HS_MCU)
   {
     /* Set flexgen dividers */
@@ -1060,25 +1082,6 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
       return HAL_ERROR;
     }
 #endif /* CORE_CM33 */
-  }
-
-  if ((pRCC_ClkInitStruct->ClockType & RCC_CLOCKTYPE_ICN_LS_MCU) == RCC_CLOCKTYPE_ICN_LS_MCU)
-  {
-    /* Cross bar is inherited from ICN_HS_MCU */
-
-    /* Set LSMCUDIV */
-    RCC->LSMCUDIVR = pRCC_ClkInitStruct->ICN_LSMCU_Div;
-
-    /* Wait for divider to be ready */
-    tickstart = HAL_GetTick();
-
-    while ((RCC->LSMCUDIVR & RCC_LSMCUDIVR_LSMCUDIVRDY) == RESET)
-    {
-      if ((HAL_GetTick() - tickstart) > LSMCUDIV_TIMEOUT_VALUE)
-      {
-        return HAL_TIMEOUT;
-      }
-    }
   }
 
   if ((pRCC_ClkInitStruct->ClockType & RCC_CLOCKTYPE_ICN_APB1) == RCC_CLOCKTYPE_ICN_APB1)

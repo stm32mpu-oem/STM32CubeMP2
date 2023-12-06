@@ -339,7 +339,7 @@ void              HAL_ETHEx_SetTxVLANIdentifier(ETH_HandleTypeDef *heth, uint32_
 void              HAL_ETHEx_EnterLPIMode(ETH_HandleTypeDef *heth, FunctionalState TxAutomate,
                                          FunctionalState TxClockStop);
 void              HAL_ETHEx_ExitLPIMode(ETH_HandleTypeDef *heth);
-uint32_t          HAL_ETHEx_GetMACLPIEvent(ETH_HandleTypeDef *heth);
+uint32_t          HAL_ETHEx_GetMACLPIEvent(const ETH_HandleTypeDef *heth);
 
 /**
   * @}
@@ -364,5 +364,3 @@ uint32_t          HAL_ETHEx_GetMACLPIEvent(ETH_HandleTypeDef *heth);
 #endif
 
 #endif /* STM32MP2xx_HAL_ETH_EX_H */
-
-

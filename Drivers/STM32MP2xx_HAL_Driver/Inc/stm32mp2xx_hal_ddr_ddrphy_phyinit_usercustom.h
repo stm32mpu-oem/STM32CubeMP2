@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -13,7 +13,9 @@
 #include "stm32mp2xx_hal.h"
 #include "stm32mp2xx_hal_ddr_ddrphy_phyinit_struct.h"
 
+#ifndef __AARCH64__
 extern uint32_t FW_DDR_START;
+#endif /* __AARCH64__ */
 
 /*
  * -------------------------------------------------------------
@@ -52,20 +54,22 @@ extern uint32_t FW_DDR_START;
 #endif /* STM32MP_LPDDR4_TYPE */
 
 #if STM32MP_DDR3_TYPE
-#define IMEM_SIZE			0x4b94
+#define IMEM_SIZE			0x4c28
 #define DMEM_SIZE			0x6c8
 #elif STM32MP_DDR4_TYPE
-#define IMEM_SIZE			0x6ac8
+#define IMEM_SIZE			0x6d24
 #define DMEM_SIZE			0x6cc
 #elif STM32MP_LPDDR4_TYPE
-#define IMEM_SIZE			0x7ec6
+#define IMEM_SIZE			0x7e50
 #define DMEM_SIZE			0x67c
 #endif
 #define IMEM_ST_ADDR			0x50000
 #define DMEM_ST_ADDR			0x54000
 #define DMEM_BIN_OFFSET			0x200
 
-#define STM32MP_DDR_FW_BASE		((uint32_t)(&FW_DDR_START))
+#ifndef __AARCH64__
+#define STM32MP_DDR_FW_BASE		((unsigned long)(&FW_DDR_START))
+#endif /* __AARCH64__ */
 #define STM32MP_DDR_FW_DMEM_OFFSET	0x400
 #define STM32MP_DDR_FW_IMEM_OFFSET	0x800
 
@@ -105,41 +109,44 @@ extern uint32_t FW_DDR_START;
  */
 
 /* A structure used to SRAM memory address space. */
-typedef enum { return_offset, return_lastaddr } return_offset_lastaddr_t;
+enum return_offset_lastaddr {
+	RETURN_OFFSET,
+	RETURN_LASTADDR
+};
 
 /* A structure to store the sequence function runtime input variables. */
-typedef struct runtime_config {
+struct runtime_config {
 	bool	skip_train;	/* skip_train input parameter */
 	bool	reten;		/*
 				 * Retention Enable input parameter, instructs phyinit to issue
 				 * register reads during initialization to retention registers.
 				 */
-} runtime_config_t;
+};
 
 /* Enumeration of instructions for PhyInit Register Interface */
-typedef enum {
-	starttrack,	/* Start register tracking */
-	stoptrack,	/* Stop register tracking */
-	saveregs,	/* Save(read) tracked register values */
-	restoreregs,	/* Restore (write) saved register values */
-	dumpregs,	/* Write register address,value pairs to file */
-	importregs	/* Import register address,value pairs to file */
-} reginstr;
+enum reginstr {
+	STARTTRACK,	/* Start register tracking */
+	STOPTRACK,	/* Stop register tracking */
+	SAVEREGS,	/* Save(read) tracked register values */
+	RESTOREREGS,	/* Restore (write) saved register values */
+	DUMPREGS,	/* Write register address,value pairs to file */
+	IMPORTREGS	/* Import register address,value pairs to file */
+} ;
 
 /* Data structure to store register address, value pairs */
-typedef struct reg_addr_val {
+struct reg_addr_val {
 	uint32_t	address;	/* Register address */
 	uint16_t	value;		/* Register value */
-} reg_addr_val_t;
+};
 
 /* TargetCSR Target CSR for the impedance value for ddrphy_phyinit_mapdrvstren() */
 enum drvtype {
-	drvstrenfsdqp,
-	drvstrenfsdqn,
-	odtstrenp,
-	odtstrenn,
-	adrvstrenp,
-	adrvstrenn
+	DRVSTRENFSDQP,
+	DRVSTRENFSDQN,
+	ODTSTRENP,
+	ODTSTRENN,
+	ADRVSTRENP,
+	ADRVSTRENN
 };
 
 /*
@@ -195,13 +202,13 @@ int ddrphy_phyinit_mapdrvstren(int drvstren_ohm, enum drvtype targetcsr);
 void ddrphy_phyinit_storemsgblk(void *msgblkptr, int sizeofmsgblk, int mem[]);
 int ddrphy_phyinit_calcmb(void);
 int ddrphy_phyinit_storeincvfile(char *incv_file_name, int mem[],
-				 return_offset_lastaddr_t return_type);
+				 enum return_offset_lastaddr return_type);
 void ddrphy_phyinit_writeoutmem(uint32_t *mem, int mem_offset, int mem_size);
 void ddrphy_phyinit_writeoutmsgblk(uint16_t *mem, int mem_offset, int mem_size);
 int ddrphy_phyinit_isdbytedisabled(int dbytenumber);
-int ddrphy_phyinit_setretreglistbase(uint32_t base);
+int ddrphy_phyinit_setretreglistbase(unsigned long base);
 int ddrphy_phyinit_trackreg(uint32_t adr);
-int ddrphy_phyinit_reginterface(reginstr myreginstr, uint32_t adr, uint16_t dat);
+int ddrphy_phyinit_reginterface(enum reginstr myreginstr, uint32_t adr, uint16_t dat);
 
 extern void ddrphy_phyinit_usercustom_a_bringuppower(void);
 extern void ddrphy_phyinit_usercustom_b_startclockresetphy(void);

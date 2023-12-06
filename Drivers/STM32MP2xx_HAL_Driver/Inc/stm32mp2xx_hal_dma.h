@@ -436,7 +436,7 @@ typedef struct __DMA_HandleTypeDef
 #define HPDMA_REQUEST_I3C4_TX    (181U) /*!< HPDMA HW request is I3C4_TX       */
 #define HPDMA_REQUEST_I3C4_CMD   (182U) /*!< HPDMA HW request is I3C4_CMD      */
 #define HPDMA_REQUEST_I3C4_STAT  (183U) /*!< HPDMA HW request is I3C4_STAT     */
-#endif
+#endif /* ! STM32MP25XX_SI_CUT1_X */
 
 /* LPDMA requests */
 #define LPDMA_REQUEST_LPUART1_RX (0U)   /*!< LPDMA HW request is LPUART1_RX    */
@@ -459,7 +459,7 @@ typedef struct __DMA_HandleTypeDef
 #define LPDMA_REQUEST_I3C4_STAT  (18U)  /*!< LPDMA HW request is I3C4_STAT     */
 
 /* Software request */
-#define DMA_REQUEST_SW               DMA_CTR2_SWREQ /*!< DMA SW request          */
+#define DMA_REQUEST_SW            DMA_CTR2_SWREQ /*!< DMA SW request           */
 /**
   * @}
   */
@@ -468,8 +468,8 @@ typedef struct __DMA_HandleTypeDef
   * @brief    DMA Block Request
   * @{
   */
-#define DMA_BREQ_SINGLE_BURST 0x00000000U   /*!< Hardware request protocol at a single / burst level */
-#define DMA_BREQ_BLOCK        DMA_CTR2_BREQ /*!< Hardware request protocol at a block level          */
+#define DMA_BREQ_SINGLE_BURST          0x00000000U     /*!< Hardware request protocol at a single / burst level */
+#define DMA_BREQ_BLOCK                 DMA_CTR2_BREQ   /*!< Hardware request protocol at a block level          */
 /**
   * @}
   */
@@ -478,9 +478,9 @@ typedef struct __DMA_HandleTypeDef
   * @brief    DMA transfer direction
   * @{
   */
-#define DMA_PERIPH_TO_MEMORY 0x00000000U    /*!< Peripheral to memory direction */
-#define DMA_MEMORY_TO_PERIPH DMA_CTR2_DREQ  /*!< Memory to peripheral direction */
-#define DMA_MEMORY_TO_MEMORY DMA_CTR2_SWREQ /*!< Memory to memory direction     */
+#define DMA_PERIPH_TO_MEMORY 0x00000000U             /*!< Peripheral to memory direction */
+#define DMA_MEMORY_TO_PERIPH DMA_CTR2_DREQ           /*!< Memory to peripheral direction */
+#define DMA_MEMORY_TO_MEMORY DMA_CTR2_SWREQ          /*!< Memory to memory direction     */
 /**
   * @}
   */
@@ -509,9 +509,10 @@ typedef struct __DMA_HandleTypeDef
   * @brief    DMA Source Data Width
   * @{
   */
-#define DMA_SRC_DATAWIDTH_BYTE     0x00000000U         /*!< Source data width : Byte     */
-#define DMA_SRC_DATAWIDTH_HALFWORD DMA_CTR1_SDW_LOG2_0 /*!< Source data width : HalfWord */
-#define DMA_SRC_DATAWIDTH_WORD     DMA_CTR1_SDW_LOG2_1 /*!< Source data width : Word     */
+#define DMA_SRC_DATAWIDTH_BYTE       0x00000000U           /*!< Source data width : Byte       */
+#define DMA_SRC_DATAWIDTH_HALFWORD   DMA_CTR1_SDW_LOG2_0   /*!< Source data width : HalfWord   */
+#define DMA_SRC_DATAWIDTH_WORD       DMA_CTR1_SDW_LOG2_1   /*!< Source data width : Word       */
+#define DMA_SRC_DATAWIDTH_DOUBLEWORD DMA_CTR1_SDW_LOG2     /*!< Source data width : DoubleWord */
 /**
   * @}
   */
@@ -520,9 +521,11 @@ typedef struct __DMA_HandleTypeDef
   * @brief    DMA destination Data Width
   * @{
   */
-#define DMA_DEST_DATAWIDTH_BYTE     0x00000000U         /*!< Destination data width : Byte     */
-#define DMA_DEST_DATAWIDTH_HALFWORD DMA_CTR1_DDW_LOG2_0 /*!< Destination data width : HalfWord */
-#define DMA_DEST_DATAWIDTH_WORD     DMA_CTR1_DDW_LOG2_1 /*!< Destination data width : Word     */
+#define DMA_DEST_DATAWIDTH_BYTE       0x00000000U          /*!< Destination data width : Byte       */
+#define DMA_DEST_DATAWIDTH_HALFWORD   DMA_CTR1_DDW_LOG2_0  /*!< Destination data width : HalfWord   */
+#define DMA_DEST_DATAWIDTH_WORD       DMA_CTR1_DDW_LOG2_1  /*!< Destination data width : Word       */
+#define DMA_DEST_DATAWIDTH_DOUBLEWORD DMA_CTR1_DDW_LOG2    /*!< Destination data width : DoubleWord */
+
 /**
   * @}
   */
@@ -574,41 +577,50 @@ typedef struct __DMA_HandleTypeDef
   * @brief    DMA Transfer Mode
   * @{
   */
-#define DMA_NORMAL (0x00U) /*!< Normal DMA transfer */
+#define DMA_NORMAL                           (0x00U)     /*!< Normal DMA transfer                    */
+#define DMA_PFCTRL                    DMA_CTR2_PFREQ     /*!< HW request peripheral flow control mode */
+/**
+  * @}
+  */
+
+/** @defgroup DMA_Channel_Attributes DMA Channel Attributes
+  * @brief    DMA Channel Security and Privilege Attributes
+  * @note     Secure and non-secure attributes are only available from the secure world when TZEN = 1
+  * @{
+  */
+
+#define DMA_CHANNEL_CID_DISABLE              (0x80000000U)
+
+#define DMA_CHANNEL_PRIV                     (DMA_CHANNEL_ATTR_PRIV_MASK | (1U<<DMA_CHANNEL_PRIV_VAL_POS))           /*!< channel is privileged             */
+#define DMA_CHANNEL_NPRIV                    (DMA_CHANNEL_ATTR_PRIV_MASK)                                            /*!< channel is unprivileged           */
+
+#define DMA_CHANNEL_SEC                      (DMA_CHANNEL_ATTR_SEC_MASK | (1U<<DMA_CHANNEL_SEC_VAL_POS))             /*!< channel is secure                 */
+#define DMA_CHANNEL_NSEC                     (DMA_CHANNEL_ATTR_SEC_MASK)                                             /*!< channel is non-secure             */
+
+#define DMA_CHANNEL_SRC_SEC                  (DMA_CHANNEL_ATTR_SEC_SRC_MASK | (1U<<DMA_CHANNEL_SRC_SEC_VAL_POS))     /*!< src is secure                 */
+#define DMA_CHANNEL_SRC_NSEC                 (DMA_CHANNEL_ATTR_SEC_SRC_MASK)                                         /*!< src is non-secure             */
+
+#define DMA_CHANNEL_DEST_SEC                 (DMA_CHANNEL_ATTR_SEC_DEST_MASK | (1U<<DMA_CHANNEL_DEST_SEC_VAL_POS))   /*!< dest is secure                */
+#define DMA_CHANNEL_DEST_NSEC                (DMA_CHANNEL_ATTR_SEC_DEST_MASK)                                        /*!< dest is non-secure            */
+
+#define DMA_CHANNEL_ATTRIBUTE_UNLOCKED (0x00U)                                                                       /*!< Channel attribute is unlocked     */
+#define DMA_CHANNEL_ATTRIBUTE_LOCKED   (0x01U)                                                                       /*!< Channel attribute is locked       */
+
+#define DMA_CHANNEL_CID_DYNAMIC_0            (DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT | DMA_CCIDCFGR_WLISTCID0)          /*!< Enable CID filtering (shared mode) and give pin control  to CID0 */
+#define DMA_CHANNEL_CID_DYNAMIC_1            (DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT | DMA_CCIDCFGR_WLISTCID1)          /*!< Enable CID filtering (shared mode) and give pin control  to CID1 */
+#define DMA_CHANNEL_CID_DYNAMIC_2            (DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT | DMA_CCIDCFGR_WLISTCID2)          /*!< Enable CID filtering (shared mode) and give pin control  to CID2 */
+#define DMA_CHANNEL_CID_DYNAMIC_3            (DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT | DMA_CCIDCFGR_WLISTCID3)          /*!< Enable CID filtering (shared mode) and give pin control  to CID3 */
+
+#define DMA_CHANNEL_CID_STATIC_0             (DMA_CHANNEL_ATTR_CID_STATIC_SELECT|(0<<DMA_CCIDCFGR_SCID_Pos))         /*!< Enable CID filtering (static mode) and give pin control  to CID0 */
+#define DMA_CHANNEL_CID_STATIC_1             (DMA_CHANNEL_ATTR_CID_STATIC_SELECT|(1U<<DMA_CCIDCFGR_SCID_Pos))         /*!< Enable CID filtering (static mode) and give pin control  to CID1 */
+#define DMA_CHANNEL_CID_STATIC_2             (DMA_CHANNEL_ATTR_CID_STATIC_SELECT|(2U<<DMA_CCIDCFGR_SCID_Pos))         /*!< Enable CID filtering (static mode) and give pin control  to CID2 */
+#define DMA_CHANNEL_CID_STATIC_3             (DMA_CHANNEL_ATTR_CID_STATIC_SELECT|(3U<<DMA_CCIDCFGR_SCID_Pos))         /*!< Enable CID filtering (static mode) and give pin control  to CID3 */
+
 /**
   * @}
   */
 
 
-#define DMA_CHANNEL_CID_DISABLE        (0x80000000U)
-
-#define DMA_CHANNEL_PRIV               (DMA_CHANNEL_ATTR_PRIV_MASK | (1U<<DMA_CHANNEL_PRIV_VAL_Pos))         /*!< Pin is privileged                                                */
-#define DMA_CHANNEL_NPRIV              (DMA_CHANNEL_ATTR_PRIV_MASK)                                          /*!< Pin is unprivileged                                              */
-
-#if defined (CORTEX_IN_SECURE_STATE)
-#define DMA_CHANNEL_SEC                (DMA_CHANNEL_ATTR_SEC_MASK | (1U<<DMA_CHANNEL_SEC_VAL_Pos))           /*!< Pin is secure                                                    */
-#define DMA_CHANNEL_NSEC               (DMA_CHANNEL_ATTR_SEC_MASK)                                           /*!< Pin is non-secure                                                */
-#define DMA_CHANNEL_SRC_SEC            (DMA_CHANNEL_ATTR_SEC_SRC_MASK | (1U<<DMA_CHANNEL_SRC_SEC_VAL_Pos))   /*!< src is secure                                                    */
-#define DMA_CHANNEL_SRC_NSEC           (DMA_CHANNEL_ATTR_SEC_SRC_MASK)                                       /*!< src is non-secure                                                */
-#define DMA_CHANNEL_DEST_SEC           (DMA_CHANNEL_ATTR_SEC_DEST_MASK | (1U<<DMA_CHANNEL_DEST_SEC_VAL_Pos)) /*!< dest is secure                                                   */
-#define DMA_CHANNEL_DEST_NSEC          (DMA_CHANNEL_ATTR_SEC_DEST_MASK)                                      /*!< dest is non-secure                                               */
-#endif /* CORTEX_IN_SECURE_STATE */
-
-#define DMA_CHANNEL_ATTRIBUTE_UNLOCKED (0x00U)                                                               /*!< Channel attribute is unlocked                                    */
-#define DMA_CHANNEL_ATTRIBUTE_LOCKED   (0x01U)                                                               /*!< Channel attribute is locked                                      */
-
-#define DMA_CHANNEL_CID_DYNAMIC_0      (DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT | DMA_CCIDCFGR_WLISTCID0)        /*!< Enable CID filtering (shared mode) and give pin control  to CID0 */
-#define DMA_CHANNEL_CID_DYNAMIC_1      (DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT | DMA_CCIDCFGR_WLISTCID1)        /*!< Enable CID filtering (shared mode) and give pin control  to CID1 */
-#define DMA_CHANNEL_CID_DYNAMIC_2      (DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT | DMA_CCIDCFGR_WLISTCID2)        /*!< Enable CID filtering (shared mode) and give pin control  to CID2 */
-#define DMA_CHANNEL_CID_DYNAMIC_3      (DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT | DMA_CCIDCFGR_WLISTCID3)        /*!< Enable CID filtering (shared mode) and give pin control  to CID3 */
-
-#define DMA_CHANNEL_CID_STATIC_0       (DMA_CHANNEL_ATTR_CID_STATIC_SELECT|(0<<DMA_CCIDCFGR_SCID_Pos))       /*!< Enable CID filtering (static mode) and give pin control  to CID0 */
-#define DMA_CHANNEL_CID_STATIC_1       (DMA_CHANNEL_ATTR_CID_STATIC_SELECT|(1<<DMA_CCIDCFGR_SCID_Pos))       /*!< Enable CID filtering (static mode) and give pin control  to CID1 */
-#define DMA_CHANNEL_CID_STATIC_2       (DMA_CHANNEL_ATTR_CID_STATIC_SELECT|(2<<DMA_CCIDCFGR_SCID_Pos))       /*!< Enable CID filtering (static mode) and give pin control  to CID2 */
-#define DMA_CHANNEL_CID_STATIC_3       (DMA_CHANNEL_ATTR_CID_STATIC_SELECT|(3<<DMA_CCIDCFGR_SCID_Pos))       /*!< Enable CID filtering (static mode) and give pin control  to CID3 */
-/**
-  * @}
-  */
 /**
   * @}
   */
@@ -809,15 +821,18 @@ uint32_t             HAL_DMA_GetError(DMA_HandleTypeDef const *const hdma);
   * @brief    DMA Attributes Functions
   * @{
   */
+
 HAL_StatusTypeDef HAL_DMA_ConfigChannelAttributes(DMA_HandleTypeDef *const hdma,
                                                   uint32_t ChannelAttributes);
 HAL_StatusTypeDef HAL_DMA_GetConfigChannelAttributes(DMA_HandleTypeDef const *const hdma,
                                                      uint32_t *const pChannelAttributes);
+
 #if defined CORTEX_IN_SECURE_STATE
 HAL_StatusTypeDef HAL_DMA_LockChannelAttributes(DMA_HandleTypeDef const *const hdma);
-#endif /* defined CORTEX_IN_SECURE_STATE */
+#endif /* CORTEX_IN_SECURE_STATE */
 HAL_StatusTypeDef HAL_DMA_GetLockChannelAttributes(DMA_HandleTypeDef const *const hdma,
                                                    uint32_t *const pLockState);
+
 
 HAL_StatusTypeDef HAL_DMA_TakeChannelSemaphore(DMA_HandleTypeDef *hdma);
 HAL_StatusTypeDef HAL_DMA_ReleaseChannelSemaphore(DMA_HandleTypeDef *hdma);
@@ -843,17 +858,18 @@ HAL_StatusTypeDef HAL_DMA_ReleaseChannelSemaphore(DMA_HandleTypeDef *hdma);
 #define DMA_CHANNEL_ATTR_SEC_MASK           (0x02000000U) /* DMA channel secure                  */
 #define DMA_CHANNEL_ATTR_SEC_SRC_MASK       (0x04000000U) /* DMA channel source secure           */
 #define DMA_CHANNEL_ATTR_SEC_DEST_MASK      (0x08000000U) /* DMA channel destination secure      */
-#define DMA_CHANNEL_ATTR_CID_DYNAMIC_MASK   (DMA_CCIDCFGR_WLISTCID3 | DMA_CCIDCFGR_WLISTCID2 | \
-                                             DMA_CCIDCFGR_WLISTCID1 | DMA_CCIDCFGR_WLISTCID0)
+
+
+#define DMA_CHANNEL_ATTR_CID_DYNAMIC_MASK   (DMA_CCIDCFGR_WLISTCID3 |\
+                                             DMA_CCIDCFGR_WLISTCID2 | DMA_CCIDCFGR_WLISTCID1 | DMA_CCIDCFGR_WLISTCID0)
+
 #define DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT (0x10000000U)
 #define DMA_CHANNEL_ATTR_CID_STATIC_SELECT  (0x20000000U)
 
-#define DMA_CHANNEL_PRIV_VAL_Pos             0
-#if defined (CORTEX_IN_SECURE_STATE)
-#define DMA_CHANNEL_SEC_VAL_Pos              1
-#define DMA_CHANNEL_SRC_SEC_VAL_Pos          2
-#define DMA_CHANNEL_DEST_SEC_VAL_Pos         3
-#endif /* CORTEX_IN_SECURE_STATE */
+#define DMA_CHANNEL_PRIV_VAL_POS       0
+#define DMA_CHANNEL_SEC_VAL_POS        1
+#define DMA_CHANNEL_SRC_SEC_VAL_POS    2
+#define DMA_CHANNEL_DEST_SEC_VAL_POS   3
 
 #define DMA_CHANNEL_BURST_MIN          (0x00000001U) /* DMA channel minimum burst size           */
 #define DMA_CHANNEL_BURST_MAX          (0x00000040U) /* DMA channel maximum burst size           */
@@ -874,7 +890,8 @@ HAL_StatusTypeDef HAL_DMA_ReleaseChannelSemaphore(DMA_HandleTypeDef *hdma);
   ((((uint32_t)((__HANDLE__)->Instance) & HAL_DMA_OFFSET_MASK) - HAL_DMA_CHANNEL_START) / HAL_DMA_CHANNEL_SIZE)
 
 #define IS_DMA_MODE(MODE) \
-  ((MODE) == DMA_NORMAL)
+  (((MODE) == DMA_NORMAL) || \
+   ((MODE) == DMA_PFCTRL))
 
 #define IS_DMA_DIRECTION(DIRECTION)         \
   (((DIRECTION) == DMA_PERIPH_TO_MEMORY) || \
@@ -896,12 +913,14 @@ HAL_StatusTypeDef HAL_DMA_ReleaseChannelSemaphore(DMA_HandleTypeDef *hdma);
 #define IS_DMA_SOURCE_DATA_WIDTH(WIDTH)       \
   (((WIDTH) == DMA_SRC_DATAWIDTH_BYTE)     || \
    ((WIDTH) == DMA_SRC_DATAWIDTH_HALFWORD) || \
-   ((WIDTH) == DMA_SRC_DATAWIDTH_WORD))
+   ((WIDTH) == DMA_SRC_DATAWIDTH_WORD)     || \
+   ((WIDTH) == DMA_SRC_DATAWIDTH_DOUBLEWORD))
 
 #define IS_DMA_DESTINATION_DATA_WIDTH(WIDTH)   \
   (((WIDTH) == DMA_DEST_DATAWIDTH_BYTE)     || \
    ((WIDTH) == DMA_DEST_DATAWIDTH_HALFWORD) || \
-   ((WIDTH) == DMA_DEST_DATAWIDTH_WORD))
+   ((WIDTH) == DMA_DEST_DATAWIDTH_WORD)     || \
+   ((WIDTH) == DMA_DEST_DATAWIDTH_DOUBLEWORD))
 
 #define IS_DMA_BURST_LENGTH(LENGTH)       \
   (((LENGTH) >= DMA_CHANNEL_BURST_MIN) && \
@@ -940,27 +959,29 @@ HAL_StatusTypeDef HAL_DMA_ReleaseChannelSemaphore(DMA_HandleTypeDef *hdma);
   (((SIZE) > 0U) && ((SIZE) <= DMA_CBR1_BNDT))
 
 #if defined CORTEX_IN_SECURE_STATE
-#define IS_DMA_ATTRIBUTES(ATTRIBUTE)  ((((ATTRIBUTE)&DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT)==DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT)   ||\
-                                       (((ATTRIBUTE)&DMA_CHANNEL_ATTR_CID_STATIC_SELECT )==DMA_CHANNEL_ATTR_CID_STATIC_SELECT)    ||\
-                                       (((ATTRIBUTE)&DMA_CHANNEL_CID_DISABLE            )==DMA_CHANNEL_CID_DISABLE)               ||\
-                                       (((ATTRIBUTE)&DMA_CHANNEL_ATTR_SEC_MASK          )==DMA_CHANNEL_ATTR_SEC_MASK)             ||\
-                                       (((ATTRIBUTE)&DMA_CHANNEL_ATTR_SEC_SRC_MASK      )==DMA_CHANNEL_ATTR_SEC_SRC_MASK)         ||\
-                                       (((ATTRIBUTE)&DMA_CHANNEL_ATTR_SEC_DEST_MASK     )==DMA_CHANNEL_ATTR_SEC_DEST_MASK)        ||\
-                                       (((ATTRIBUTE)&DMA_CHANNEL_ATTR_PRIV_MASK         )==DMA_CHANNEL_ATTR_PRIV_MASK)              )
+#define IS_DMA_ATTRIBUTES(ATTRIBUTE)  \
+  ((((ATTRIBUTE) & DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT) == DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT)   || \
+   (((ATTRIBUTE) & DMA_CHANNEL_ATTR_CID_STATIC_SELECT ) == DMA_CHANNEL_ATTR_CID_STATIC_SELECT)    || \
+   (((ATTRIBUTE) & DMA_CHANNEL_CID_DISABLE            ) == DMA_CHANNEL_CID_DISABLE)               || \
+   (((ATTRIBUTE) & DMA_CHANNEL_ATTR_SEC_MASK          ) == DMA_CHANNEL_ATTR_SEC_MASK)             || \
+   (((ATTRIBUTE) & DMA_CHANNEL_ATTR_SEC_SRC_MASK      ) == DMA_CHANNEL_ATTR_SEC_SRC_MASK)         || \
+   (((ATTRIBUTE) & DMA_CHANNEL_ATTR_SEC_DEST_MASK     ) == DMA_CHANNEL_ATTR_SEC_DEST_MASK)        || \
+   (((ATTRIBUTE) & DMA_CHANNEL_ATTR_PRIV_MASK         ) == DMA_CHANNEL_ATTR_PRIV_MASK)              )
 #else
-#define IS_DMA_ATTRIBUTES(ATTRIBUTE)  ((((ATTRIBUTE)&DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT)==DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT)   ||\
-                                       (((ATTRIBUTE)&DMA_CHANNEL_ATTR_CID_STATIC_SELECT )==DMA_CHANNEL_ATTR_CID_STATIC_SELECT)    ||\
-                                       (((ATTRIBUTE)&DMA_CHANNEL_CID_DISABLE            )==DMA_CHANNEL_CID_DISABLE)               ||\
-                                       (((ATTRIBUTE)&DMA_CHANNEL_ATTR_PRIV_MASK         )==DMA_CHANNEL_ATTR_PRIV_MASK)              )
-#endif /* defined CORTEX_IN_SECURE_STATE */
+#define IS_DMA_ATTRIBUTES(ATTRIBUTE)  \
+  ((((ATTRIBUTE) & DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT) == DMA_CHANNEL_ATTR_CID_DYNAMIC_SELECT)   || \
+   (((ATTRIBUTE) & DMA_CHANNEL_ATTR_CID_STATIC_SELECT ) == DMA_CHANNEL_ATTR_CID_STATIC_SELECT)    || \
+   (((ATTRIBUTE) & DMA_CHANNEL_CID_DISABLE            ) == DMA_CHANNEL_CID_DISABLE)               || \
+   (((ATTRIBUTE) & DMA_CHANNEL_ATTR_PRIV_MASK         ) == DMA_CHANNEL_ATTR_PRIV_MASK)              )
+#endif /* CORTEX_IN_SECURE_STATE */
 
 #if defined CORTEX_IN_SECURE_STATE
-#define IS_DMA_GLOBAL_ACTIVE_FLAG(INSTANCE, GLOBAL_FLAG) \
+#define IS_DMA_GLOBAL_ACTIVE_FLAG_S(INSTANCE, GLOBAL_FLAG) \
   (((INSTANCE)->SMISR & (GLOBAL_FLAG)))
-#else
-#define IS_DMA_GLOBAL_ACTIVE_FLAG(INSTANCE, GLOBAL_FLAG) \
+#endif /* CORTEX_IN_SECURE_STATE */
+#define IS_DMA_GLOBAL_ACTIVE_FLAG_NS(INSTANCE, GLOBAL_FLAG) \
   (((INSTANCE)->MISR & (GLOBAL_FLAG)))
-#endif /* defined CORTEX_IN_SECURE_STATE */
+
 /**
   * @}
   */

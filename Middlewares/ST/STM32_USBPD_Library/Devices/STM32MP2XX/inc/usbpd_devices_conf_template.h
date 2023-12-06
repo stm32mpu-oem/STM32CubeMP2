@@ -33,7 +33,11 @@ extern "C" {
 #include "stm32mp2xx_ll_tim.h"
 
 /* Following include file may be replaced with the BSP UBSPD PWR header file */
-#warning "Update for the series"
+#if defined(USE_STM32MP257F_EV1)
+#include "stm32mp257f_eval_usbpd_pwr.h"
+#else
+#include "usbpd_bsp_pwr.h"
+#endif /* USE_STM32MP257F_EV1 */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
@@ -48,22 +52,30 @@ extern "C" {
 #define UCPD_INSTANCE0 UCPD1
 
 /* Define used to configure function : USBPD_HW_Init_DMARxInstance,USBPD_HW_DeInit_DMARxInstance */
-#warning "Update for the series"
+#define UCPDDMA_INSTANCE0_CLOCKENABLE_RX  \
+  do                                      \
+  {                                       \
+    __HAL_RCC_HPDMA1_CLK_ENABLE();        \
+  } while(0)
 
 #define UCPDDMA_INSTANCE0_DMA_RX  HPDMA1
 
-#warning "Update for the series"
+#define UCPDDMA_INSTANCE0_REQUEST_RX   LL_HPDMA_REQUEST_UCPD_RX
 
 #define UCPDDMA_INSTANCE0_LL_CHANNEL_RX   LL_DMA_CHANNEL_5
 
 #define UCPDDMA_INSTANCE0_CHANNEL_RX   HPDMA1_Channel5
 
 /* Define used to configure function : USBPD_HW_Init_DMATxInstance, USBPD_HW_DeInit_DMATxInstance */
-#warning "Update for the series"
+#define UCPDDMA_INSTANCE0_CLOCKENABLE_TX  \
+  do                                      \
+  {                                       \
+    __HAL_RCC_HPDMA1_CLK_ENABLE();        \
+  } while(0)
 
 #define UCPDDMA_INSTANCE0_DMA_TX  HPDMA1
 
-#warning "Update for the series"
+#define UCPDDMA_INSTANCE0_REQUEST_TX   LL_HPDMA_REQUEST_UCPD_TX
 
 #define UCPDDMA_INSTANCE0_LL_CHANNEL_TX   LL_DMA_CHANNEL_3
 

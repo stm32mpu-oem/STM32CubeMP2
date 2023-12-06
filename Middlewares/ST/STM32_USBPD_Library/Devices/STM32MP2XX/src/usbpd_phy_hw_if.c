@@ -28,9 +28,17 @@
 #endif /* !USBPDCORE_LIB_NO_PD */
 #if defined(_LOW_POWER)
 #include "usbpd_lowpower.h"
+#include "usbpd_cad_hw_if.h"
 #endif /* _LOW_POWER */
 
 /* Private typedef -----------------------------------------------------------*/
+#define PHY_ENTER_CRITICAL_SECTION()  uint32_t primask = __get_PRIMASK(); \
+  __disable_irq();
+
+#define PHY_LEAVE_CRITICAL_SECTION()  __set_PRIMASK(primask);
+
+/* Private define ------------------------------------------------------------*/
+
 
 /* Private function prototypes -----------------------------------------------*/
 USBPD_PORT_HandleTypeDef Ports[USBPD_PORT_COUNT];
@@ -64,54 +72,68 @@ USBPD_StatusTypeDef USBPD_HW_IF_SendBuffer(uint8_t PortNum, USBPD_SOPType_TypeDe
   }
   else
   {
-    switch (Type)
+    PHY_ENTER_CRITICAL_SECTION()
+
+    /* If RX is ongoing or if a DMA transfer is active then discard the buffer sending */
+    if ((Ports[PortNum].RXStatus == USBPD_TRUE) || ((Ports[PortNum].hdmatx->CCR &  DMA_CCR_EN) == DMA_CCR_EN))
     {
-      case USBPD_SOPTYPE_SOP :
-      {
-        LL_UCPD_WriteTxOrderSet(Ports[PortNum].husbpd, LL_UCPD_ORDERED_SET_SOP);
-        LL_UCPD_SetTxMode(Ports[PortNum].husbpd, LL_UCPD_TXMODE_NORMAL);
-        break;
-      }
-      case USBPD_SOPTYPE_SOP1 :
-      {
-        LL_UCPD_WriteTxOrderSet(Ports[PortNum].husbpd, LL_UCPD_ORDERED_SET_SOP1);
-        LL_UCPD_SetTxMode(Ports[PortNum].husbpd, LL_UCPD_TXMODE_NORMAL);
-        break;
-      }
-      case USBPD_SOPTYPE_SOP2 :
-      {
-        LL_UCPD_WriteTxOrderSet(Ports[PortNum].husbpd, LL_UCPD_ORDERED_SET_SOP2);
-        LL_UCPD_SetTxMode(Ports[PortNum].husbpd, LL_UCPD_TXMODE_NORMAL);
-        break;
-      }
-      case USBPD_SOPTYPE_CABLE_RESET :
-      {
-        LL_UCPD_SetTxMode(Ports[PortNum].husbpd, LL_UCPD_TXMODE_CABLE_RESET);
-        break;
-      }
-      case USBPD_SOPTYPE_BIST_MODE_2 :
-      {
-        LL_UCPD_SetTxMode(Ports[PortNum].husbpd, LL_UCPD_TXMODE_BIST_CARRIER2);
-        break;
-      }
-      default :
-        _status = USBPD_ERROR;
-        break;
+      PHY_LEAVE_CRITICAL_SECTION()
+      _status = USBPD_ERROR;
     }
-
-    if (USBPD_OK == _status)
+    else
     {
+      PHY_LEAVE_CRITICAL_SECTION()
+
+      switch (Type)
+      {
+        case USBPD_SOPTYPE_SOP :
+        {
+          LL_UCPD_WriteTxOrderSet(Ports[PortNum].husbpd, LL_UCPD_ORDERED_SET_SOP);
+          LL_UCPD_SetTxMode(Ports[PortNum].husbpd, LL_UCPD_TXMODE_NORMAL);
+          break;
+        }
+        case USBPD_SOPTYPE_SOP1 :
+        {
+          LL_UCPD_WriteTxOrderSet(Ports[PortNum].husbpd, LL_UCPD_ORDERED_SET_SOP1);
+          LL_UCPD_SetTxMode(Ports[PortNum].husbpd, LL_UCPD_TXMODE_NORMAL);
+          break;
+        }
+        case USBPD_SOPTYPE_SOP2 :
+        {
+          LL_UCPD_WriteTxOrderSet(Ports[PortNum].husbpd, LL_UCPD_ORDERED_SET_SOP2);
+          LL_UCPD_SetTxMode(Ports[PortNum].husbpd, LL_UCPD_TXMODE_NORMAL);
+          break;
+        }
+        case USBPD_SOPTYPE_CABLE_RESET :
+        {
+          LL_UCPD_SetTxMode(Ports[PortNum].husbpd, LL_UCPD_TXMODE_CABLE_RESET);
+          break;
+        }
+        case USBPD_SOPTYPE_BIST_MODE_2 :
+        {
+          LL_UCPD_SetTxMode(Ports[PortNum].husbpd, LL_UCPD_TXMODE_BIST_CARRIER2);
+          break;
+        }
+        default :
+          _status = USBPD_ERROR;
+          break;
+      }
+
+      if (USBPD_OK == _status)
+      {
 #if defined(_LOW_POWER)
-      UTIL_LPM_SetOffMode(0 == PortNum ? LPM_PE_0 : LPM_PE_1, UTIL_LPM_DISABLE);
+        UTIL_LPM_SetStopMode(0 == PortNum ? LPM_PE_0 : LPM_PE_1, UTIL_LPM_DISABLE);
 #endif /* _LOW_POWER */
-      SET_BIT(Ports[PortNum].hdmatx->CCR, DMA_CCR_SUSP | DMA_CCR_RESET);
+        SET_BIT(Ports[PortNum].hdmatx->CCR, DMA_CCR_SUSP | DMA_CCR_RESET);
+        while ((Ports[PortNum].hdmatx->CCR &  DMA_CCR_EN) == DMA_CCR_EN);
 
-      WRITE_REG(Ports[PortNum].hdmatx->CSAR, (uint32_t)pBuffer);
-      MODIFY_REG(Ports[PortNum].hdmatx->CBR1, DMA_CBR1_BNDT, (Size & DMA_CBR1_BNDT));
-      SET_BIT(Ports[PortNum].hdmatx->CCR, DMA_CCR_EN);
+        WRITE_REG(Ports[PortNum].hdmatx->CSAR, (uint32_t)pBuffer);
+        MODIFY_REG(Ports[PortNum].hdmatx->CBR1, DMA_CBR1_BNDT, (Size & DMA_CBR1_BNDT));
+        SET_BIT(Ports[PortNum].hdmatx->CCR, DMA_CCR_EN);
 
-      LL_UCPD_WriteTxPaySize(Ports[PortNum].husbpd, Size);
-      LL_UCPD_SendMessage(Ports[PortNum].husbpd);
+        LL_UCPD_WriteTxPaySize(Ports[PortNum].husbpd, Size);
+        LL_UCPD_SendMessage(Ports[PortNum].husbpd);
+      }
     }
   }
   return _status;
@@ -238,7 +260,7 @@ void USBPDM1_EnterErrorRecovery(uint8_t PortNum)
   */
 void USBPDM1_Set_CC(uint8_t PortNum, CCxPin_TypeDef cc)
 {
-  /* Set the correct pin on the comparator*/
+  /* Set the correct pin on the comparator */
   Ports[PortNum].CCx = cc;
   LL_UCPD_SetCCPin(Ports[PortNum].husbpd, (cc == CC1) ? LL_UCPD_CCPIN_CC1 : LL_UCPD_CCPIN_CC2);
 }
@@ -415,6 +437,23 @@ void USBPD_HW_IF_SetResistor_SinkTxOK(uint8_t PortNum)
   */
 uint8_t USBPD_HW_IF_IsResistor_SinkTxOk(uint8_t PortNum)
 {
+#if defined(_LOW_POWER)
+  /* When in low power mode, the type C state machine is turned off.
+     To retrieve any potential updates of the SR register, the state machine needs to be re-enabled briefly. */
+
+  /* Enable type C state machine */
+  CLEAR_BIT(Ports[PortNum].husbpd->CR, (UCPD_CR_CC1TCDIS | UCPD_CR_CC2TCDIS));
+
+  /* Let time for internal state machine to refresh his state */
+  for (uint32_t index = 0; index < CAD_DELAY_READ_CC_STATUS; index++)
+  {
+    __DSB();
+  }
+
+  /* Disable type C state machine */
+  SET_BIT(Ports[PortNum].husbpd->CR, (UCPD_CR_CC1TCDIS | UCPD_CR_CC2TCDIS));
+#endif /* _LOW_POWER */
+
   switch (Ports[PortNum].CCx)
   {
     case CC1 :

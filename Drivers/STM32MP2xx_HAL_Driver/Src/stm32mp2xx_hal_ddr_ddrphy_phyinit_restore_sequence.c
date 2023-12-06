@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -60,7 +60,7 @@ int ddrphy_phyinit_restore_sequence(void)
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TMASTER | CSR_CALZAP_ADDR)), 0x1U);
 
 	/* -# Issue register writes to restore registers values. */
-	ret = ddrphy_phyinit_reginterface(restoreregs, 0, 0);
+	ret = ddrphy_phyinit_reginterface(RESTOREREGS, 0, 0);
 	if (ret != 0) {
 		return ret;
 	}
@@ -68,13 +68,8 @@ int ddrphy_phyinit_restore_sequence(void)
 	/*
 	 * -# Write the UcclkHclkEnables CSR to disable the appropriate clocks after all reads done.
 	 */
-#if STM32MP_DDR3_TYPE || STM32MP_DDR4_TYPE
 	/* Disabling Ucclk (PMU) and Hclk (training hardware) */
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TDRTUB | CSR_UCCLKHCLKENABLES_ADDR)), 0x0U);
-#elif STM32MP_LPDDR4_TYPE
-	/* Disabling Ucclk (PMU) */
-	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TDRTUB | CSR_UCCLKHCLKENABLES_ADDR)), 0x2U);
-#endif /* STM32MP_LPDDR4_TYPE */
 
 	/*
 	 * -# Write the MicroContMuxSel CSR to 0x1 to isolate the internal CSRs during mission mode.

@@ -219,8 +219,11 @@
                                           ((CONFIG) == SYSCFG_ETH_RGMII) || \
                                           ((CONFIG) == SYSCFG_ETH_RMII))
 
-#define SYSCFG_ETH_RMII_CLOCK_EXTERNAL          ((uint32_t) 0x00000000U) /*!<  External clock is used. Need selection of AFMux. Could be used with all PHY */
-#define SYSCFG_ETH_RMII_CLOCK_ETHx_CLK          SYSCFG_ETH1CR_ETH1_REF_CLK_SEL /*!<  Internal clock ETHx_CLK from RCC is used regardless AFMux */
+#define SYSCFG_ETH_EXT_CLK                  (0x0U << SYSCFG_ETH1CR_ETH1_CLK_SEL_Pos)  /*!< Select the External clock */
+#define SYSCFG_ETH_RCC_CLK                  (0x1U << SYSCFG_ETH1CR_ETH1_CLK_SEL_Pos)  /*!< Select the RCC Internal Clock */
+
+#define IS_SYSCFG_ETHERNET_CLOCK_CONFIG(CONFIG) (((CONFIG) == SYSCFG_ETH_EXT_CLK) || \
+                                                ((CONFIG) == SYSCFG_ETH_RCC_CLK))
 
 /**
   * @}
@@ -1423,6 +1426,8 @@ uint32_t              HAL_HDP_ReadVAL(void);
 /* SYSCFG Peripheral Control functions  ***************************************/
 void                  HAL_SYSCFG_ETH1InterfaceSelect(uint32_t SYSCFG_ETHInterface);
 void                  HAL_SYSCFG_ETH2InterfaceSelect(uint32_t SYSCFG_ETHInterface);
+void                  HAL_SYSCFG_ETH1ClockSelect(uint32_t SYSCFG_ETHClock);
+void                  HAL_SYSCFG_ETH2ClockSelect(uint32_t SYSCFG_ETHClock);
 void                  HAL_SYSCFG_AnalogSwitchConfig(uint32_t SYSCFG_AnalogSwitch, uint32_t SYSCFG_SwitchState);
 void                  HAL_SYSCFG_EnableIOSpeedOptimize(uint32_t SYSCFG_HighSpeedSignal);
 void                  HAL_SYSCFG_DisableIOSpeedOptimize(uint32_t SYSCFG_HighSpeedSignal);

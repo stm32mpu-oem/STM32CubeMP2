@@ -158,7 +158,7 @@ extern "C" {
 /* Register MPU_RBAR (Cortex-M33) : bits [4:3] */
 #if defined(CORE_CM33)
 #define LL_MPU_ACCESS_NOT_SHAREABLE        (0U << MPU_RBAR_SH_Pos)
-#define LL_MPU_ACCESS_OUTER_SHAREABLE      (1U << MPU_RBAR_SH_Pos)
+#define LL_MPU_ACCESS_OUTER_SHAREABLE      (2U << MPU_RBAR_SH_Pos)
 #define LL_MPU_ACCESS_INNER_SHAREABLE      (3U << MPU_RBAR_SH_Pos)
 /* Register MPU_RASR (Cortex-M0+) : bit 18 */
 #else /* defined(CORE_CM33) */
@@ -919,14 +919,15 @@ __STATIC_INLINE uint32_t LL_CPUID_GetRevision_NS(void)
   */
 __STATIC_INLINE void LL_MPU_Enable(uint32_t MPU_Control)
 {
+  __DMB(); /* Data Memory Barrier operation to force any outstanding writes to memory before enabling the MPU */
+
   /* Enable the MPU */
   WRITE_REG(MPU->CTRL, (MPU_CTRL_ENABLE_Msk | MPU_Control));
 
-  /* Ensure MPU settings take effects */
-  __DSB();
-
-  /* Sequence instruction fetches using update settings */
-  __ISB();
+  /* Follow ARM recommendation with */
+  /* Data Synchronization and Instruction Synchronization Barriers to ensure MPU configuration */
+  __DSB(); /* Ensure that the subsequent instruction is executed only after the write to memory */
+  __ISB(); /* Flush and refill pipeline with updated MPU configuration settings */
 }
 
 /**
@@ -936,10 +937,15 @@ __STATIC_INLINE void LL_MPU_Enable(uint32_t MPU_Control)
   */
 __STATIC_INLINE void LL_MPU_Disable(void)
 {
-  /* Make sure outstanding transfers are done */
-  __DMB();
+  __DMB(); /* Data Memory Barrier operation to force any outstanding writes to memory before disabling the MPU */
+
   /* Disable MPU */
   WRITE_REG(MPU->CTRL, 0U);
+
+  /* Follow ARM recommendation with */
+  /* Data Synchronization and Instruction Synchronization Barriers to ensure MPU configuration */
+  __DSB(); /* Ensure that the subsequent instruction is executed only after the write to memory */
+  __ISB(); /* Flush and refill pipeline with updated MPU configuration settings */
 }
 
 /**
@@ -1489,14 +1495,15 @@ __STATIC_INLINE void LL_MPU_ConfigAttributes(uint32_t AttIndex, uint32_t MemoryA
   */
 __STATIC_INLINE void LL_MPU_Enable_NS(uint32_t MPU_Control)
 {
+  __DMB(); /* Data Memory Barrier operation to force any outstanding writes to memory before enabling the MPU */
+
   /* Enable the MPU */
   MPU_NS->CTRL = MPU_CTRL_ENABLE_Msk | MPU_Control;
 
-  /* Ensure MPU settings take effects */
-  __DSB();
-
-  /* Sequence instruction fetches using update settings */
-  __ISB();
+  /* Follow ARM recommendation with */
+  /* Data Synchronization and Instruction Synchronization Barriers to ensure MPU configuration */
+  __DSB(); /* Ensure that the subsequent instruction is executed only after the write to memory */
+  __ISB(); /* Flush and refill pipeline with updated MPU configuration settings */
 }
 
 /**
@@ -1506,10 +1513,15 @@ __STATIC_INLINE void LL_MPU_Enable_NS(uint32_t MPU_Control)
   */
 __STATIC_INLINE void LL_MPU_Disable_NS(void)
 {
-  /* Make sure outstanding transfers are done */
-  __DMB();
+  __DMB(); /* Data Memory Barrier operation to force any outstanding writes to memory before disabling the MPU */
+
   /* Disable MPU */
   WRITE_REG(MPU_NS->CTRL, 0U);
+
+  /* Follow ARM recommendation with */
+  /* Data Synchronization and Instruction Synchronization Barriers to ensure MPU configuration */
+  __DSB(); /* Ensure that the subsequent instruction is executed only after the write to memory */
+  __ISB(); /* Flush and refill pipeline with updated MPU configuration settings */
 }
 
 /**

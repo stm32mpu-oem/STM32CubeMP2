@@ -129,6 +129,15 @@ void      EXTI_Exti1_SetImr(uint32_t u32Offset, uint32_t u32Value);
 uint32_t  EXTI_Exti1_GetImr(uint32_t u32Offset);
 void      EXTI_Exti1_SetEmr(uint32_t u32Offset, uint32_t u32Value);
 uint32_t  EXTI_Exti1_GetEmr(uint32_t u32Offset);
+uint32_t  EXTI_Exti1_GetEmr1(void);
+void      EXTI_Exti1_SetEmr1(uint32_t u32Value);
+uint32_t  EXTI_Exti1_CheckImr(uint32_t u32Offset);
+uint32_t  EXTI_Exti2_CheckEmr(uint32_t u32Offset);
+uint32_t  EXTI_Exti1_GetRtsr(uint32_t u32Offset);
+uint32_t  EXTI_Exti2_GetRtsr(uint32_t u32Offset);
+uint32_t  EXTI_Exti1_GetFtsr(uint32_t u32Offset);
+uint32_t  EXTI_Exti2_GetFtsr(uint32_t u32Offset);
+uint32_t  EXTI_Exti1_CheckEmr(uint32_t u32Offset);
 #endif
 
 uint32_t  EXTI_Exti2_GetImr1();
@@ -146,14 +155,14 @@ void      EXTI_Exti2_SetImr(uint32_t u32Offset, uint32_t u32Value);
 uint32_t  EXTI_Exti2_GetEmr(uint32_t u32Offset);
 uint32_t  EXTI_Exti2_GetImr(uint32_t u32Offset);
 
-void      EXTI_SetImr(EXTI_TypeDef* Instance, uint32_t u32Offset, uint32_t u32Value);
-uint32_t  EXTI_GetImr(EXTI_TypeDef* Instance, uint32_t u32Offset);
-void      EXTI_SetEmr(EXTI_TypeDef* Instance, uint32_t u32Offset, uint32_t u32Value);
-uint32_t  EXTI_GetEmr(EXTI_TypeDef* Instance, uint32_t u32Offset);
-uint32_t  EXTI_CheckEmr(EXTI_TypeDef* Instance, uint32_t u32Offset);
+void      EXTI_SetImr(const EXTI_TypeDef* Instance, uint32_t u32Offset, uint32_t u32Value);
+uint32_t  EXTI_GetImr(const EXTI_TypeDef* Instance, uint32_t u32Offset);
+void      EXTI_SetEmr(const EXTI_TypeDef* Instance, uint32_t u32Offset, uint32_t u32Value);
+uint32_t  EXTI_GetEmr(const EXTI_TypeDef* Instance, uint32_t u32Offset);
+uint32_t  EXTI_CheckEmr(const EXTI_TypeDef* Instance, uint32_t u32Offset);
 
-uint32_t  EXTI_GetRtsr(EXTI_TypeDef* Instance, uint32_t u32Offset);
-uint32_t  EXTI_GetFtsr(EXTI_TypeDef* Instance, uint32_t u32Offset);
+uint32_t  EXTI_GetRtsr(const EXTI_TypeDef* Instance, uint32_t u32Offset);
+uint32_t  EXTI_GetFtsr(const EXTI_TypeDef* Instance, uint32_t u32Offset);
 
 #ifdef HAL_EXTI_USE_CONNECTOR
 static EXTI_Core_TypeDef *getExtiConnector (EXTI_HandleTypeDef *hexti)
@@ -258,8 +267,8 @@ HAL_StatusTypeDef HAL_EXTI_SetConfigLine(EXTI_HandleTypeDef *hexti, EXTI_ConfigT
 
   /* compute line register offset and line mask */
   linepos = pExtiConfig->Line & EXTI_PIN_MASK;
-  offset = linepos/32;
-  maskline = 1UL << (linepos%32);
+  offset = linepos/32U;
+  maskline = 1UL << (linepos%32U);
 
   /* Configure triggers for configurable lines */
   if((pExtiConfig->Line & EXTI_CONFIG) != 0U)
@@ -308,7 +317,7 @@ HAL_StatusTypeDef HAL_EXTI_SetConfigLine(EXTI_HandleTypeDef *hexti, EXTI_ConfigT
       assert_param(IS_EXTI_GPIO_PIN(hexti->Instance, linepos));
 
       /* sanity check for EXTICR access */
-      if ( linepos < 16)
+      if ( linepos < 16U)
       {
         regval = hexti->Instance->EXTICR[linepos >> 2u];
         regval &= ~(EXTI_EXTICR1_EXTI0 << (EXTI_EXTICR1_EXTI1_Pos * (linepos & 0x03u)));
@@ -344,7 +353,7 @@ HAL_StatusTypeDef HAL_EXTI_SetConfigLine(EXTI_HandleTypeDef *hexti, EXTI_ConfigT
 #endif
 
   /* Configure event mode : read current mode */
-  if (EXTI_CheckEmr(hexti->Instance, offset) == 1 )
+  if (EXTI_CheckEmr(hexti->Instance, offset) == 1U )
   {
 #ifdef HAL_EXTI_USE_CONNECTOR
     regaddr = (uint32_t *)(&EXTI_CurrentCPU->EMR1 + (EXTI_MODE_OFFSET * offset));
@@ -420,8 +429,8 @@ HAL_StatusTypeDef HAL_EXTI_GetConfigLine(EXTI_HandleTypeDef *hexti, EXTI_ConfigT
 
   /* compute line register offset and line mask */
   linepos = (pExtiConfig->Line & EXTI_PIN_MASK);
-  offset = linepos/32;
-  maskline = 1uL << (linepos%32);
+  offset = linepos/32U;
+  maskline = 1uL << (linepos%32U);
 
   /* 1] Get core mode : interrupt */
 #ifdef HAL_EXTI_USE_CONNECTOR
@@ -493,7 +502,7 @@ HAL_StatusTypeDef HAL_EXTI_GetConfigLine(EXTI_HandleTypeDef *hexti, EXTI_ConfigT
     if((pExtiConfig->Line & EXTI_GPIO) == EXTI_GPIO)
     {
       regval = hexti->Instance->EXTICR[linepos >> 2U];
-      pExtiConfig->GPIOSel = (regval >> (EXTI_EXTICR1_EXTI1_Pos * (linepos & 0x03u)) ) & 0xF;
+      pExtiConfig->GPIOSel = (regval >> (EXTI_EXTICR1_EXTI1_Pos * (linepos & 0x03U)) ) & 0xFU;
     }
     else
     {
@@ -548,8 +557,8 @@ HAL_StatusTypeDef HAL_EXTI_ClearConfigLine(EXTI_HandleTypeDef *hexti)
 
   /* compute line register offset and line mask */
   linepos = (hexti->Line & EXTI_PIN_MASK);
-  offset = linepos/32;
-  maskline = 1UL << (linepos%32);
+  offset = linepos/32U;
+  maskline = 1UL << (linepos%32U);
 
   /* 1] Clear interrupt mode */
 #ifdef HAL_EXTI_USE_CONNECTOR
@@ -568,7 +577,7 @@ HAL_StatusTypeDef HAL_EXTI_ClearConfigLine(EXTI_HandleTypeDef *hexti)
   regval = (*regaddr & ~maskline);
   *regaddr = regval;
 #else
-  if ( EXTI_CheckEmr(hexti->Instance, offset) == 1)
+  if ( EXTI_CheckEmr(hexti->Instance, offset) == 1U)
   {
     regval = EXTI_GetEmr(hexti->Instance, offset);
     regval &= ~maskline;
@@ -591,7 +600,7 @@ HAL_StatusTypeDef HAL_EXTI_ClearConfigLine(EXTI_HandleTypeDef *hexti)
     if((hexti->Line & EXTI_GPIO) == EXTI_GPIO)
     {
       /* sanity check for EXTICR access */
-      if ( linepos < 16)
+      if ( linepos < 16U)
       {
         regval = hexti->Instance->EXTICR[linepos >> 2u];
         regval &= ~(EXTI_EXTICR1_EXTI0 << (EXTI_EXTICR1_EXTI1_Pos * (linepos & 0x03u)));
@@ -719,8 +728,8 @@ void HAL_EXTI_IRQHandler(EXTI_HandleTypeDef *hexti)
 
   /* Compute line register offset and line mask */
   linepos = (hexti->Line & EXTI_PIN_MASK);
-  offset = linepos/32;
-  maskline = 1UL << (linepos%32);
+  offset = linepos/32U;
+  maskline = 1UL << (linepos%32U);
 
   /* Get pending bit  */
   regaddr = &hexti->Instance->RPR1 + (EXTI_CONFIG_OFFSET * offset);
@@ -766,9 +775,9 @@ void HAL_EXTI_IRQHandler(EXTI_HandleTypeDef *hexti)
   *           @arg @ref EXTI_TRIGGER_RISING_FALLING
   * @retval 1 if interrupt is pending else 0.
   */
-uint32_t HAL_EXTI_GetPending(EXTI_HandleTypeDef *hexti, uint32_t Edge)
+uint32_t HAL_EXTI_GetPending(const EXTI_HandleTypeDef *hexti, uint32_t Edge)
 {
-  __IO uint32_t *regaddr;
+  const __IO uint32_t *regaddr;
   uint32_t regval;
   uint32_t maskline;
   uint32_t linepos;
@@ -781,21 +790,22 @@ uint32_t HAL_EXTI_GetPending(EXTI_HandleTypeDef *hexti, uint32_t Edge)
 
   /* compute line register offset and line mask */
   linepos = (hexti->Line & EXTI_PIN_MASK);
-  offset = linepos/32;
-  maskline = 1uL << (linepos%32);
+  offset = linepos/32U;
+  maskline = 1UL << (linepos%32U);
 
   /* Get rising pending bit */
   if ( (Edge & EXTI_TRIGGER_RISING) == EXTI_TRIGGER_RISING )
   {
-    regaddr = &hexti->Instance->RPR1 + (EXTI_CONFIG_OFFSET * offset);
+    regaddr = (__IO uint32_t *)(&hexti->Instance->RPR1 + (EXTI_CONFIG_OFFSET * offset));
 
     /* return 1 if bit is set else 0 */
     regval = (*regaddr & maskline);
 
-    if ( regval != 0 )
+    if ( regval != 0U )
+    {
       return 1;
+    }
   }
-  
   /* Get falling pending bit */
   if ( (Edge & EXTI_TRIGGER_FALLING) == EXTI_TRIGGER_FALLING )
   {
@@ -803,8 +813,10 @@ uint32_t HAL_EXTI_GetPending(EXTI_HandleTypeDef *hexti, uint32_t Edge)
 
     /* return 1 if bit is set else 0 */
     regval = (*regaddr & maskline);
-    if ( regval != 0 )
+    if ( regval != 0U )
+    {
       return 1;
+    }
   }
 
   return 0;
@@ -841,8 +853,8 @@ void HAL_EXTI_ClearPending(EXTI_HandleTypeDef *hexti, uint32_t Edge)
 
   /* compute line register offset and line mask */
   linepos = (hexti->Line & EXTI_PIN_MASK);
-  offset = linepos/32;
-  maskline = 1uL << (linepos%32);
+  offset = linepos/32U;
+  maskline = 1UL << (linepos%32U);
 
   if ( (Edge & EXTI_TRIGGER_RISING) == EXTI_TRIGGER_RISING )
   {
@@ -852,7 +864,6 @@ void HAL_EXTI_ClearPending(EXTI_HandleTypeDef *hexti, uint32_t Edge)
     /* Clear Pending bit */
     *regaddr =  maskline;
   }
-  
   if ( (Edge & EXTI_TRIGGER_FALLING) == EXTI_TRIGGER_FALLING )
   {
     /* Get pending register address */
@@ -888,8 +899,8 @@ void HAL_EXTI_GenerateSWI(EXTI_HandleTypeDef *hexti)
 
   /* compute line register offset and line mask */
   linepos = (hexti->Line & EXTI_PIN_MASK);
-  offset = linepos/32;
-  maskline = 1uL << (linepos%32);
+  offset = linepos/32U;
+  maskline = 1uL << (linepos%32U);
 
   regaddr = &hexti->Instance->SWIER1 + (EXTI_CONFIG_OFFSET * offset);
   *regaddr = maskline;
@@ -930,7 +941,7 @@ void HAL_EXTI_ConfigLineAttributes(uint32_t ExtiLine, uint32_t LineAttributes)
 
   /* compute line register offset and line mask */
   linepos = (ExtiLine & EXTI_PIN_MASK);
-  offset = linepos/32;
+  offset = linepos/32U;
 
   if ( (ExtiLine & EXTI_INDEX_MASK) ==  EXTI_EXTI2)
   {
@@ -952,7 +963,7 @@ void HAL_EXTI_ConfigLineAttributes(uint32_t ExtiLine, uint32_t LineAttributes)
   #endif
   regaddrP = &Instance->PRIVCFGR1 + (EXTI_CONFIG_OFFSET * offset);
 
-  eventCurrent = 1U << (linepos%32);
+  eventCurrent = 1UL << (linepos%32UL);
 
   #if defined (CORTEX_IN_SECURE_STATE)
   if ((LineAttributes & EXTI_LINE_ATTR_SEC_SELECT) == EXTI_LINE_ATTR_SEC_SELECT)
@@ -1020,7 +1031,7 @@ HAL_StatusTypeDef HAL_EXTI_GetConfigLineAttributes(uint32_t ExtiLine, uint32_t *
 
   /* compute line register offset and line mask */
   linepos = (ExtiLine & EXTI_PIN_MASK);
-  offset = linepos/32;
+  offset = linepos/32U;
 
   if ( (ExtiLine & EXTI_INDEX_MASK) ==  EXTI_EXTI2)
   {
@@ -1041,7 +1052,7 @@ HAL_StatusTypeDef HAL_EXTI_GetConfigLineAttributes(uint32_t ExtiLine, uint32_t *
   #endif
   regaddrP = &Instance->PRIVCFGR1 + (EXTI_CONFIG_OFFSET * offset);
 
-  eventCurrent = 1U << (linepos%32);
+  eventCurrent = 1UL << (linepos%32UL);
 
 
   #if defined (CORTEX_IN_SECURE_STATE)
@@ -1102,7 +1113,7 @@ HAL_StatusTypeDef HAL_EXTI_GetConfigLock(EXTI_HandleTypeDef *hexti, uint32_t *pL
 #if defined (CORE_CA35) || defined (CORE_CM33)
 /* EXTI1 can't be accessed from M0Plus */
 
-uint32_t EXTI_Exti1_GetImr1()
+uint32_t EXTI_Exti1_GetImr1(void)
 {
 #if defined (CORE_CA35)
   return EXTI1->C1IMR1;
@@ -1111,7 +1122,7 @@ uint32_t EXTI_Exti1_GetImr1()
 #endif
 }
 
-uint32_t EXTI_Exti1_GetImr2()
+uint32_t EXTI_Exti1_GetImr2(void)
 {
 #if defined (CORE_CA35)
   return EXTI1->C1IMR2;
@@ -1120,7 +1131,7 @@ uint32_t EXTI_Exti1_GetImr2()
 #endif
 }
 
-uint32_t EXTI_Exti1_GetImr3()
+uint32_t EXTI_Exti1_GetImr3(void)
 {
 #if defined (CORE_CA35)
   return EXTI1->C1IMR3;
@@ -1156,8 +1167,7 @@ void EXTI_Exti1_SetImr3(uint32_t u32Value)
 #endif
 }
 
-
-uint32_t EXTI_Exti1_GetEmr1()
+uint32_t EXTI_Exti1_GetEmr1(void)
 {
 #if defined (CORE_CA35)
 /*no event connected to C1EMR1*/
@@ -1167,7 +1177,7 @@ uint32_t EXTI_Exti1_GetEmr1()
 #endif
 }
 
-uint32_t EXTI_Exti1_GetEmr3()
+uint32_t EXTI_Exti1_GetEmr3(void)
 {
 #if defined (CORE_CA35)
 /*no event connected to C1EMR3*/
@@ -1200,26 +1210,34 @@ void EXTI_Exti1_SetEmr3(uint32_t u32Value)
 void EXTI_Exti1_SetEmr(uint32_t u32Offset, uint32_t u32Value)
 {
   /* EMR2 not available*/
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     EXTI_Exti1_SetEmr1(u32Value);
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     EXTI_Exti1_SetEmr3(u32Value);
+  }
+  else
+  {
+    /* Nothing to do */
   }
 }
 
 uint32_t EXTI_Exti1_GetEmr(uint32_t u32Offset)
 {
   /* EMR2 not available*/
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return EXTI_Exti1_GetEmr1();
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     return EXTI_Exti1_GetEmr3();
+  }
+  else
+  {
+    /* Nothing to do */
   }
   return 0;
 }
@@ -1228,16 +1246,16 @@ uint32_t EXTI_Exti1_GetEmr(uint32_t u32Offset)
 
 uint32_t EXTI_Exti1_CheckEmr(uint32_t u32Offset)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return 1;
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     /* EMR2 not available*/
     return 0;
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     return 1;
   }
@@ -1250,31 +1268,35 @@ uint32_t EXTI_Exti1_CheckEmr(uint32_t u32Offset)
 
 void EXTI_Exti1_SetImr(uint32_t u32Offset, uint32_t u32Value)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     EXTI_Exti1_SetImr1(u32Value);
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     EXTI_Exti1_SetImr2(u32Value);
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     EXTI_Exti1_SetImr3(u32Value);
+  }
+  else
+  {
+    /* Nothing to do */
   }
 }
 
 uint32_t EXTI_Exti1_GetImr(uint32_t u32Offset)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return EXTI_Exti1_GetImr1();
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     return EXTI_Exti1_GetImr2();
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     return EXTI_Exti1_GetImr3();
   }
@@ -1286,15 +1308,15 @@ uint32_t EXTI_Exti1_GetImr(uint32_t u32Offset)
 
 uint32_t EXTI_Exti1_CheckImr(uint32_t u32Offset)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return 1;
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     return 1;
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     return 1;
   }
@@ -1307,7 +1329,7 @@ uint32_t EXTI_Exti1_CheckImr(uint32_t u32Offset)
 #endif
 
 
-uint32_t EXTI_Exti2_GetImr1()
+uint32_t EXTI_Exti2_GetImr1(void)
 {
 #if defined (CORE_CA35)
   return EXTI2->C1IMR1;
@@ -1318,7 +1340,7 @@ uint32_t EXTI_Exti2_GetImr1()
 #endif
 }
 
-uint32_t EXTI_Exti2_GetImr2()
+uint32_t EXTI_Exti2_GetImr2(void)
 {
 #if defined (CORE_CA35)
   return EXTI2->C1IMR2;
@@ -1329,7 +1351,7 @@ uint32_t EXTI_Exti2_GetImr2()
 #endif
 }
 
-uint32_t EXTI_Exti2_GetImr3()
+uint32_t EXTI_Exti2_GetImr3(void)
 {
 #if defined (CORE_CA35)
   return EXTI2->C1IMR3;
@@ -1340,7 +1362,7 @@ uint32_t EXTI_Exti2_GetImr3()
 #endif
 }
 
-uint32_t EXTI_Exti2_GetEmr1()
+uint32_t EXTI_Exti2_GetEmr1(void)
 {
 #if defined (CORE_CA35)
 /*no event connected to C1EMR1*/
@@ -1352,7 +1374,7 @@ uint32_t EXTI_Exti2_GetEmr1()
 #endif
 }
 
-uint32_t EXTI_Exti2_GetEmr2()
+uint32_t EXTI_Exti2_GetEmr2(void)
 {
 #if defined (CORE_CA35)
 /*no event connected to C1EMR2*/
@@ -1429,15 +1451,19 @@ void EXTI_Exti2_SetEmr2(uint32_t u32Value)
 
 void EXTI_Exti2_SetEmr(uint32_t u32Offset, uint32_t u32Value)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     EXTI_Exti2_SetEmr1(u32Value);
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     EXTI_Exti2_SetEmr2(u32Value);
   }
   /* EMR3 not available*/
+  else
+  {
+    /* Nothing to do */
+  }
 }
 
 
@@ -1445,28 +1471,32 @@ void EXTI_Exti2_SetEmr(uint32_t u32Offset, uint32_t u32Value)
 
 void EXTI_Exti2_SetImr(uint32_t u32Offset, uint32_t u32Value)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     EXTI_Exti2_SetImr1(u32Value);
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     EXTI_Exti2_SetImr2(u32Value);
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     EXTI_Exti2_SetImr3(u32Value);
+  }
+  else
+  {
+    /* Nothing to do */
   }
 }
 
 
 uint32_t EXTI_Exti2_GetEmr(uint32_t u32Offset)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return EXTI_Exti2_GetEmr1();
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     return EXTI_Exti2_GetEmr2();
   }
@@ -1480,15 +1510,15 @@ uint32_t EXTI_Exti2_GetEmr(uint32_t u32Offset)
 
 uint32_t EXTI_Exti2_CheckEmr(uint32_t u32Offset)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return 1;
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     return 1;
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     /* EMR3 not available*/
     return 0;
@@ -1502,15 +1532,15 @@ uint32_t EXTI_Exti2_CheckEmr(uint32_t u32Offset)
 
 uint32_t EXTI_Exti2_GetImr(uint32_t u32Offset)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return EXTI_Exti2_GetImr1();
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     return EXTI_Exti2_GetImr2();
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     return EXTI_Exti2_GetImr3();
   }
@@ -1523,7 +1553,7 @@ uint32_t EXTI_Exti2_GetImr(uint32_t u32Offset)
 
 
 
-void EXTI_SetImr(EXTI_TypeDef* Instance, uint32_t u32Offset, uint32_t u32Value)
+void EXTI_SetImr(const EXTI_TypeDef* Instance, uint32_t u32Offset, uint32_t u32Value)
 {
 #ifdef EXTI1
   if ( Instance == EXTI1)
@@ -1541,7 +1571,7 @@ void EXTI_SetImr(EXTI_TypeDef* Instance, uint32_t u32Offset, uint32_t u32Value)
 
 }
 
-uint32_t  EXTI_GetImr(EXTI_TypeDef* Instance, uint32_t u32Offset)
+uint32_t  EXTI_GetImr(const EXTI_TypeDef* Instance, uint32_t u32Offset)
 {
 #ifdef EXTI1
   if ( Instance == EXTI1)
@@ -1561,7 +1591,7 @@ uint32_t  EXTI_GetImr(EXTI_TypeDef* Instance, uint32_t u32Offset)
 
 }
 
-void EXTI_SetEmr(EXTI_TypeDef* Instance, uint32_t u32Offset, uint32_t u32Value)
+void EXTI_SetEmr(const EXTI_TypeDef* Instance, uint32_t u32Offset, uint32_t u32Value)
 {
 #ifdef EXTI1
   if ( Instance == EXTI1)
@@ -1579,7 +1609,7 @@ void EXTI_SetEmr(EXTI_TypeDef* Instance, uint32_t u32Offset, uint32_t u32Value)
 
 }
 
-uint32_t  EXTI_GetEmr(EXTI_TypeDef* Instance, uint32_t u32Offset)
+uint32_t  EXTI_GetEmr(const EXTI_TypeDef* Instance, uint32_t u32Offset)
 {
 #ifdef EXTI1
   if ( Instance == EXTI1)
@@ -1600,7 +1630,7 @@ uint32_t  EXTI_GetEmr(EXTI_TypeDef* Instance, uint32_t u32Offset)
 
 
 
-uint32_t  EXTI_CheckEmr(EXTI_TypeDef* Instance, uint32_t u32Offset)
+uint32_t  EXTI_CheckEmr(const EXTI_TypeDef* Instance, uint32_t u32Offset)
 {
 #ifdef EXTI1
   if ( Instance == EXTI1)
@@ -1620,19 +1650,18 @@ uint32_t  EXTI_CheckEmr(EXTI_TypeDef* Instance, uint32_t u32Offset)
 
 }
 
-
 uint32_t EXTI_Exti1_GetRtsr(uint32_t u32Offset)
 {
 #if !defined(CORE_CM0PLUS)
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return EXTI1->RTSR1;
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     return EXTI1->RTSR2;
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     return EXTI1->RTSR3;
   }
@@ -1646,18 +1675,17 @@ uint32_t EXTI_Exti1_GetRtsr(uint32_t u32Offset)
 #endif
 }
 
-
 uint32_t EXTI_Exti2_GetRtsr(uint32_t u32Offset)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return EXTI2->RTSR1;
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     return EXTI2->RTSR2;
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     return EXTI2->RTSR3;
   }
@@ -1669,7 +1697,7 @@ uint32_t EXTI_Exti2_GetRtsr(uint32_t u32Offset)
 
 
 
-uint32_t  EXTI_GetRtsr(EXTI_TypeDef* Instance, uint32_t u32Offset)
+uint32_t  EXTI_GetRtsr(const EXTI_TypeDef* Instance, uint32_t u32Offset)
 {
 #ifdef EXTI1
   if ( Instance == EXTI1)
@@ -1689,19 +1717,18 @@ uint32_t  EXTI_GetRtsr(EXTI_TypeDef* Instance, uint32_t u32Offset)
 }
 
 
-
 uint32_t EXTI_Exti1_GetFtsr(uint32_t u32Offset)
 {
 #if !defined(CORE_CM0PLUS)
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return EXTI1->FTSR1;
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     return EXTI1->FTSR2;
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     return EXTI1->FTSR3;
   }
@@ -1715,18 +1742,17 @@ uint32_t EXTI_Exti1_GetFtsr(uint32_t u32Offset)
 #endif
 }
 
-
 uint32_t EXTI_Exti2_GetFtsr(uint32_t u32Offset)
 {
-  if ( u32Offset == 0 )
+  if ( u32Offset == 0U )
   {
     return EXTI2->FTSR1;
   }
-  else if ( u32Offset == 1 )
+  else if ( u32Offset == 1U )
   {
     return EXTI2->FTSR2;
   }
-  else if ( u32Offset == 2 )
+  else if ( u32Offset == 2U )
   {
     return EXTI2->FTSR3;
   }
@@ -1737,7 +1763,7 @@ uint32_t EXTI_Exti2_GetFtsr(uint32_t u32Offset)
 }
 
 
-uint32_t  EXTI_GetFtsr(EXTI_TypeDef* Instance, uint32_t u32Offset)
+uint32_t  EXTI_GetFtsr(const EXTI_TypeDef* Instance, uint32_t u32Offset)
 {
 #ifdef EXTI1
   if ( Instance == EXTI1)

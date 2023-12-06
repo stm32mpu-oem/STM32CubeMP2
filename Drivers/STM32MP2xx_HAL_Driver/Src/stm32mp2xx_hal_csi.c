@@ -190,7 +190,7 @@ void HAL_CSI_WritePHYReg(CSI_HandleTypeDef *pHcsi, uint32_t reg_msb, uint32_t re
   __HAL_CSI_SET_REG(pHcsi, PTCR1, 0x00);
 
   /* Place the 8-bit word corresponding to the testcode MSBs in testdin */
-  __HAL_CSI_SET_REG(pHcsi, PTCR1, reg_msb & 0xff);
+  __HAL_CSI_SET_REG(pHcsi, PTCR1, reg_msb & 0xffU);
 
   /* Set testclk to high */
   __HAL_CSI_SET_REG(pHcsi, PTCR0, CSI_PTCR0_TCKEN);
@@ -206,7 +206,7 @@ void HAL_CSI_WritePHYReg(CSI_HandleTypeDef *pHcsi, uint32_t reg_msb, uint32_t re
   __HAL_CSI_SET_REG(pHcsi, PTCR0, CSI_PTCR0_TCKEN);
 
   /* Place the 8-bit word test data in testdin */
-  __HAL_CSI_SET_REG(pHcsi, PTCR1, CSI_PTCR1_TWM | (reg_lsb & 0xff));
+  __HAL_CSI_SET_REG(pHcsi, PTCR1, CSI_PTCR1_TWM | (reg_lsb & 0xffU));
 
   /* Set testclk to low (with the falling edge on testclk, the testdin signal content is latched internally) */
   __HAL_CSI_SET_REG(pHcsi, PTCR0, 0x00);
@@ -216,7 +216,7 @@ void HAL_CSI_WritePHYReg(CSI_HandleTypeDef *pHcsi, uint32_t reg_msb, uint32_t re
 
   /* For writing the data */
   /* Place the 8-bit word corresponding to the page offset in testdin */
-  __HAL_CSI_SET_REG(pHcsi, PTCR1, val & 0xff);
+  __HAL_CSI_SET_REG(pHcsi, PTCR1, val & 0xffU);
 
   /* Set testclk to high (test data is programmed internally */
   __HAL_CSI_SET_REG(pHcsi, PTCR0, CSI_PTCR0_TCKEN);
@@ -273,7 +273,8 @@ HAL_StatusTypeDef HAL_CSI_Init(CSI_HandleTypeDef *pHcsi)
     nb_lanes = HAL_CSI_LM_SINGLE_LANE;
   }
 
-  /* Check Lane Merger configuration - mapping can be either LANE0 or LANE1 and cannot be same for both physical lanes */
+  /* Check Lane Merger configuration - mapping can be either LANE0 or LANE1
+   and cannot be same for both physical lanes */
   if (((pHcsi->Init.LaneMerger.PhysicalLane0_Mapping != HAL_CSI_LM_LOGIC_LANE0) &&
        (pHcsi->Init.LaneMerger.PhysicalLane0_Mapping != HAL_CSI_LM_LOGIC_LANE1)) ||
       ((pHcsi->Init.LaneMerger.PhysicalLane1_Mapping != HAL_CSI_LM_LOGIC_LANE0) &&
@@ -329,7 +330,7 @@ HAL_StatusTypeDef HAL_CSI_Init(CSI_HandleTypeDef *pHcsi)
   __HAL_CSI_SET_REG(pHcsi, PTCR0, 0x00);
 
   /* Set hsfreqrange */
-  __HAL_CSI_SET_REG(pHcsi, PFCR, (0x28 << CSI_PFCR_CCFR_Pos) |
+  __HAL_CSI_SET_REG(pHcsi, PFCR, (0x28U << CSI_PFCR_CCFR_Pos) |
                     (SNPS_Freqs[pHcsi->Init.PhyBitrate].hsfreqrange << CSI_PFCR_HSFR_Pos));
 
   /* set reg @08 deskew_polarity_rw 1'b1 */
@@ -344,22 +345,26 @@ HAL_StatusTypeDef HAL_CSI_Init(CSI_HandleTypeDef *pHcsi)
   HAL_CSI_WritePHYReg(pHcsi, 0x00, 0xe3,
 		      SNPS_Freqs[pHcsi->Init.PhyBitrate].osc_freq_target >> 8);
   HAL_CSI_WritePHYReg(pHcsi, 0x00, 0xe3,
-		      SNPS_Freqs[pHcsi->Init.PhyBitrate].osc_freq_target & 0xFF);
+		      SNPS_Freqs[pHcsi->Init.PhyBitrate].osc_freq_target & 0xFFU);
 
-  /* set basedir_0 to RX // Christophe DLD 0 RX, 1 TX. Synopsys 1 RX 0 TX  + freq range */
-  __HAL_CSI_SET_REG(pHcsi, PFCR, (0x28 << CSI_PFCR_CCFR_Pos) |
+  /* set basedir_0 to RX - Christophe DLD 0 RX, 1 TX. Synopsys 1 RX 0 TX  + freq range */
+  __HAL_CSI_SET_REG(pHcsi, PFCR, (0x28U << CSI_PFCR_CCFR_Pos) |
                     (SNPS_Freqs[pHcsi->Init.PhyBitrate].hsfreqrange << CSI_PFCR_HSFR_Pos) | CSI_PFCR_DLD);
 
   /* Enable the D-PHY_RX lane(s) etc */
   __HAL_CSI_SET_REG(pHcsi, PCR,
-                    ((pHcsi->Init.LaneMerger.PhysicalLane0_Status == HAL_CSI_LANE_ENABLED) ? CSI_PCR_DL0EN : 0) |
-                    ((pHcsi->Init.LaneMerger.PhysicalLane1_Status == HAL_CSI_LANE_ENABLED) ? CSI_PCR_DL1EN : 0) |
+                    ((pHcsi->Init.LaneMerger.PhysicalLane0_Status == HAL_CSI_LANE_ENABLED) ?
+                     (uint32_t)CSI_PCR_DL0EN : 0U) |
+                    ((pHcsi->Init.LaneMerger.PhysicalLane1_Status == HAL_CSI_LANE_ENABLED) ?
+                     (uint32_t)CSI_PCR_DL1EN : 0U) |
                     CSI_PCR_CLEN);
 
   /* Enable the D-PHY_RX lane(s) etc */
   __HAL_CSI_SET_REG(pHcsi, PCR,
-                    ((pHcsi->Init.LaneMerger.PhysicalLane0_Status == HAL_CSI_LANE_ENABLED) ? CSI_PCR_DL0EN : 0) |
-                    ((pHcsi->Init.LaneMerger.PhysicalLane1_Status == HAL_CSI_LANE_ENABLED) ? CSI_PCR_DL1EN : 0) |
+                    ((pHcsi->Init.LaneMerger.PhysicalLane0_Status == HAL_CSI_LANE_ENABLED) ? 
+                     (uint32_t)CSI_PCR_DL0EN : 0U) |
+                    ((pHcsi->Init.LaneMerger.PhysicalLane1_Status == HAL_CSI_LANE_ENABLED) ? 
+                     (uint32_t)CSI_PCR_DL1EN : 0U) |
                     CSI_PCR_CLEN | CSI_PCR_PWRDOWN);
 
   /* Enable PHY, out of reset */
@@ -432,9 +437,13 @@ HAL_StatusTypeDef HAL_CSI_DeInit(CSI_HandleTypeDef *pHcsi)
   * @param  Config pointer to a CSI_VirtualChannelConfigTypeDef structure
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CSI_ConfigVirtualChan(CSI_HandleTypeDef *pHcsi, uint32_t vchan, CSI_VirtualChannelConfigTypeDef *Config)
+HAL_StatusTypeDef HAL_CSI_ConfigVirtualChan(CSI_HandleTypeDef *pHcsi, uint32_t vchan,
+                                            CSI_VirtualChannelConfigTypeDef *Config)
 {
-  uint32_t cfgr1 = 0, cfgr2 = 0, cfgr3 = 0, cfgr4 = 0;
+  uint32_t cfgr1 = 0;
+  uint32_t cfgr2 = 0;
+  uint32_t cfgr3 = 0;
+  uint32_t cfgr4 = 0;
   struct dt_cfg
   {
     uint32_t *reg;
@@ -458,21 +467,22 @@ HAL_StatusTypeDef HAL_CSI_ConfigVirtualChan(CSI_HandleTypeDef *pHcsi, uint32_t v
 
 
   /* Handle the ALLDT case first */
-  if (Config->NoDataTypeFiltering == 1)
+  if (Config->NoDataTypeFiltering == 1U)
   {
-    cfgr1 = (Config->CommonDataTypeFormat << CSI_VC0CFGR1_CDTFT_Pos) | CSI_VC0CFGR1_ALLDT;
+    cfgr1 = ((uint32_t)Config->CommonDataTypeFormat << CSI_VC0CFGR1_CDTFT_Pos) | CSI_VC0CFGR1_ALLDT;
   }
   else
   {
     uint32_t i;
-    for (i = 0; i < HAL_CSI_DATATYPE_NB; i++)
+    for (i = 0U; i < HAL_CSI_DATATYPE_NB; i++)
     {
-      if (Config->DataType[i].Enable == 0)
+      if (Config->DataType[i].Enable == 0U)
       {
         continue;
       }
-      *(DTCFG[i].reg) |= (Config->DataType[i].Class) << (DTCFG[i].offset) | (Config->DataType[i].DataTypeFormat << (DTCFG[i].offset + 8));
-      cfgr1 |= (1 << (CSI_VC0CFGR1_DT0EN_Pos + i));
+      *(DTCFG[i].reg) |= (((uint32_t)Config->DataType[i].Class) << (DTCFG[i].offset)) | \
+        		  ((uint32_t)Config->DataType[i].DataTypeFormat << (DTCFG[i].offset + 8U));
+      cfgr1 |= (1UL << (CSI_VC0CFGR1_DT0EN_Pos + i));
     }
   }
 
@@ -502,6 +512,9 @@ HAL_StatusTypeDef HAL_CSI_ConfigVirtualChan(CSI_HandleTypeDef *pHcsi, uint32_t v
       __HAL_CSI_SET_REG(pHcsi, VC3CFGR3, cfgr3);
       __HAL_CSI_SET_REG(pHcsi, VC3CFGR4, cfgr4);
       break;
+  default:
+    /* do something*/
+    break;
   }
 
   return HAL_OK;
@@ -514,7 +527,8 @@ HAL_StatusTypeDef HAL_CSI_ConfigVirtualChan(CSI_HandleTypeDef *pHcsi, uint32_t v
   * @param  Config pointer to a CSI_LineByteCounterConfigTypeDef structure
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CSI_ConfigLineByteCounter(CSI_HandleTypeDef *pHcsi, uint32_t counter, CSI_LineByteCounterConfigTypeDef *Config)
+HAL_StatusTypeDef HAL_CSI_ConfigLineByteCounter(CSI_HandleTypeDef *pHcsi, uint32_t counter,
+                                                const CSI_LineByteCounterConfigTypeDef *Config)
 {
   uint32_t conf_reg = 0x00;
   uint32_t reg;
@@ -522,7 +536,7 @@ HAL_StatusTypeDef HAL_CSI_ConfigLineByteCounter(CSI_HandleTypeDef *pHcsi, uint32
   {
     uint32_t vc_off;
     uint32_t en_off;
-  } lbxvc[HAL_CSI_COUNTER_NB] =
+  }const lbxvc[HAL_CSI_COUNTER_NB] =
   {
     { CSI_PRGITR_LB0VC_Pos, CSI_PRGITR_LB0EN_Pos }, /* LB0 */
     { CSI_PRGITR_LB1VC_Pos, CSI_PRGITR_LB1EN_Pos }, /* LB1 */
@@ -531,19 +545,19 @@ HAL_StatusTypeDef HAL_CSI_ConfigLineByteCounter(CSI_HandleTypeDef *pHcsi, uint32
   };
 
   /* Check pointer and input values validity */
-  if ((pHcsi == NULL) || (Config == NULL) || (counter >= HAL_CSI_COUNTER_NB))
+  if ((pHcsi == NULL) || (Config == NULL) || (counter >= (uint32_t)HAL_CSI_COUNTER_NB))
   {
     return HAL_ERROR;
   }
 
-  if (Config->Enable == 1)
+  if (Config->Enable == 1U)
   {
-    conf_reg = (Config->LineCnt << CSI_LB0CFGR_LINECNT_Pos) | Config->ByteCnt;
+    conf_reg = ((uint32_t)Config->LineCnt << CSI_LB0CFGR_LINECNT_Pos) | (uint32_t)Config->ByteCnt;
   }
 
   /* Stop the LineByte counter (if it is running) */
-  reg = __HAL_CSI_GET_MASKED_REG(pHcsi, PRGITR, 0xffffffff);
-  reg &= ~(0x01 << lbxvc[counter].en_off);
+  reg = __HAL_CSI_GET_MASKED_REG(pHcsi, PRGITR, 0xffffffffU);
+  reg &= ~(0x01U << lbxvc[counter].en_off);
   __HAL_CSI_SET_REG(pHcsi, PRGITR, reg);
 
   /* Apply the configuration */
@@ -561,13 +575,16 @@ HAL_StatusTypeDef HAL_CSI_ConfigLineByteCounter(CSI_HandleTypeDef *pHcsi, uint32
     case 3:
       __HAL_CSI_SET_REG(pHcsi, LB3CFGR, conf_reg);
       break;
+  default:
+    /*do something*/
+    break;
   }
 
-  reg &= ~(0x03 << lbxvc[counter].vc_off);
+  reg &= ~(0x03U << lbxvc[counter].vc_off);
   reg |= (Config->VC << lbxvc[counter].vc_off);
   __HAL_CSI_SET_REG(pHcsi, PRGITR, reg);
 
-  reg |= (!!Config->Enable << lbxvc[counter].en_off);
+  reg |= (~~Config->Enable << lbxvc[counter].en_off);
   __HAL_CSI_SET_REG(pHcsi, PRGITR, reg);
 
   return HAL_OK;
@@ -580,7 +597,7 @@ HAL_StatusTypeDef HAL_CSI_ConfigLineByteCounter(CSI_HandleTypeDef *pHcsi, uint32
   * @param  Config pointer to a CSI_TimerConfigTypeDef structure
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_CSI_ConfigTimer(CSI_HandleTypeDef *pHcsi, uint32_t timer, CSI_TimerConfigTypeDef *Config)
+HAL_StatusTypeDef HAL_CSI_ConfigTimer(CSI_HandleTypeDef *pHcsi, uint32_t timer, const CSI_TimerConfigTypeDef *Config)
 {
   uint32_t conf_reg = 0x00;
   uint32_t reg;
@@ -589,7 +606,7 @@ HAL_StatusTypeDef HAL_CSI_ConfigTimer(CSI_HandleTypeDef *pHcsi, uint32_t timer, 
     uint32_t vc_off;
     uint32_t start_off;
     uint32_t en_off;
-  } tim[HAL_CSI_TIMER_NB] =
+  } const tim[HAL_CSI_TIMER_NB] =
   {
     { CSI_PRGITR_TIM0VC_Pos, CSI_PRGITR_TIM0EOF_Pos, CSI_PRGITR_TIM0EN_Pos }, /* TIM0 */
     { CSI_PRGITR_TIM1VC_Pos, CSI_PRGITR_TIM1EOF_Pos, CSI_PRGITR_TIM1EN_Pos }, /* TIM1 */
@@ -598,19 +615,19 @@ HAL_StatusTypeDef HAL_CSI_ConfigTimer(CSI_HandleTypeDef *pHcsi, uint32_t timer, 
   };
 
   /* Check pointer and input values validity */
-  if ((pHcsi == NULL) || (Config == NULL) || (timer >= HAL_CSI_TIMER_NB))
+  if ((pHcsi == NULL) || (Config == NULL) || (timer >= (uint32_t)HAL_CSI_TIMER_NB))
   {
     return HAL_ERROR;
   }
 
-  if (Config->Enable == 1)
+  if (Config->Enable == 1U)
   {
     conf_reg = (Config->Count & CSI_TIM0CFGR_COUNT_Msk);
   }
 
   /* Stop the timer (if it is running) */
-  reg = __HAL_CSI_GET_MASKED_REG(pHcsi, PRGITR, 0xffffffff);
-  reg &= ~(0x01 << tim[timer].en_off);
+  reg = __HAL_CSI_GET_MASKED_REG(pHcsi, PRGITR, 0xffffffffU);
+  reg &= ~(0x01U << tim[timer].en_off);
   __HAL_CSI_SET_REG(pHcsi, PRGITR, reg);
 
   /* Apply the configuration */
@@ -628,13 +645,16 @@ HAL_StatusTypeDef HAL_CSI_ConfigTimer(CSI_HandleTypeDef *pHcsi, uint32_t timer, 
     case 3:
       __HAL_CSI_SET_REG(pHcsi, TIM3CFGR, conf_reg);
       break;
+  default:
+    /* do something*/
+    break;
   }
 
-  reg &= ~((0x03 << tim[timer].vc_off) | (0x01 << tim[timer].start_off));
+  reg &= ~((0x03U << tim[timer].vc_off) | (0x01U << tim[timer].start_off));
   reg |= ((Config->VC << tim[timer].vc_off) | (Config->Start << tim[timer].start_off));
   __HAL_CSI_SET_REG(pHcsi, PRGITR, reg);
 
-  reg |= (!!Config->Enable << tim[timer].en_off);
+  reg |= (~~Config->Enable << tim[timer].en_off);
   __HAL_CSI_SET_REG(pHcsi, PRGITR, reg);
 
   return HAL_OK;
@@ -704,20 +724,21 @@ HAL_StatusTypeDef HAL_CSI_Start(CSI_HandleTypeDef *pHcsi, uint32_t vchans)
   }
 
   __HAL_CSI_SET_BIT(pHcsi, CR,
-                    ((vchans & HAL_CSI_VIRTUAL_CHANNEL_0) ? CSI_CR_VC0START : 0) |
-                    ((vchans & HAL_CSI_VIRTUAL_CHANNEL_1) ? CSI_CR_VC1START : 0) |
-                    ((vchans & HAL_CSI_VIRTUAL_CHANNEL_2) ? CSI_CR_VC2START : 0) |
-                    ((vchans & HAL_CSI_VIRTUAL_CHANNEL_3) ? CSI_CR_VC3START : 0));
+                    (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_0)!=0U) ? (uint32_t)CSI_CR_VC0START : 0U) |
+                    (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_1)!=0U) ? (uint32_t)CSI_CR_VC1START : 0U) |
+                    (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_2)!=0U) ? (uint32_t)CSI_CR_VC2START : 0U) |
+                    (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_3)!=0U) ? (uint32_t)CSI_CR_VC3START : 0U));
 
   /* Enable Interrupts related to the Virtual Channel enabled */
   __HAL_CSI_ENABLE_IT(pHcsi,
-                      ((vchans & HAL_CSI_VIRTUAL_CHANNEL_0) ? VC0_IT : 0) |
-                      ((vchans & HAL_CSI_VIRTUAL_CHANNEL_1) ? VC1_IT : 0) |
-                      ((vchans & HAL_CSI_VIRTUAL_CHANNEL_2) ? VC2_IT : 0) |
-                      ((vchans & HAL_CSI_VIRTUAL_CHANNEL_3) ? VC3_IT : 0));
+                      (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_0)!=0U) ? (uint32_t)VC0_IT : 0U) |
+                      (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_1)!=0U) ? (uint32_t)VC1_IT : 0U) |
+                      (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_2)!=0U) ? (uint32_t)VC2_IT : 0U) |
+                      (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_3)!=0U) ? (uint32_t)VC3_IT : 0U));
 
   /* Wait for the start of all requested virtual channels */
-  while (__HAL_CSI_GET_MASKED_REG(pHcsi, SR0, ((vchans & HAL_CSI_ALL_VIRTUAL_CHANNELS) << CSI_SR0_VC0STATEF_Pos)) != ((vchans & HAL_CSI_ALL_VIRTUAL_CHANNELS) << CSI_SR0_VC0STATEF_Pos))
+  while (__HAL_CSI_GET_MASKED_REG(pHcsi, SR0, ((vchans & HAL_CSI_ALL_VIRTUAL_CHANNELS) << CSI_SR0_VC0STATEF_Pos)) \
+                                  != ((vchans & HAL_CSI_ALL_VIRTUAL_CHANNELS) << CSI_SR0_VC0STATEF_Pos))
   {
     HAL_Delay(1);
   }
@@ -740,13 +761,13 @@ HAL_StatusTypeDef HAL_CSI_Stop(CSI_HandleTypeDef *pHcsi, uint32_t vchans)
   }
 
   __HAL_CSI_SET_BIT(pHcsi, CR,
-                    ((vchans & HAL_CSI_VIRTUAL_CHANNEL_0) ? CSI_CR_VC0STOP : 0) |
-                    ((vchans & HAL_CSI_VIRTUAL_CHANNEL_1) ? CSI_CR_VC1STOP : 0) |
-                    ((vchans & HAL_CSI_VIRTUAL_CHANNEL_2) ? CSI_CR_VC2STOP : 0) |
-                    ((vchans & HAL_CSI_VIRTUAL_CHANNEL_3) ? CSI_CR_VC3STOP : 0));
+                    (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_0) != 0U) ? (uint32_t)CSI_CR_VC0STOP : 0U) |
+                    (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_1) != 0U) ? (uint32_t)CSI_CR_VC1STOP : 0U) |
+                    (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_2) != 0U) ? (uint32_t)CSI_CR_VC2STOP : 0U) |
+                    (((vchans & (uint32_t)HAL_CSI_VIRTUAL_CHANNEL_3) != 0U) ? (uint32_t)CSI_CR_VC3STOP : 0U));
 
   /* Wait for the start of all requested virtual channels */
-  while (__HAL_CSI_GET_MASKED_REG(pHcsi, SR0, (vchans & HAL_CSI_ALL_VIRTUAL_CHANNELS) << CSI_SR0_VC0STATEF_Pos))
+  while (__HAL_CSI_GET_MASKED_REG(pHcsi, SR0, (vchans & HAL_CSI_ALL_VIRTUAL_CHANNELS) << CSI_SR0_VC0STATEF_Pos)!=0U)
   {
     HAL_Delay(1);
   }
@@ -780,7 +801,8 @@ HAL_StatusTypeDef HAL_CSI_Stop(CSI_HandleTypeDef *pHcsi, uint32_t vchans)
   * @param  arg1 argument (depend on error)
   * @retval None
   */
-__weak void HAL_CSI_ErrorEventCallback(CSI_HandleTypeDef *pHcsi, HAL_CSI_ErrorEventTypeDef error, uint32_t arg0, uint32_t arg1)
+__weak void HAL_CSI_ErrorEventCallback(CSI_HandleTypeDef *pHcsi, HAL_CSI_ErrorEventTypeDef error,
+                                       uint32_t arg0, uint32_t arg1)
 {
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_CSI_ErrorEventCallback could be implemented in the user file
@@ -838,7 +860,7 @@ __weak void HAL_CSI_EventCallback(CSI_HandleTypeDef *pHcsi, HAL_CSI_EventTypeDef
   *               the configuration information for CSI.
   * @retval HAL state
   */
-HAL_CSI_StateTypeDef HAL_CSI_GetState(CSI_HandleTypeDef *pHcsi)
+HAL_CSI_StateTypeDef HAL_CSI_GetState(const CSI_HandleTypeDef *pHcsi)
 {
   return pHcsi->State;
 }
@@ -849,7 +871,7 @@ HAL_CSI_StateTypeDef HAL_CSI_GetState(CSI_HandleTypeDef *pHcsi)
  *              the configuration information for CSI.
  * @retval CSI Error Code
  */
-uint32_t HAL_CSI_GetError(CSI_HandleTypeDef *pHcsi)
+uint32_t HAL_CSI_GetError(const CSI_HandleTypeDef *pHcsi)
 {
   return pHcsi->ErrorCode;
 }
@@ -877,11 +899,18 @@ uint32_t HAL_CSI_GetError(CSI_HandleTypeDef *pHcsi)
   *               the configuration information for the CSI.
   * @retval None
   */
-typedef void (*irq_error_cb_t)(CSI_HandleTypeDef *pHcsim, HAL_CSI_ErrorEventTypeDef error, uint32_t arg0, uint32_t arg1);
+typedef void (*irq_error_cb_t)(CSI_HandleTypeDef *pHcsim, HAL_CSI_ErrorEventTypeDef error,
+                               uint32_t arg0, uint32_t arg1);
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-#define CSI_SR0_ERROR_FLAGS (CSI_SR0_SYNCERRF | CSI_SR0_WDERRF | CSI_SR0_SPKTERRF | CSI_SR0_IDERRF | CSI_SR0_CECCERRF | CSI_SR0_ECCERRF | CSI_SR0_CRCERRF)
-#define CSI_SR0_EVENTS_FLAGS (CSI_SR0_SPKTF | CSI_SR0_CCFIFOFF | CSI_SR0_EOF0F | CSI_SR0_EOF1F | CSI_SR0_EOF2F | CSI_SR0_EOF3F | CSI_SR0_SOF0F | CSI_SR0_SOF1F | CSI_SR0_SOF2F | CSI_SR0_SOF3F | CSI_SR0_TIM0F | CSI_SR0_TIM1F | CSI_SR0_TIM2F | CSI_SR0_TIM3F | CSI_SR0_LB0F | CSI_SR0_LB1F | CSI_SR0_LB2F | CSI_SR0_LB3F)
-#define CSI_SR1_ERROR_FLAGS (CSI_SR1_ESOTDL0F | CSI_SR1_ESOTSYNCDL0F | CSI_SR1_EESCDL0F | CSI_SR1_ESYNCESCDL0F | CSI_SR1_ECTRLDL0F | CSI_SR1_ESOTDL1F | CSI_SR1_ESOTSYNCDL1F | CSI_SR1_EESCDL1F | CSI_SR1_ESYNCESCDL1F | CSI_SR1_ECTRLDL1F )
+#define CSI_SR0_ERROR_FLAGS (CSI_SR0_SYNCERRF | CSI_SR0_WDERRF | CSI_SR0_SPKTERRF | CSI_SR0_IDERRF | \
+                              CSI_SR0_CECCERRF | CSI_SR0_ECCERRF | CSI_SR0_CRCERRF)
+#define CSI_SR0_EVENTS_FLAGS (CSI_SR0_SPKTF | CSI_SR0_CCFIFOFF | CSI_SR0_EOF0F | CSI_SR0_EOF1F | CSI_SR0_EOF2F | \
+                              CSI_SR0_EOF3F | CSI_SR0_SOF0F | CSI_SR0_SOF1F | CSI_SR0_SOF2F | CSI_SR0_SOF3F | \
+                              CSI_SR0_TIM0F | CSI_SR0_TIM1F | CSI_SR0_TIM2F | CSI_SR0_TIM3F | CSI_SR0_LB0F | \
+                              CSI_SR0_LB1F | CSI_SR0_LB2F | CSI_SR0_LB3F)
+#define CSI_SR1_ERROR_FLAGS (CSI_SR1_ESOTDL0F | CSI_SR1_ESOTSYNCDL0F | CSI_SR1_EESCDL0F | CSI_SR1_ESYNCESCDL0F | \
+                              CSI_SR1_ECTRLDL0F | CSI_SR1_ESOTDL1F | CSI_SR1_ESOTSYNCDL1F | CSI_SR1_EESCDL1F | \
+                              CSI_SR1_ESYNCESCDL1F | CSI_SR1_ECTRLDL1F )
 void HAL_CSI_IRQHandler(CSI_HandleTypeDef *pHcsi)
 {
   CSI_TypeDef *regs = pHcsi->Instance;
@@ -898,11 +927,15 @@ void HAL_CSI_IRQHandler(CSI_HandleTypeDef *pHcsi)
   {
     { CSI_SR0_SYNCERRF, HAL_CSI_ERROR_SYNC, HAL_CSI_SyncError, &(regs->ERR2), CSI_ERR2_SYNCVCERR_Pos, 0xFFFF },
     { CSI_SR0_WDERRF, HAL_CSI_ERROR_WDG, HAL_CSI_WatchdogError, &(regs->ERR2), CSI_ERR2_SYNCVCERR_Pos, 0xFFFF },
-    { CSI_SR0_SPKTERRF, HAL_CSI_ERROR_SPKT, HAL_CSI_ShortPacketError, &(regs->ERR2), CSI_ERR2_SPKTVCERR_Pos, CSI_ERR2_SPKTDTERR_Pos },
-    { CSI_SR0_IDERRF, HAL_CSI_ERROR_DTID, HAL_CSI_DataTypeIDError, &(regs->ERR1), CSI_ERR1_IDVCERR_Pos, CSI_ERR1_IDDTERR_Pos },
-    { CSI_SR0_CECCERRF, HAL_CSI_ERROR_CECC, HAL_CSI_CECCError, &(regs->ERR1), CSI_ERR1_CECCVCERR_Pos, CSI_ERR1_CECCDTERR_Pos},
+    { CSI_SR0_SPKTERRF, HAL_CSI_ERROR_SPKT, HAL_CSI_ShortPacketError, &(regs->ERR2), \
+     CSI_ERR2_SPKTVCERR_Pos, CSI_ERR2_SPKTDTERR_Pos },
+    { CSI_SR0_IDERRF, HAL_CSI_ERROR_DTID, HAL_CSI_DataTypeIDError, &(regs->ERR1), \
+     CSI_ERR1_IDVCERR_Pos, CSI_ERR1_IDDTERR_Pos },
+    { CSI_SR0_CECCERRF, HAL_CSI_ERROR_CECC, HAL_CSI_CECCError, &(regs->ERR1), \
+     CSI_ERR1_CECCVCERR_Pos, CSI_ERR1_CECCDTERR_Pos},
     { CSI_SR0_ECCERRF, HAL_CSI_ERROR_ECC, HAL_CSI_ECCError, &(regs->ERR1), 0xFFFF, 0xFFFF },
-    { CSI_SR0_CRCERRF, HAL_CSI_ERROR_CRC, HAL_CSI_CRCError, &(regs->ERR1), CSI_ERR1_CRCVCERR_Pos, CSI_ERR1_CRCDTERR_Pos },
+    { CSI_SR0_CRCERRF, HAL_CSI_ERROR_CRC, HAL_CSI_CRCError, &(regs->ERR1), \
+     CSI_ERR1_CRCVCERR_Pos, CSI_ERR1_CRCDTERR_Pos },
   };
 
   struct
@@ -972,11 +1005,13 @@ void HAL_CSI_IRQHandler(CSI_HandleTypeDef *pHcsi)
 
   /* Loop through all error interrupt sources */
   i = 0;
-  while ((irq_status & CSI_SR0_ERROR_FLAGS) && (i < ARRAY_SIZE(errors_sr0)))
+  while (((irq_status & (uint32_t)CSI_SR0_ERROR_FLAGS) != 0U) && ((i < (uint32_t)ARRAY_SIZE(errors_sr0)) != 0U))
   {
-    if (irq_status & (errors_sr0[i].flag))
+    if ((irq_status & (errors_sr0[i].flag)) != 0U)
     {
-      uint32_t error_reg, vchan = 0, data_type = 0;
+      uint32_t error_reg;
+      uint32_t vchan = 0;
+      uint32_t data_type = 0;
 
       __HAL_CSI_SET_BIT(pHcsi, FCR0, errors_sr0[i].flag);
       irq_status &= ~errors_sr0[i].flag;
@@ -985,14 +1020,14 @@ void HAL_CSI_IRQHandler(CSI_HandleTypeDef *pHcsi)
 
       error_reg = *(errors_sr0[i].arg_reg);
 
-      if (errors_sr0[i].vchan_off != 0xFFFF)
+      if (errors_sr0[i].vchan_off != 0xFFFFU)
       {
-        vchan = (error_reg >> errors_sr0[i].vchan_off) & 0x03;
+        vchan = (error_reg >> errors_sr0[i].vchan_off) & 0x03U;
       }
 
-      if (errors_sr0[i].data_type_off != 0xFFFF)
+      if (errors_sr0[i].data_type_off != 0xFFFFU)
       {
-        data_type = (error_reg >> errors_sr0[i].data_type_off) & 0x3f;
+        data_type = (error_reg >> errors_sr0[i].data_type_off) & 0x3fU;
       }
       HAL_CSI_ErrorEventCallback(pHcsi, errors_sr0[i].type, vchan, data_type);
     }
@@ -1001,9 +1036,9 @@ void HAL_CSI_IRQHandler(CSI_HandleTypeDef *pHcsi)
 
   i = 0;
   /* Loop through all virtual channel interrupt sources */
-  while ((irq_status & CSI_SR0_EVENTS_FLAGS) && (i < ARRAY_SIZE(chans)))
+  while (((irq_status & (uint32_t)CSI_SR0_EVENTS_FLAGS) != 0U) && ((i < (uint32_t)ARRAY_SIZE(chans)) != 0U))
   {
-    if (irq_status & (chans[i].flag))
+    if ((irq_status & (chans[i].flag) )!= 0U)
     {
       __HAL_CSI_SET_BIT(pHcsi, FCR0, chans[i].flag);
       irq_status &= ~chans[i].flag;
@@ -1014,7 +1049,7 @@ void HAL_CSI_IRQHandler(CSI_HandleTypeDef *pHcsi)
       else
       {
         uint32_t tmp;
-        tmp = __HAL_CSI_GET_MASKED_REG(pHcsi, SPDFR, 0xffffffff);
+        tmp = __HAL_CSI_GET_MASKED_REG(pHcsi, SPDFR, 0xffffffffU);
         HAL_CSI_EventCallback(pHcsi, chans[i].type,
                               (tmp & CSI_SPDFR_VCHANNEL_Msk) >> CSI_SPDFR_VCHANNEL_Pos,
                               (tmp & (CSI_SPDFR_DATATYPE_Msk | CSI_SPDFR_DATAFIELD_Msk)));
@@ -1028,9 +1063,9 @@ void HAL_CSI_IRQHandler(CSI_HandleTypeDef *pHcsi)
 
   /* Loop through all error interrupt sources */
   i = 0;
-  while (irq_status && (i < ARRAY_SIZE(errors_sr1)))
+  while ((irq_status != 0U) && (i < ARRAY_SIZE(errors_sr1)))
   {
-    if (irq_status & (errors_sr1[i].flag))
+    if ((irq_status & (errors_sr1[i].flag)) != 0U)
     {
       __HAL_CSI_SET_BIT(pHcsi, FCR1, errors_sr1[i].flag);
       irq_status &= ~errors_sr1[i].flag;

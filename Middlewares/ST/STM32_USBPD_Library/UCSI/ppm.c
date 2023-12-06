@@ -109,7 +109,7 @@ typedef enum
 #if defined(_RTOS)
 #define OS_PPM_PRIORITY                         osPriorityLow
 #elif defined(USBPD_THREADX)
-#define OS_PPM_PRIORITY                         (10U)
+#define OS_PPM_PRIORITY                         (3U)
 #endif /* _RTOS */
 #define OS_PPM_STACK_SIZE                       (256U + OS_PPM_STACK_ADDITIONAL_SIZE)
 #define PPM_BOX_MESSAGES_MAX                    (2U)
@@ -216,7 +216,7 @@ static void                PPM_ManageCommandReady(PUCSI_CONTROL_t PtrControl);
 static void                PPM_NotifyOPM(uint32_t Command, uint32_t Event);
 static USBPD_StatusTypeDef PPM_FillDefaultConfiguration(void);
 static USBPD_StatusTypeDef PPM_FillConnectorCapability(uint8_t PortNumber,
-                                                        PUCSI_GET_CONNECTOR_CAPABILITY_IN_t PtrConnectorCapability);
+                                                       PUCSI_GET_CONNECTOR_CAPABILITY_IN_t PtrConnectorCapability);
 static USBPD_StatusTypeDef PPM_Reset(void);
 static USBPD_StatusTypeDef PPM_Cancel(void);
 static USBPD_StatusTypeDef PPM_ConnectorReset(uint8_t PortNumber, uint8_t HardReset);
@@ -234,7 +234,7 @@ static USBPD_StatusTypeDef PPM_SetPowerDirectionMode(uint8_t PortNumber, UCSI_PO
 static USBPD_StatusTypeDef PPM_SetPowerDirectionRole(uint8_t PortNumber, UCSI_POWER_DIRECTION_ROLE_t PowerRole);
 #if FEATURE_ALTERNATEMODEDETAILS_SUPPORTED
 static USBPD_StatusTypeDef PPM_GetAlternateModes(uint8_t PortNumber,
-                                                  PUCSI_GET_ALTERNATE_MODES_COMMAND PtrGetAlternatesModes);
+                                                 PUCSI_GET_ALTERNATE_MODES_COMMAND PtrGetAlternatesModes);
 static USBPD_StatusTypeDef PPM_GetCamSupported(uint8_t PortNumber);
 static USBPD_StatusTypeDef PPM_GetCurrentCam(uint8_t PortNumber);
 #if FEATURE_ALTERNATEMODEOVERRIDE_SUPPORTED
@@ -324,13 +324,13 @@ DEF_TASK_FUNCTION(USBPD_PPM_UserExecute)
 #endif /* USBPD_THREADX */
   static uint32_t tickstart = 0;
 
-   OS_QUEUE_ID *queue = (OS_QUEUE_ID *)argument;
+  OS_QUEUE_ID *queue = (OS_QUEUE_ID *)argument;
 
   do
   {
 #if defined(USBPD_THREADX)
     ULONG event = 0;
-    tx_queue_receive(queue, (void*)&event, _timing);
+    tx_queue_receive(queue, (void *)&event, _timing);
     switch (((PPM_USER_EVENT)event & MASK_EVENT))
 #elif defined(_RTOS)
 #if (osCMSIS < 0x20000U)
@@ -413,15 +413,15 @@ DEF_TASK_FUNCTION(USBPD_PPM_UserExecute)
         else
         {
           /* Manage timeout in case OPM never ack command */
-            if ((HAL_GetTick() - tickstart) > PPM_WAIT_ACK_TIMEOUT) /* 1s timeout */
-            {
-              PPM_DEBUG(PPM_DEBUG_LEVEL_1, USBPD_PORT_0,
-                        "PPM_WAIT_FOR_CMD_COMPL_ACK timeout. Switching to state PPM_IDLE_READY");
+          if ((HAL_GetTick() - tickstart) > PPM_WAIT_ACK_TIMEOUT) /* 1s timeout */
+          {
+            PPM_DEBUG(PPM_DEBUG_LEVEL_1, USBPD_PORT_0,
+                      "PPM_WAIT_FOR_CMD_COMPL_ACK timeout. Switching to state PPM_IDLE_READY");
 
-              /* Abort waiting */
-              PPM_Handle.AckCCI_Status.AcknowledgeCommandIndicator = 1U;
-              SWITCH_TO_PPM_STATE(PPM_IDLE_READY);
-            }
+            /* Abort waiting */
+            PPM_Handle.AckCCI_Status.AcknowledgeCommandIndicator = 1U;
+            SWITCH_TO_PPM_STATE(PPM_IDLE_READY);
+          }
         }
         break;
       default:
@@ -486,7 +486,8 @@ uint8_t *USBPD_PPM_GetDataPointer(UCSI_REG_t Register)
     case UcsiRegDataStructureUnkown:
     case UcsiRegDataStructureReserved:
     default:
-      PPM_TRACE(PPM_DEBUG_LEVEL_0, UCSI_TRACE_PPM_GET_REG_ERROR_READ, (uint8_t *)&PPM_Handle.AckCCI_Status.AsUInt32, 4U);
+      PPM_TRACE(PPM_DEBUG_LEVEL_0, UCSI_TRACE_PPM_GET_REG_ERROR_READ,
+                (uint8_t *)&PPM_Handle.AckCCI_Status.AsUInt32, 4U);
       break;
   }
 
@@ -541,7 +542,7 @@ void USBPD_PPM_Notification(uint8_t PortNumber, uint32_t EventType)
       case USBPD_NOTIFY_DATAROLESWAP_DFP:
       case USBPD_NOTIFY_USBSTACK_START:
       case USBPD_NOTIFY_PE_DISABLED:
-      /* A notification has been detected */
+        /* A notification has been detected */
       {
         uint32_t event = SET_PORT_EVENT(PortNumber, PPM_USER_EVENT_NOTIFICATION);
         ConnectorChange[PortNumber] = UCSI_CONNECTOR_CHANGE;
@@ -678,7 +679,8 @@ static void PPM_ManageCommandReady(PUCSI_CONTROL_t PtrControl)
           break;
         case UcsiCommandAckCcCi:
           CurrentPort = (uint8_t)(PtrControl->ConnectorReset.ConnectorNumber - 1U);
-          PPM_AckCcCi((uint8_t)PtrControl->AckCcCi.ConnectorChangeAcknowledge, (uint8_t)PtrControl->AckCcCi.CommandCompletedAcknowledge);
+          PPM_AckCcCi((uint8_t)PtrControl->AckCcCi.ConnectorChangeAcknowledge,
+                      (uint8_t)PtrControl->AckCcCi.CommandCompletedAcknowledge);
           break;
         case UcsiCommandSetNotificationEnable:
           PPM_SetNotificationEnable(PtrControl->SetNotificationEnable.Content.NotificationEnable);
@@ -1002,7 +1004,7 @@ static USBPD_StatusTypeDef PPM_GetConnectorCapabilityStatus(uint8_t PortNumber)
   /* If the command completed successfully then PPM shall copy the
      capability in the message_in as described in table 4-13 GET_CAPABILITY Data */
   (void)memcpy(&PPM_Handle.MessageIn.ConnectorCapability, &PPM_Handle.ConnectorCapability[PortNumber],
-         sizeof(UCSI_GET_CONNECTOR_CAPABILITY_IN_t));
+               sizeof(UCSI_GET_CONNECTOR_CAPABILITY_IN_t));
 
   return USBPD_OK;
 }
@@ -1145,7 +1147,7 @@ static USBPD_StatusTypeDef PPM_SetPowerDirectionRole(uint8_t PortNumber, UCSI_PO
   * @retval USBPD status
   */
 static USBPD_StatusTypeDef PPM_GetAlternateModes(uint8_t PortNumber,
-                                                  PUCSI_GET_ALTERNATE_MODES_COMMAND PtrGetAlternatesModes)
+                                                 PUCSI_GET_ALTERNATE_MODES_COMMAND PtrGetAlternatesModes)
 {
   USBPD_StatusTypeDef status = USBPD_OK;
 
@@ -1155,50 +1157,8 @@ static USBPD_StatusTypeDef PPM_GetAlternateModes(uint8_t PortNumber,
   /* Acknowledge the command */
   PPM_Handle.AckCCI_Status.CommandCompletedIndicator = 1U;
   PPM_Handle.AckCCI_Status.ConnectorChangeIndicator  = AsynchEventPending;
-
-  /* Save the content of Get alternate modes */
-  PPM_Handle.Control.GetAlternateModes.Recipient =
-    (UCSI_GET_ALTERNATE_MODES_RECIPIENT_t)PtrGetAlternatesModes->Recipient;
-  PPM_Handle.Control.GetAlternateModes.AlternateModeOffset = PtrGetAlternatesModes->AlternateModeOffset;
-  /* Number of alternate modes to return starting from the alternate mode offset.
-     Nb of alt mode to return is the value in this field plus 1
-     => it means a value between 1 to 4                                           */
-  PPM_Handle.Control.GetAlternateModes.NumberOfAlternateModes  = (PtrGetAlternatesModes->NumberOfAlternateModes + 1U);
-
-  switch (PPM_Handle.Control.GetAlternateModes.Recipient)
-  {
-    case UcsiGetAlternateModesRecipientConnector:
-    {
-      PUCSI_GET_ALTERNATE_MODES_IN _ptr_altmode = &PPM_Handle.MessageIn.AlternateModes;
-      /* Set the data length in Ack_CCI_Status
-              => set to 4 times the nb of alt modes supported upt to a max of MAX_DATA_LENGTH */
-      PPM_Handle.AckCCI_Status.DataLength =
-        ((PPM_Handle.Control.GetAlternateModes.NumberOfAlternateModes * sizeof(UCSI_ALTERNATE_MODE)) >
-         UCSI_MAX_DATA_LENGTH) ? UCSI_MAX_DATA_LENGTH :
-        ((PPM_Handle.Control.GetAlternateModes.NumberOfAlternateModes * sizeof(UCSI_ALTERNATE_MODE)));
-      /* Get information directly from the devices */
-      _ptr_altmode->AlternateModes[0].Svid = 0x0015U; /* SVID available in VDM ID Header? */
-      _ptr_altmode->AlternateModes[0].Mode = 0x000001FFU; /* SVID available in Discovery Mode? */
-      _ptr_altmode->AlternateModes[1].Svid = 0x0015U;
-      _ptr_altmode->AlternateModes[1].Mode = 0x000002FFU;
-      break;
-    }
-    case UcsiGetAlternateModesRecipientSop:
-      /* Send a VDM Discovery to SOP */
-      /* TBI */
-      break;
-    case UcsiGetAlternateModesRecipientSopP:
-      /* Send a VDM Discovery to SOP' */
-      /* TBI */
-      break;
-    case UcsiGetAlternateModesRecipientSopPP:
-      /* Send a VDM Discovery to SOP'' */
-      /* TBI */
-      break;
-    default:
-      status = USBPD_FAIL;
-      break;
-  }
+  
+  PPM_DEBUG(PortNumber, "ADVICE: Update PPM_GetAlternateModes");
 
   return status;
 }
@@ -1217,13 +1177,7 @@ static USBPD_StatusTypeDef PPM_GetCamSupported(uint8_t PortNumber)
   PPM_Handle.AckCCI_Status.CommandCompletedIndicator = 1U;
   PPM_Handle.AckCCI_Status.ConnectorChangeIndicator  = AsynchEventPending;
 
-  /* Return in the DataLength field if successful:
-     => (Number of alternate modes Mod 8) + 1 */
-  PPM_Handle.AckCCI_Status.DataLength = 1U;
-
-  /* Fill the structure UCSI_GET_CAM_SUPPORTED_IN_t */
-  /* !!! TBI !!! */
-  PPM_Handle.MessageIn.CamSupported.bmAlternateModeSupported[0] = 0xAAU;
+  PPM_DEBUG(PortNumber, "ADVICE: Update PPM_GetCamSupported");
 
   return USBPD_OK;
 }
@@ -1242,12 +1196,7 @@ static USBPD_StatusTypeDef PPM_GetCurrentCam(uint8_t PortNumber)
   PPM_Handle.AckCCI_Status.CommandCompletedIndicator = 1U;
   PPM_Handle.AckCCI_Status.ConnectorChangeIndicator  = AsynchEventPending;
 
-  /* Set length to 1 if successful */
-  PPM_Handle.AckCCI_Status.DataLength = 1U;
-
-  /* Fill the structure UCSI_GET_CURRENT_CAM_IN_t */
-  /* !!! TBI !!! */
-  PPM_Handle.MessageIn.CurrentCam.CurrentAlternateMode = 0xBBU;
+  PPM_DEBUG(PortNumber, "ADVICE: Update PPM_GetCurrentCam");
 
   return USBPD_OK;
 }
@@ -1270,7 +1219,7 @@ static USBPD_StatusTypeDef PPM_SetNewCam(uint8_t PortNumber, uint8_t EnterOrExit
   PPM_Handle.AckCCI_Status.CommandCompletedIndicator = 1U;
   PPM_Handle.AckCCI_Status.ConnectorChangeIndicator  = AsynchEventPending;
 
-  /* !!! TBI !!! */
+  PPM_DEBUG(PortNumber, "ADVICE: Update PPM_SetNewCam");
 
   return USBPD_OK;
 }
@@ -1370,25 +1319,8 @@ static USBPD_StatusTypeDef PPM_GetCableProperty(uint8_t PortNumber)
   /* Acknowledge the command */
   PPM_Handle.AckCCI_Status.CommandCompletedIndicator = 1U;
   PPM_Handle.AckCCI_Status.ConnectorChangeIndicator  = AsynchEventPending;
-
-  /* Return 5 in the DataLength field if successful */
-  PPM_Handle.AckCCI_Status.DataLength = 5U;
-
-  /* Fill the structure UCSI_GET_CABLE_PROPERTY_IN */
-  /* !!! TBI !!! */
-  PPM_Handle.MessageIn.CableProperty.bmSpeedSupported.SpeedExponent = 1U;
-  PPM_Handle.MessageIn.CableProperty.bmSpeedSupported.Mantissa      = 0x3FU;
-  PPM_Handle.MessageIn.CableProperty.bCurrentCapability = 0xAAU;
-  PPM_Handle.MessageIn.CableProperty.VBusInCable        = 1U;
-  /* 1: Active cable, 0: Passive cable */
-  PPM_Handle.MessageIn.CableProperty.CableType          = 1U;
-  PPM_Handle.MessageIn.CableProperty.Directionality     = 1U;
-  /* 0: USB-Type-A, 1: USB-Type-B, 2: USB-Type-C, 3: Other (not USB) */
-  PPM_Handle.MessageIn.CableProperty.PlugEndType        = CABLE_TO_TYPE_C;
-  /* 0: no support of alternate mode, 1: Support of alternate mode */
-  PPM_Handle.MessageIn.CableProperty.ModeSupport        =  1U;
-  /* Check table 6-28 from USB-PD 2.0 spec */
-  PPM_Handle.MessageIn.CableProperty.Latency            = CABLE_LATENCY_60NS;
+  
+  PPM_DEBUG(PortNumber, "ADVICE: Update PPM_GetCableProperty");
 
   return USBPD_OK;
 }

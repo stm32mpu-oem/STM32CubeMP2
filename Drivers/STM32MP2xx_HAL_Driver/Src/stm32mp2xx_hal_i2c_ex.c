@@ -284,6 +284,7 @@ HAL_StatusTypeDef HAL_I2CEx_DisableWakeUp(I2C_HandleTypeDef *hi2c)
 /**
   * @}
   */
+
 /** @defgroup I2CEx_Exported_Functions_Group3 Fast Mode Plus Functions
   * @brief    Fast Mode Plus Functions
   *
@@ -373,7 +374,8 @@ HAL_StatusTypeDef HAL_I2CEx_ConfigFastModePlus(I2C_HandleTypeDef *hi2c, uint32_t
   *                the configuration information of the autonomous mode for the specified I2Cx peripheral.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_I2CEx_SetConfigAutonomousMode(I2C_HandleTypeDef *hi2c, I2C_AutonomousModeConfTypeDef *sConfig)
+HAL_StatusTypeDef HAL_I2CEx_SetConfigAutonomousMode(I2C_HandleTypeDef *hi2c,
+                                                    const I2C_AutonomousModeConfTypeDef *sConfig)
 {
   if (hi2c->State == HAL_I2C_STATE_READY)
   {
@@ -383,8 +385,8 @@ HAL_StatusTypeDef HAL_I2CEx_SetConfigAutonomousMode(I2C_HandleTypeDef *hi2c, I2C
     hi2c->State = HAL_I2C_STATE_BUSY;
 
     /* Check the parameters */
+    assert_param(IS_I2C_TRIG_INPUT_INSTANCE(hi2c->Instance));
     assert_param(IS_I2C_TRIG_SOURCE(hi2c->Instance, sConfig->TriggerSelection));
-
     assert_param(IS_I2C_AUTO_MODE_TRG_POL(sConfig->TriggerPolarity));
 
     /* Disable the selected I2C peripheral to be able to configure AUTOCR */
@@ -420,15 +422,14 @@ HAL_StatusTypeDef HAL_I2CEx_SetConfigAutonomousMode(I2C_HandleTypeDef *hi2c, I2C
   *                the configuration information of the autonomous mode for the specified I2Cx peripheral.
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_I2CEx_GetConfigAutonomousMode(I2C_HandleTypeDef *hi2c, I2C_AutonomousModeConfTypeDef *sConfig)
+HAL_StatusTypeDef HAL_I2CEx_GetConfigAutonomousMode(const I2C_HandleTypeDef *hi2c,
+                                                    I2C_AutonomousModeConfTypeDef *sConfig)
 {
   uint32_t autocr_tmp;
 
-#if defined(I2C8)
   /* Check the parameters */
-  assert_param(IS_I2C_TRIGGER_INPUT_INSTANCE(hi2c->Instance));
+  assert_param(IS_I2C_TRIG_INPUT_INSTANCE(hi2c->Instance));
 
-#endif /* I2C8 */
   autocr_tmp = hi2c->Instance->AUTOCR;
 
   sConfig->TriggerState     = (autocr_tmp & I2C_AUTOCR_TRIGEN);
@@ -452,6 +453,9 @@ HAL_StatusTypeDef HAL_I2CEx_ClearConfigAutonomousMode(I2C_HandleTypeDef *hi2c)
     __HAL_LOCK(hi2c);
 
     hi2c->State = HAL_I2C_STATE_BUSY;
+
+    /* Check the parameters */
+    assert_param(IS_I2C_TRIG_INPUT_INSTANCE(hi2c->Instance));
 
     /* Disable the selected I2C peripheral to be able to clear AUTOCR */
     __HAL_I2C_DISABLE(hi2c);

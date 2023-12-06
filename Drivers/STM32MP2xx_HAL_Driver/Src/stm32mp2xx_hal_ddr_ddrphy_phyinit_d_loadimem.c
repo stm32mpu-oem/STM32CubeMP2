@@ -8,6 +8,9 @@
 #include <stdio.h>
 
 #include "stm32mp2xx_hal_ddr_ddrphy_phyinit.h"
+#ifdef __AARCH64__
+#include "stm32mp2xx_hal_ddr_ddrphy_firmware_ddr_pmu_train.h"
+#endif
 
 /*
  * This function loads the training firmware IMEM image into the SRAM.
@@ -34,11 +37,14 @@ void ddrphy_phyinit_d_loadimem(void)
 	/*
 	 * Set memresetl to avoid glitch on BP_MemReset_L during training
 	 */
-
 	memresetl = CSR_PROTECTMEMRESET_MASK;
 	mmio_write_16((uintptr_t)(DDRPHYC_BASE + 4 * (TMASTER | CSR_MEMRESETL_ADDR)), memresetl);
 
+#ifdef __AARCH64__
+	ptr32 = (uint32_t *)(ddr_pmu_train_bin + STM32MP_DDR_FW_IMEM_OFFSET);
+#else
 	ptr32 = (uint32_t *)(STM32MP_DDR_FW_BASE + STM32MP_DDR_FW_IMEM_OFFSET);
+#endif
 	ddrphy_phyinit_writeoutmem(ptr32, IMEM_ST_ADDR, IMEM_SIZE);
 
 	VERBOSE("%s End\n", __func__);

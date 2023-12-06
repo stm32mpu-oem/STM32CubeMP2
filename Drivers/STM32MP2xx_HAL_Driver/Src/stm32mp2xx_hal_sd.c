@@ -259,6 +259,7 @@
   * @{
   */
 
+#if defined (SDMMC1) || defined (SDMMC2)
 #ifdef HAL_SD_MODULE_ENABLED
 
 /* Private typedef -----------------------------------------------------------*/
@@ -4102,6 +4103,7 @@ __weak void HAL_SDEx_Write_DMALnkLstBufCpltCallback(SD_HandleTypeDef *hsd)
   */
 
 #endif /* HAL_SD_MODULE_ENABLED */
+#endif /* SDMMC1 || SDMMC2 */
 
 /**
   * @}

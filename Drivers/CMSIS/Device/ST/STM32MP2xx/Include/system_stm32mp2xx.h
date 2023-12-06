@@ -200,6 +200,10 @@ extern uint32_t SystemA35_TriggerInterruptAtGICInput( gic_interrupt_config_t int
 /* A35ss specific function to get A35 secure state by reading GICD_ICFGR0 */
 extern uint32_t SystemA35_IsA35InSecureState( void );
 
+/* Creates Memory Management Unit Translation Table */
+extern void MMU_CreateTranslationTable(void);
+extern void MMU_CreateTranslationTable_LPAE(void);
+
 /* Functions to add specific user processing on system timers (if any) */
 void SecurePhysicalTimer_IRQHandler_CallBack(void);
 void NonSecurePhysicalTimer_IRQHandler_CallBack(void);

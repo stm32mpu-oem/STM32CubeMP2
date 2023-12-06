@@ -205,11 +205,18 @@ typedef void USBPD_PWR_VBUSDetectCallbackFunc(uint32_t PortNum,
 /* Definition of ADCx channels */
 #define TCPP0203_PORT0_VBUSC_ADC_CHANNEL            ADC_CHANNEL_2          /* PF10 : ADC3_INP2 */
 
-#define TCPP0203_PORT0_VBUSC_GPIO_CLK_ENABLE()      LL_RCC_GPIOB_EnableClock();
-#define TCPP0203_PORT0_VBUSC_GPIO_CLK_DISABLE()     LL_RCC_GPIOB_DisableClock();
+#define TCPP0203_PORT0_VBUSC_GPIO_CLK_ENABLE()      LL_RCC_GPIOF_EnableClock();
+#define TCPP0203_PORT0_VBUSC_GPIO_CLK_DISABLE()     LL_RCC_GPIOF_DisableClock();
 #define TCPP0203_PORT0_VBUSC_GPIO_PORT              GPIOF
 #define TCPP0203_PORT0_VBUSC_GPIO_PIN               LL_GPIO_PIN_10
 #define TCPP0203_PORT0_VBUSC_GPIO_MODE              LL_GPIO_MODE_ANALOG
+
+#ifdef USE_STM32MP257F_EV1
+#define TCPP0203_PORT0_EN_GPIO_CLK_ENABLE()      __HAL_RCC_GPIOG_CLK_ENABLE();
+#define TCPP0203_PORT0_EN_GPIO_CLK_DISABLE()     __HAL_RCC_GPIOG_CLK_DISABLE();
+#define TCPP0203_PORT0_EN_GPIO_PORT              GPIOG
+#define TCPP0203_PORT0_EN_GPIO_PIN               GPIO_PIN_2
+#endif
 
 /**
   * @brief  VBUS sensing parameters

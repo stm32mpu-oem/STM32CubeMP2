@@ -272,7 +272,7 @@ uint8_t USBPD_PHY_IsResistor_SinkTxOk(uint8_t PortNum)
   */
 void USBPD_PHY_FastRoleSwapSignalling(uint8_t PortNum)
 {
-  /* FRS not supported on this device */
+  /* FRS TX not supported on this device */
   (void)PortNum;
 }
 

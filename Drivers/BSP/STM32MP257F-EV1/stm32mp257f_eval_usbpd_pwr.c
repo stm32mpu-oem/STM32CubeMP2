@@ -24,7 +24,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32mp257f_eval_usbpd_pwr.h"
 #include "stm32mp257f_eval_bus.h"
-
+#include "res_mgr.h"
 #if  defined(_TRACE)
 #include "usbpd_core.h"
 #include "usbpd_trace.h"
@@ -630,7 +630,7 @@ int32_t BSP_USBPD_PWR_VBUSOn(uint32_t PortNum)
       if ((USBPD_PWR_HW_CONFIG_TYPE_TCPP02 == USBPD_PWR_Port_Configs[PortNum].Type) ||
           (USBPD_PWR_HW_CONFIG_TYPE_TCPP03 == USBPD_PWR_Port_Configs[PortNum].Type))
       {
-        HAL_Delay(2);
+        OS_DELAY(2);
 
         if (USBPD_PWR_PortCompDrv[PortNum]->SetGateDriverProvider(&USBPD_PWR_PortCompObj[PortNum],
                                                                   TCPP0203_GD_PROVIDER_SWITCH_CLOSED) != TCPP0203_OK)
@@ -696,7 +696,7 @@ int32_t BSP_USBPD_PWR_VBUSOff(uint32_t PortNum)
         while ((vbus >= (USBPD_PWR_LOW_VBUS_THRESHOLD - 200U)) && (counter < 20U))
         {
           counter++;
-          HAL_Delay(20);
+          OS_DELAY(20);
           (void)BSP_USBPD_PWR_VBUSGetVoltage(PortNum, &vbus);
         }
 
@@ -707,7 +707,7 @@ int32_t BSP_USBPD_PWR_VBUSOff(uint32_t PortNum)
           ret = BSP_ERROR_COMPONENT_FAILURE;
         }
 
-        HAL_Delay(30);
+        OS_DELAY(30);
 
         /* Only for TCPP03 */
         if (USBPD_PWR_HW_CONFIG_TYPE_TCPP03 == USBPD_PWR_Port_Configs[PortNum].Type)
@@ -1261,7 +1261,7 @@ int32_t BSP_USBPD_PWR_VCONNOff(uint32_t PortNum,
       else
       {
         /* Wait DISCHARGE is completed then disable VCONN Discharge */
-        HAL_Delay(10U);
+        OS_DELAY(10U);
         if (USBPD_PWR_PortCompDrv[PortNum]->SetVConnDischarge(&USBPD_PWR_PortCompObj[PortNum],
                                                               TCPP0203_VCONN_DISCHARGE_OFF) != TCPP0203_OK)
         {
@@ -1434,10 +1434,44 @@ static void PWR_TCPP0203_GPIOConfigInit(uint32_t PortNum)
 {
   UNUSED(PortNum);
 
-  /* Configure VBUS Connector sensing GPIO */
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
-  TCPP0203_PORT0_VBUSC_GPIO_CLK_ENABLE();
+#ifdef USE_STM32MP257F_EV1
+  GPIO_InitTypeDef gpio_init_structure;
+
+  if(ResMgr_Request(RESMGR_RESOURCE_RIF_RCC, RESMGR_RCC_RESOURCE(96)) == RESMGR_STATUS_ACCESS_OK)
+  {
+    TCPP0203_PORT0_EN_GPIO_CLK_ENABLE();
+  }
+  else
+  {
+	/* RCC->GPIOGCFGR not already enabled */
+	if(READ_BIT(RCC->GPIOGCFGR, RCC_GPIOGCFGR_GPIOxEN) != RCC_GPIOGCFGR_GPIOxEN)
+	{
+	  Error_Handler();
+    }
+  }
+
+  /* Enable TCPP_EN */
+  gpio_init_structure.Mode = GPIO_MODE_OUTPUT_PP;
+  gpio_init_structure.Pull = GPIO_PULLUP;
+  gpio_init_structure.Speed = GPIO_SPEED_FREQ_LOW;
+  gpio_init_structure.Pin = TCPP0203_PORT0_EN_GPIO_PIN;
+  HAL_GPIO_Init(TCPP0203_PORT0_EN_GPIO_PORT, &gpio_init_structure);
+  HAL_GPIO_WritePin(TCPP0203_PORT0_EN_GPIO_PORT, TCPP0203_PORT0_EN_GPIO_PIN, GPIO_PIN_SET);
 #endif
+
+  /* Configure VBUS Connector sensing GPIO */
+  if(ResMgr_Request(RESMGR_RESOURCE_RIF_RCC, RESMGR_RCC_RESOURCE(95)) == RESMGR_STATUS_ACCESS_OK)
+  {
+    TCPP0203_PORT0_VBUSC_GPIO_CLK_ENABLE();
+  } else
+  {
+    /* RCC->GPIOFCFGR not already enabled */
+    if(READ_BIT(RCC->GPIOFCFGR, RCC_GPIOFCFGR_GPIOxEN) != RCC_GPIOFCFGR_GPIOxEN)
+    {
+      Error_Handler();
+     }
+  }
+
   /* Configure GPIO in Analog mode */
   LL_GPIO_SetPinMode(TCPP0203_PORT0_VBUSC_GPIO_PORT, TCPP0203_PORT0_VBUSC_GPIO_PIN, TCPP0203_PORT0_VBUSC_GPIO_MODE);
 }
@@ -1445,33 +1479,45 @@ static void PWR_TCPP0203_GPIOConfigInit(uint32_t PortNum)
 static void MX_ADC_Init(void)
 {
   static ADC_HandleTypeDef hadc;
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
+
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-#endif
+
   /* USER CODE BEGIN ADC_Init 0 */
   TCPP0203_PORT0_ADC_CLK_ENABLE();
 
   /* Configuration of ADC VREF Power */
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
-  PWR->CR1 |= PWR_CR1_AVMEN;
-  HAL_Delay(1);
-  PWR->CR1 |= PWR_CR1_ASV;    /* Remove the VDDA18ADC power isolation */
-  HAL_Delay(1);
-  while ( (PWR->CR1 & PWR_CR1_ARDY) == 0); /* Wait for PWR ready */
-
-  /* Initializes the peripheral clock */
-  PeriphClkInitStruct.XBAR_Channel = VSENSE_ADC_RCC_PERIPHCLK;
-  PeriphClkInitStruct.XBAR_ClkSrc = RCC_XBAR_CLKSRC_PLL4;
-  PeriphClkInitStruct.Div = 12; /* 1200MHz / 12 = 100MHz */
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+  if(ResMgr_Request(RESMGR_RESOURCE_RIF_PWR, RESMGR_PWR_RESOURCE(0)) == RESMGR_STATUS_ACCESS_OK)
   {
-    while (1){};
+	  PWR->CR1 |= PWR_CR1_AVMEN;
+	  OS_DELAY(1);
+	  PWR->CR1 |= PWR_CR1_ASV;    /* Remove the VDDA18ADC power isolation */
+	  OS_DELAY(1);
+	  while ( (PWR->CR1 & PWR_CR1_ARDY) == 0); /* Wait for PWR ready */
   }
-#endif
-  /* Configure the GPIO as analog */
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
-  TCPP0203_PORT0_VBUSC_GPIO_CLK_ENABLE();
-#endif
+  if(ResMgr_Request(RESMGR_RESOURCE_RIF_RCC, RESMGR_RCC_RESOURCE(47)) == RESMGR_STATUS_ACCESS_OK)
+  {
+	  /* Initializes the peripheral clock */
+	  PeriphClkInitStruct.XBAR_Channel = VSENSE_ADC_RCC_PERIPHCLK;
+	  PeriphClkInitStruct.XBAR_ClkSrc = RCC_XBAR_CLKSRC_PLL4;
+	  PeriphClkInitStruct.Div = 12; /* 1200MHz / 12 = 100MHz */
+	  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+	  {
+		while (1){};
+	  }
+  }
+  /* Configure VBUS Connector sensing GPIO */
+  if(ResMgr_Request(RESMGR_RESOURCE_RIF_RCC, RESMGR_RCC_RESOURCE(95)) == RESMGR_STATUS_ACCESS_OK)
+  {
+    TCPP0203_PORT0_VBUSC_GPIO_CLK_ENABLE();
+  } else
+  {
+    /* RCC->GPIOFCFGR not already enabled */
+    if(READ_BIT(RCC->GPIOFCFGR, RCC_GPIOFCFGR_GPIOxEN) != RCC_GPIOFCFGR_GPIOxEN)
+    {
+      Error_Handler();
+     }
+  }
+
   LL_GPIO_SetPinMode(TCPP0203_PORT0_VBUSC_GPIO_PORT, TCPP0203_PORT0_VBUSC_GPIO_PIN, TCPP0203_PORT0_VBUSC_GPIO_MODE);
 
   /* USER CODE END ADC1_Init 0 */
@@ -1541,9 +1587,17 @@ static void PWR_TCPP0203_ITConfigInit(uint32_t PortNum)
     USBPD_PWR_Port_Status[PortNum].IsItEnabled = 1U;
 
     /* Enable the GPIO EXTI clock */
-#if !defined(USE_OSTL_RIF_CONFIGURATION_ECOSYSTEM)
-    TCPP0203_PORT0_FLG_GPIO_CLK_ENABLE();
-#endif
+    if(ResMgr_Request(RESMGR_RESOURCE_RIF_RCC, RESMGR_RCC_RESOURCE(96)) == RESMGR_STATUS_ACCESS_OK)
+    {
+        TCPP0203_PORT0_FLG_GPIO_CLK_ENABLE();
+    } else
+    {
+      /* RCC->GPIOGCFGR not already enabled */
+      if(READ_BIT(RCC->GPIOGCFGR, RCC_GPIOGCFGR_GPIOxEN) != RCC_GPIOGCFGR_GPIOxEN)
+      {
+        Error_Handler();
+       }
+    }
     /* Configure IO */
     LL_GPIO_SetPinMode(TCPP0203_PORT0_FLG_GPIO_PORT, TCPP0203_PORT0_FLG_GPIO_PIN, TCPP0203_PORT0_FLG_GPIO_MODE);
     LL_GPIO_SetPinPull(TCPP0203_PORT0_FLG_GPIO_PORT, TCPP0203_PORT0_FLG_GPIO_PIN, TCPP0203_PORT0_FLG_GPIO_PUPD);

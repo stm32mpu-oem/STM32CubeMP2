@@ -251,6 +251,7 @@
   * @{
   */
 
+#if defined (SDMMC1) || defined (SDMMC2)
 #ifdef HAL_MMC_MODULE_ENABLED
 
 /* Private typedef -----------------------------------------------------------*/
@@ -3260,8 +3261,8 @@ HAL_StatusTypeDef HAL_MMC_SleepDevice(MMC_HandleTypeDef *hmmc)
             }
             timeout = (((1UL << sleep_timeout) / 100U) + 1U);
 
-            /* Wait that the device is ready by checking the D0 line */
-            while ((!__HAL_MMC_GET_FLAG(hmmc, SDMMC_FLAG_BUSYD0END)) && (errorstate == HAL_MMC_ERROR_NONE))
+            /* Wait that the device is ready by checking the VSWEND flag */
+            while ((__HAL_MMC_GET_FLAG(hmmc, SDMMC_FLAG_VSWEND)) && (errorstate == HAL_MMC_ERROR_NONE))
             {
               if ((HAL_GetTick() - tickstart) >= timeout)
               {
@@ -3269,8 +3270,8 @@ HAL_StatusTypeDef HAL_MMC_SleepDevice(MMC_HandleTypeDef *hmmc)
               }
             }
 
-            /* Clear the flag corresponding to end D0 bus line */
-            __HAL_MMC_CLEAR_FLAG(hmmc, SDMMC_FLAG_BUSYD0END);
+            /* Clear the flag VSWEND */
+            __HAL_MMC_CLEAR_FLAG(hmmc, SDMMC_FLAG_VSWEND);
 
             if (errorstate == HAL_MMC_ERROR_NONE)
             {
@@ -3326,8 +3327,8 @@ HAL_StatusTypeDef HAL_MMC_SleepDevice(MMC_HandleTypeDef *hmmc)
                                                    ((hmmc->MmcCard.RelCardAdd << 16U) | (0x1U << 15U)));
                     if (errorstate == HAL_MMC_ERROR_NONE)
                     {
-                      /* Wait that the device is ready by checking the D0 line */
-                      while ((!__HAL_MMC_GET_FLAG(hmmc, SDMMC_FLAG_BUSYD0END)) && (errorstate == HAL_MMC_ERROR_NONE))
+                      /* Wait that the device is ready by checking the VSWEND flag */
+                      while ((__HAL_MMC_GET_FLAG(hmmc, SDMMC_FLAG_VSWEND)) && (errorstate == HAL_MMC_ERROR_NONE))
                       {
                         if ((HAL_GetTick() - tickstart) >= timeout)
                         {
@@ -3335,8 +3336,8 @@ HAL_StatusTypeDef HAL_MMC_SleepDevice(MMC_HandleTypeDef *hmmc)
                         }
                       }
 
-                      /* Clear the flag corresponding to end D0 bus line */
-                      __HAL_MMC_CLEAR_FLAG(hmmc, SDMMC_FLAG_BUSYD0END);
+                      /* Clear the flag VSWEND */
+                      __HAL_MMC_CLEAR_FLAG(hmmc, SDMMC_FLAG_VSWEND);
                     }
                   }
                   else
@@ -4308,6 +4309,7 @@ __weak void HAL_MMCEx_Write_DMALnkLstBufCpltCallback(MMC_HandleTypeDef *hmmc)
   */
 
 #endif /* HAL_MMC_MODULE_ENABLED */
+#endif /* SDMMC1 || SDMMC2 */
 
 /**
   * @}

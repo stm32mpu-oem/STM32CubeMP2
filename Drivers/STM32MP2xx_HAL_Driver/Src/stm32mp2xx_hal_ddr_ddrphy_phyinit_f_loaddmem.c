@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2022, STMicroelectronics - All Rights Reserved
+ * Copyright (C) 2021-2023, STMicroelectronics - All Rights Reserved
  *
  * SPDX-License-Identifier: BSD-3-Clause
  */
@@ -8,6 +8,9 @@
 #include <stdio.h>
 
 #include "stm32mp2xx_hal_ddr_ddrphy_phyinit.h"
+#ifdef __AARCH64__
+#include "stm32mp2xx_hal_ddr_ddrphy_firmware_ddr_pmu_train.h"
+#endif
 
 /*
  * This function loads the training firmware DMEM image and write the
@@ -23,7 +26,7 @@
  */
 int ddrphy_phyinit_f_loaddmem(int pstate)
 {
-	pmu_smb_ddr_1d_t *msgblkptr;
+	struct pmu_smb_ddr_1d *msgblkptr;
 	int sizeofmsgblk;
 	uint16_t *ptr16;
 	uint32_t *ptr32;
@@ -60,7 +63,11 @@ int ddrphy_phyinit_f_loaddmem(int pstate)
 	ptr16 = (uint16_t *)msgblkptr;
 	ddrphy_phyinit_writeoutmsgblk(ptr16, DMEM_ST_ADDR, sizeofmsgblk);
 
+#ifdef __AARCH64__
+	ptr32 = (uint32_t *)(ddr_pmu_train_bin + STM32MP_DDR_FW_DMEM_OFFSET);
+#else
 	ptr32 = (uint32_t *)(STM32MP_DDR_FW_BASE + STM32MP_DDR_FW_DMEM_OFFSET);
+#endif
 	ddrphy_phyinit_writeoutmem(ptr32, DMEM_ST_ADDR + DMEM_BIN_OFFSET,
 				   DMEM_SIZE - STM32MP_DDR_FW_DMEM_OFFSET);
 

@@ -37,7 +37,17 @@
 
 #include "stm32mp2xx_hal_ddr_ddrphy_phyinit.h"
 
-  #if (STM32MP_DDR3_TYPE && (DDR_SIZE_Gb == 8))
+  #if (STM32MP_DDR3_TYPE && (DDR_SIZE_Gb == 8)) && defined(STM32MP_DDR_16_BIT_INTERFACE)
+      #ifdef USE_STM32MP257CXX_EMU
+        #if (DDR_FREQ == 800)
+          #include "stm32mp2xx-ddr3-1x8Gbits-1x16bits-800MHz-palladium.h"
+        #endif
+        #if (DDR_FREQ == 933)
+          #include "stm32mp2xx-ddr3-1x8Gbits-1x16bits-933MHz-palladium.h"
+        #endif
+      #endif
+  #endif
+  #if (STM32MP_DDR3_TYPE && (DDR_SIZE_Gb == 8)) && !defined(STM32MP_DDR_16_BIT_INTERFACE)
       #ifdef USE_STM32MP257CXX_EMU
         #include "stm32mp2xx-ddr3-2x4Gbits-2x16bits-933MHz-palladium.h"
       #endif
@@ -50,17 +60,27 @@
       #endif
     #endif
   #endif
-  #if (STM32MP_DDR3_TYPE && (DDR_SIZE_Gb == 16))
+  #if (STM32MP_DDR3_TYPE && (DDR_SIZE_Gb == 16)) && !defined(STM32MP_DDR_16_BIT_INTERFACE)
       #ifdef USE_STM32MP257CXX_EMU
         #include "stm32mp2xx-ddr3-2x8Gbits-2x16bits-933MHz-palladium.h"
       #endif
   #endif
-  #if (STM32MP_DDR4_TYPE && (DDR_SIZE_Gb == 8))
+  #if (STM32MP_DDR4_TYPE && (DDR_SIZE_Gb == 32)) && defined(STM32MP_DDR_16_BIT_INTERFACE)
+      #ifdef USE_STM32MP257CXX_EMU
+        #if (DDR_FREQ == 800)
+          #include "stm32mp2xx-ddr4-1x32Gbits-1x16bits-800MHz-palladium.h"
+        #endif
+        #if (DDR_FREQ == 1600)
+          #include "stm32mp2xx-ddr4-1x32Gbits-1x16bits-1600MHz-palladium.h"
+        #endif
+      #endif
+  #endif
+  #if (STM32MP_DDR4_TYPE && (DDR_SIZE_Gb == 8)) && !defined(STM32MP_DDR_16_BIT_INTERFACE)
       #ifdef USE_STM32MP257CXX_EMU
         #include "stm32mp2xx-ddr4-2x4Gbits-2x16bits-1200MHz-palladium.h"
       #endif
   #endif
-  #if (STM32MP_DDR4_TYPE && (DDR_SIZE_Gb == 16))
+  #if (STM32MP_DDR4_TYPE && (DDR_SIZE_Gb == 16)) && !defined(STM32MP_DDR_16_BIT_INTERFACE)
       #ifdef USE_STM32MP257CXX_EMU
         #include "stm32mp2xx-ddr4-2x8Gbits-2x16bits-1200MHz-palladium.h"
       #endif
@@ -73,12 +93,25 @@
       #endif
     #endif
   #endif
-  #if (STM32MP_DDR4_TYPE && (DDR_SIZE_Gb == 32))
+  #if (STM32MP_DDR4_TYPE && (DDR_SIZE_Gb == 32)) && !defined(STM32MP_DDR_16_BIT_INTERFACE)
       #ifdef USE_STM32MP257CXX_EMU
         #include "stm32mp2xx-ddr4-2x16Gbits-2x16bits-1200MHz-palladium.h"
       #endif
+    #ifndef USE_STM32MP257CXX_EMU
+      #include "stm32mp2xx-ddr4-2x16Gbits-2x16bits-1200MHz.h"
+    #endif
   #endif
-  #if (STM32MP_LPDDR4_TYPE && (DDR_SIZE_Gb == 16))
+  #if (STM32MP_LPDDR4_TYPE && (DDR_SIZE_Gb == 8)) && defined(STM32MP_DDR_16_BIT_INTERFACE)
+      #ifdef USE_STM32MP257CXX_EMU
+        #include "stm32mp2xx-lpddr4-1x8Gbits-1x16bits-1600MHz-palladium.h"
+      #endif
+  #endif
+  #if (STM32MP_LPDDR4_TYPE && (DDR_SIZE_Gb == 16)) && defined(STM32MP_DDR_16_BIT_INTERFACE)
+      #ifdef USE_STM32MP257CXX_EMU
+        #include "stm32mp2xx-lpddr4-1x16Gbits-1x16bits-800MHz-palladium.h"
+      #endif
+  #endif
+  #if (STM32MP_LPDDR4_TYPE && (DDR_SIZE_Gb == 16)) && !defined(STM32MP_DDR_16_BIT_INTERFACE)
       #ifdef USE_STM32MP257CXX_EMU
         #include "stm32mp2xx-lpddr4-1x16Gbits-1x32bits-1200MHz-palladium.h"
       #endif
@@ -91,10 +124,13 @@
       #endif
     #endif
   #endif
-  #if (STM32MP_LPDDR4_TYPE && (DDR_SIZE_Gb == 32))
+  #if (STM32MP_LPDDR4_TYPE && (DDR_SIZE_Gb == 32)) && !defined(STM32MP_DDR_16_BIT_INTERFACE)
       #ifdef USE_STM32MP257CXX_EMU
         #include "stm32mp2xx-lpddr4-1x32Gbits-1x32bits-1200MHz-palladium.h"
       #endif
+    #ifndef USE_STM32MP257CXX_EMU
+      #include "stm32mp2xx-lpddr4-1x32Gbits-1x32bits-1200MHz.h"
+    #endif
   #endif
 
 /** @addtogroup STM32MP2xx_HAL_Driver
@@ -284,14 +320,14 @@ static const reg_desc ddr_perf_desc[] = {
 #define PHY_UIB_PARAM(x) \
   { \
     .name = "UIB_"#x, \
-    .offset = offsetof(user_input_basic_t, x), \
+    .offset = offsetof(struct user_input_basic, x), \
     .par_offset = offsetof(HAL_DDR_BasicUiDef, x) \
   }
 
 #define PHY_UIB_PARAM_INDEX(x, y) \
   { \
     .name = "UIB_"#x"_"#y, \
-    .offset = offsetof(user_input_basic_t, x[(y)]), \
+    .offset = offsetof(struct user_input_basic, x[(y)]), \
     .par_offset = offsetof(HAL_DDR_BasicUiDef, x[(y)]) \
   }
 
@@ -320,14 +356,14 @@ static const reg_desc phy_uib_desc[] = {
 #define PHY_UIA_PARAM(x) \
   { \
     .name = "UIA_"#x, \
-    .offset = offsetof(user_input_advanced_t, x), \
+    .offset = offsetof(struct user_input_advanced, x), \
     .par_offset = offsetof(HAL_DDR_AdvancedUiDef, x) \
   }
 
 #define PHY_UIA_PARAM_INDEX(x, y) \
   { \
     .name = "UIA_"#x"_"#y, \
-    .offset = offsetof(user_input_advanced_t, x[(y)]), \
+    .offset = offsetof(struct user_input_advanced, x[(y)]), \
     .par_offset = offsetof(HAL_DDR_AdvancedUiDef, x[(y)]) \
   }
 
@@ -380,7 +416,7 @@ static const reg_desc phy_uia_desc[] = {
 #define PHY_UIM_PARAM_INDEX(x, y) \
   { \
     .name = "UIM_"#x"_"#y, \
-    .offset = offsetof(user_input_mode_register_t, x[(y)]), \
+    .offset = offsetof(struct user_input_mode_register, x[(y)]), \
     .par_offset = offsetof(HAL_DDR_ModeRegisterUiDef, x[(y)]) \
   }
 
@@ -402,7 +438,7 @@ static const reg_desc phy_uim_desc[] = {
 #define PHY_UIS_PARAM_INDEX(x) \
   { \
     .name = "UIS_SWIZZLE_"#x, \
-    .offset = offsetof(user_input_swizzle_t, swizzle[(x)]), \
+    .offset = offsetof(struct user_input_swizzle, swizzle[(x)]), \
     .par_offset = offsetof(HAL_DDR_SwizzleUiDef, swizzle[(x)]) \
   }
 
@@ -620,9 +656,13 @@ const __attribute__((section (".STATIC_PARAMS"))) uint32_t tab_static_param[] = 
 };
 #endif /* STM32MP_GATHER_DDRCTRL_SETTING_IN_STATIC_ARRAY */
 
-#define DDR_MAX_SIZE                         0x80000000
+#ifdef __AARCH64__
+#define DDR_PATTERN                          0xAAAAAAAAAAAAAAAAU
+#define DDR_ANTIPATTERN                      0x5555555555555555U
+#else
 #define DDR_PATTERN                          0xAAAAAAAAU
 #define DDR_ANTIPATTERN                      0x55555555U
+#endif
 
 #define DDR_DELAY_1_US                       1
 #define DDR_TIMEOUT_1_US                     1
@@ -656,6 +696,9 @@ const __attribute__((section (".STATIC_PARAMS"))) uint32_t tab_static_param[] = 
 #define DDRPHY_DRTUB0_UCCLKHCLKENABLES_UCCLKEN          (1 << 0)
 #define DDRPHY_DRTUB0_UCCLKHCLKENABLES_HCLKEN           (1 << 1)
 #define DDRPHY_APBONLY0_MICROCONTMUXSEL_MICROCONTMUXSEL (1 << 0)
+
+/* Other register fields */
+#define RCC_DDRITFCFGR_DDRCKMOD_HSR          (0x2UL << 4)
 
 /* HW idle period (unit: Multiples of 32 DFI clock cycles) */
 #define HW_IDLE_PERIOD                       0x3
@@ -941,20 +984,21 @@ __weak int HAL_DDR_MspInit(__attribute__((unused))ddr_type type)
  * Note that the previous content is restored after test.
  * Returns 0 if success, and address value else.
  ******************************************************************************/
-static uint32_t ddr_test_rw_access(void)
+static unsigned long ddr_test_rw_access(void)
 {
-  uint32_t saved_value = READ_REG(*(volatile uint32_t*)DDR_MEM_BASE);
+  unsigned long saved_value = *(uintptr_t*)DDR_MEM_BASE;
+  uintptr_t *addr = (uintptr_t *)DDR_MEM_BASE;
 
-  WRITE_REG(*(volatile uint32_t*)DDR_MEM_BASE, DDR_PATTERN);
+  *addr = DDR_PATTERN;
 
-  if (READ_REG(*(volatile uint32_t*)DDR_MEM_BASE) != DDR_PATTERN)
+  if (*addr != DDR_PATTERN)
   {
-    return (uint32_t)DDR_MEM_BASE;
+    return (unsigned long)addr;
   }
 
-  WRITE_REG(*(volatile uint32_t*)DDR_MEM_BASE, saved_value);
+  *addr = saved_value;
 
-  return 0;
+  return 0UL;
 }
 
 /*******************************************************************************
@@ -965,21 +1009,22 @@ static uint32_t ddr_test_rw_access(void)
  * File: memtest.c - This source code belongs to Public Domain.
  * Returns 0 if success, and address value else.
  ******************************************************************************/
-static uint32_t ddr_test_data_bus(void)
+static unsigned long ddr_test_data_bus(void)
 {
-  uint32_t pattern;
+  unsigned long pattern;
+  uintptr_t *addr = (uintptr_t *)DDR_MEM_BASE;
 
-  for (pattern = 1U; pattern != 0U; pattern <<= 1)
+  for (pattern = 1U; pattern != 0UL; pattern <<= 1)
   {
-    WRITE_REG(*(volatile uint32_t*)DDR_MEM_BASE, pattern);
+   *addr = pattern;
 
-    if (READ_REG(*(volatile uint32_t*)DDR_MEM_BASE) != pattern)
+    if (*addr != pattern)
     {
-      return (uint32_t)DDR_MEM_BASE;
+      return (unsigned long)addr;
     }
   }
 
-  return 0;
+  return 0UL;
 }
 
 /*******************************************************************************
@@ -990,63 +1035,57 @@ static uint32_t ddr_test_data_bus(void)
  * File: memtest.c - This source code belongs to Public Domain.
  * Returns 0 if success, and address value else.
  ******************************************************************************/
-static uint32_t ddr_test_addr_bus(void)
+static unsigned long ddr_test_addr_bus(void)
 {
-  uint64_t addressmask = (static_ddr_config.info.size - 1U);
-  uint64_t offset;
-  uint64_t testoffset = 0;
+  unsigned long addressmask = (static_ddr_config.info.size - 1U);
+  unsigned long offset;
+  unsigned long testoffset = 0;
+  uintptr_t *addr = (uintptr_t *)DDR_MEM_BASE;
+  unsigned long ret = 0;
 
   /* Write the default pattern at each of the power-of-two offsets. */
-  for (offset = sizeof(uint32_t); (offset & addressmask) != 0U; offset <<= 1)
+  for (offset = sizeof(unsigned long); offset < addressmask; offset <<= 1)
   {
-    WRITE_REG(*(volatile uint32_t*)(DDR_MEM_BASE + (uint32_t)offset),
-              DDR_PATTERN);
+    *(addr + (offset / sizeof(unsigned long))) = DDR_PATTERN;
   }
 
   /* Check for address bits stuck high. */
-  WRITE_REG(*(volatile uint32_t*)(DDR_MEM_BASE + (uint32_t)testoffset),
-            DDR_ANTIPATTERN);
+  *(addr + testoffset) = DDR_ANTIPATTERN;
 
-  for (offset = sizeof(uint32_t); (offset & addressmask) != 0U; offset <<= 1)
+  for (offset = sizeof(unsigned long); offset < addressmask; offset <<= 1)
   {
-    if (READ_REG(*(volatile uint32_t*)(DDR_MEM_BASE + (uint32_t)offset))
-        != DDR_PATTERN)
+    if (*(addr + (offset / sizeof(unsigned long))) != DDR_PATTERN)
     {
-      return (uint32_t)(DDR_MEM_BASE + offset);
+      return (unsigned long)(addr + offset * sizeof(unsigned long));
     }
   }
 
-  WRITE_REG(*(volatile uint32_t*)(DDR_MEM_BASE + (uint32_t)testoffset),
-            DDR_PATTERN);
+  *(addr + testoffset) = DDR_PATTERN;
 
   /* Check for address bits stuck low or shorted. */
-  for (testoffset = sizeof(uint32_t); (testoffset & addressmask) != 0U;
+  for (testoffset = sizeof(unsigned long); testoffset < addressmask;
        testoffset <<= 1)
   {
-    WRITE_REG(*(volatile uint32_t*)(DDR_MEM_BASE + (uint32_t)testoffset),
-              DDR_ANTIPATTERN);
+    *(addr + (testoffset / sizeof(unsigned long))) = DDR_ANTIPATTERN;
 
-    if (READ_REG(*(volatile uint32_t*)DDR_MEM_BASE) != DDR_PATTERN)
+    if (*addr != DDR_PATTERN)
     {
-      return DDR_MEM_BASE;
+      return (unsigned long)addr;
     }
 
-    for (offset = sizeof(uint32_t); (offset & addressmask) != 0U;
-         offset <<= 1)
+    for (offset = sizeof(unsigned long); offset < addressmask; offset <<= 1)
     {
-      if ((READ_REG(*(volatile uint32_t*)(DDR_MEM_BASE + (uint32_t)offset))
-           != DDR_PATTERN)
-          && (offset != testoffset))
+      if ((*(addr + (offset / sizeof(unsigned long))) != DDR_PATTERN) &&
+          (offset != testoffset))
       {
-        return (uint32_t)(DDR_MEM_BASE + offset);
+        return (unsigned long)(addr + offset * sizeof(unsigned long));
       }
     }
 
-    WRITE_REG(*(volatile uint32_t*)(DDR_MEM_BASE + (uint32_t)testoffset),
-              DDR_PATTERN);
+    *(addr + (testoffset / sizeof(unsigned long))) = DDR_PATTERN;
   }
 
-  return 0;
+  return ret;
 }
 
 /*******************************************************************************
@@ -1056,18 +1095,19 @@ static uint32_t ddr_test_addr_bus(void)
  * restore its content.
  * Returns DDR computed size.
  ******************************************************************************/
-static uint32_t ddr_check_size(void)
+static unsigned long ddr_check_size(void)
 {
-  uint32_t offset = sizeof(uint32_t);
+  unsigned long offset = sizeof(unsigned long);
+  uintptr_t *addr = (uintptr_t *)DDR_MEM_BASE;
 
-  WRITE_REG(*(volatile uint32_t*)DDR_MEM_BASE, DDR_PATTERN);
+  *addr = DDR_PATTERN;
 
-  while (offset < DDR_MAX_SIZE)
+  while (offset < static_ddr_config.info.size)
   {
-    WRITE_REG(*(volatile uint32_t*)(DDR_MEM_BASE + offset), DDR_ANTIPATTERN);
+    *(addr + (offset / sizeof(unsigned long))) = DDR_ANTIPATTERN;
     __DSB();
 
-    if (READ_REG(*(volatile uint32_t*)DDR_MEM_BASE) != DDR_PATTERN)
+    if (*addr != DDR_PATTERN)
     {
       break;
     }
@@ -1771,7 +1811,7 @@ static int sr_hsr_exit(void)
 
 static int sr_hsr_set(void)
 {
-  WRITE_REG(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRCKMOD_HSR);
+  MODIFY_REG(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRCKMOD, RCC_DDRITFCFGR_DDRCKMOD_HSR);
 
   /*
    * manage quasi-dynamic registers modification
@@ -1798,7 +1838,7 @@ static void ddr_reset(void)
 {
   ddr_delay_us(DDR_DELAY_1_US);
 
-  WRITE_REG(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRRST);
+  SET_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRRST);
   WRITE_REG(RCC->DDRPHYCAPBCFGR, RCC_DDRPHYCAPBCFGR_DDRPHYCAPBEN |
                                  RCC_DDRPHYCAPBCFGR_DDRPHYCAPBLPEN |
                                  RCC_DDRPHYCAPBCFGR_DDRPHYCAPBRST);
@@ -1888,7 +1928,7 @@ static int ddr_sysconf_configuration(void)
   WRITE_REG(RCC->DDRPHYCCFGR, RCC_DDRPHYCCFGR_DDRPHYCEN);
 
   WRITE_REG(RCC->DDRCPCFGR, RCC_DDRCPCFGR_DDRCPEN | RCC_DDRCPCFGR_DDRCPLPEN);
-  WRITE_REG(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRRST);
+  SET_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRRST);
 
   ddr_delay_us(DDR_DELAY_1_US);
 #endif /* USE_STM32MP257CXX_EMU */
@@ -1900,7 +1940,7 @@ static int ddr_sysconf_configuration(void)
   WRITE_REG(DDRDBG->BYPASS_PCLKEN, (uint32_t)static_ddr_config.p_uib.pllbypass[0]);
 
   WRITE_REG(RCC->DDRPHYCCFGR, RCC_DDRPHYCCFGR_DDRPHYCEN);
-  WRITE_REG(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRRST);
+  SET_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRRST);
 
   ddr_delay_us(DDR_DELAY_1_US);
 #endif /* !defined(USE_STM32MP257CXX_EMU) */
@@ -2159,7 +2199,7 @@ HAL_StatusTypeDef HAL_DDR_Init(DDR_InitTypeDef *iddr)
   {
     WRITE_REG(RCC->DDRCPCFGR, RCC_DDRCPCFGR_DDRCPEN | RCC_DDRCPCFGR_DDRCPLPEN |
                               RCC_DDRCPCFGR_DDRCPRST);
-    WRITE_REG(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRRST);
+    SET_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRRST);
     WRITE_REG(RCC->DDRPHYCAPBCFGR, RCC_DDRPHYCAPBCFGR_DDRPHYCAPBEN |
                                    RCC_DDRPHYCAPBCFGR_DDRPHYCAPBLPEN |
                                    RCC_DDRPHYCAPBCFGR_DDRPHYCAPBRST);
@@ -2232,7 +2272,7 @@ HAL_StatusTypeDef HAL_DDR_Init(DDR_InitTypeDef *iddr)
   if (iddr->wakeup_from_standby)
   {
     WRITE_REG(RCC->DDRCPCFGR, RCC_DDRCPCFGR_DDRCPEN | RCC_DDRCPCFGR_DDRCPLPEN);
-    WRITE_REG(RCC->DDRITFCFGR, 0);
+    CLEAR_BIT(RCC->DDRITFCFGR, RCC_DDRITFCFGR_DDRRST);
     CLEAR_BIT(RCC->DDRPHYCAPBCFGR, RCC_DDRPHYCAPBCFGR_DDRPHYCAPBRST);
     WRITE_REG(RCC->DDRCFGR, RCC_DDRCFGR_DDRCFGEN | RCC_DDRCFGR_DDRCFGLPEN);
 
@@ -2327,16 +2367,15 @@ HAL_StatusTypeDef HAL_DDR_Init(DDR_InitTypeDef *iddr)
 
   if (uret == 1)
   {
+    unsigned long ulret;
+
     if (iddr->self_refresh)
     {
-      uret = ddr_test_rw_access();
-      if (uret != 0U)
+      ulret = ddr_test_rw_access();
+      if (ulret != 0UL)
       {
         return HAL_ERROR;
       }
-
-      /* TODO Restore area overwritten by training */
-      //restore_ddr_training_area();
     }
     else
     {
@@ -2346,14 +2385,14 @@ HAL_StatusTypeDef HAL_DDR_Init(DDR_InitTypeDef *iddr)
         return HAL_ERROR;
       }
 
-      uret = ddr_test_addr_bus();
-      if (uret != 0U)
+      ulret = ddr_test_addr_bus();
+      if (ulret != 0UL)
       {
         return HAL_ERROR;
       }
 
-      uret = ddr_check_size();
-      if (uret < static_ddr_config.info.size)
+      ulret = ddr_check_size();
+      if (ulret != static_ddr_config.info.size)
       {
         return HAL_ERROR;
       }
@@ -2562,7 +2601,7 @@ HAL_DDR_SelfRefreshModeTypeDef HAL_DDR_SR_ReadMode(void)
   * @param  base new address.
   * @retval HAL status.
   */
-HAL_StatusTypeDef HAL_DDR_SetRetentionAreaBase(uint32_t base)
+HAL_StatusTypeDef HAL_DDR_SetRetentionAreaBase(unsigned long base)
 {
   if(ddrphy_phyinit_setretreglistbase(base) != 0)
   {

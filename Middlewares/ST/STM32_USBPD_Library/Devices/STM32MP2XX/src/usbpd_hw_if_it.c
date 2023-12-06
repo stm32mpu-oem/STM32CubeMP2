@@ -52,6 +52,7 @@ void PORTx_IRQHandler(uint8_t PortNum)
       /* Message has been discarded */
       LL_UCPD_ClearFlag_TxMSGDISC(hucpd);
       SET_BIT(Ports[PortNum].hdmatx->CCR, DMA_CCR_SUSP | DMA_CCR_RESET);
+      while ((Ports[PortNum].hdmatx->CCR & DMA_CCR_EN) == DMA_CCR_EN);
       Ports[PortNum].cbs.USBPD_HW_IF_TxCompleted(PortNum, 1);
       return;
     }
@@ -61,6 +62,7 @@ void PORTx_IRQHandler(uint8_t PortNum)
       /* Message has been fully transferred */
       LL_UCPD_ClearFlag_TxMSGSENT(hucpd);
       SET_BIT(Ports[PortNum].hdmatx->CCR, DMA_CCR_SUSP | DMA_CCR_RESET);
+      while ((Ports[PortNum].hdmatx->CCR & DMA_CCR_EN) == DMA_CCR_EN);
       Ports[PortNum].cbs.USBPD_HW_IF_TxCompleted(PortNum, 0);
 
 #if defined(_LOW_POWER)
@@ -73,6 +75,7 @@ void PORTx_IRQHandler(uint8_t PortNum)
     {
       LL_UCPD_ClearFlag_TxMSGABT(hucpd);
       SET_BIT(Ports[PortNum].hdmatx->CCR, DMA_CCR_SUSP | DMA_CCR_RESET);
+      while ((Ports[PortNum].hdmatx->CCR &  DMA_CCR_EN) == DMA_CCR_EN);
       Ports[PortNum].cbs.USBPD_HW_IF_TxCompleted(PortNum, 2);
       return;
     }
@@ -116,6 +119,9 @@ void PORTx_IRQHandler(uint8_t PortNum)
 #if defined(_LOW_POWER)
       UTIL_LPM_SetStopMode(0 == PortNum ? LPM_PE_0 : LPM_PE_1, UTIL_LPM_DISABLE);
 #endif /* _LOW_POWER */
+
+      /* Forbid message sending */
+      Ports[PortNum].RXStatus = USBPD_TRUE;
       return;
     }
 
@@ -139,6 +145,8 @@ void PORTx_IRQHandler(uint8_t PortNum)
     /* Check RXMSGEND an Rx message has been received */
     if (UCPD_SR_RXMSGEND == (_interrupt & UCPD_SR_RXMSGEND))
     {
+      Ports[PortNum].RXStatus = USBPD_FALSE;
+
       /* For DMA mode, add a check to ensure the number of data received matches
          the number of data received by UCPD */
       LL_UCPD_ClearFlag_RxMsgEnd(hucpd);
@@ -154,7 +162,7 @@ void PORTx_IRQHandler(uint8_t PortNum)
       /* Enable the DMA */
       SET_BIT(Ports[PortNum].hdmarx->CCR, DMA_CCR_EN);
 #if defined(_LOW_POWER)
-      UTIL_LPM_SetOffMode(0 == PortNum ? LPM_PE_0 : LPM_PE_1, UTIL_LPM_ENABLE);
+      UTIL_LPM_SetStopMode(0 == PortNum ? LPM_PE_0 : LPM_PE_1, UTIL_LPM_ENABLE);
 #endif /* _LOW_POWER */
 
       if (((_interrupt & UCPD_SR_RXERR) == 0u) && (ovrflag == 0u))

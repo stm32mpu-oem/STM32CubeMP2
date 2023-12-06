@@ -185,8 +185,10 @@ HAL_StatusTypeDef HAL_I2CEx_ConfigFastModePlus(I2C_HandleTypeDef *hi2c, uint32_t
 /** @addtogroup I2CEx_Exported_Functions_Group4 Autonomous Mode Functions
   * @{
   */
-HAL_StatusTypeDef HAL_I2CEx_SetConfigAutonomousMode(I2C_HandleTypeDef *hi2c, I2C_AutonomousModeConfTypeDef *sConfig);
-HAL_StatusTypeDef HAL_I2CEx_GetConfigAutonomousMode(I2C_HandleTypeDef *hi2c, I2C_AutonomousModeConfTypeDef *sConfig);
+HAL_StatusTypeDef HAL_I2CEx_SetConfigAutonomousMode(I2C_HandleTypeDef *hi2c,
+                                                    const I2C_AutonomousModeConfTypeDef *sConfig);
+HAL_StatusTypeDef HAL_I2CEx_GetConfigAutonomousMode(const I2C_HandleTypeDef *hi2c,
+                                                    I2C_AutonomousModeConfTypeDef *sConfig);
 HAL_StatusTypeDef HAL_I2CEx_ClearConfigAutonomousMode(I2C_HandleTypeDef *hi2c);
 /**
   * @}
@@ -234,6 +236,8 @@ HAL_StatusTypeDef HAL_I2CEx_ClearConfigAutonomousMode(I2C_HandleTypeDef *hi2c);
                                               ((__SOURCE__) == I2C_GRP1_RTC_ALRA_TRG       ) || \
                                               ((__SOURCE__) == I2C_GRP1_RTC_WUT_TRG        ))
 #endif /* I2C8 */
+
+#define IS_I2C_TRIG_INPUT_INSTANCE(__INSTANCE__)    IS_I2C_GRP1_INSTANCE(__INSTANCE__)
 
 #define IS_I2C_AUTO_MODE_TRG_POL(__POLARITY__)      (((__POLARITY__) == I2C_TRIG_POLARITY_RISING) || \
                                                      ((__POLARITY__) == I2C_TRIG_POLARITY_FALLING))

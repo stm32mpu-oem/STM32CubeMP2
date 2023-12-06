@@ -194,22 +194,46 @@
 #if defined(CORE_CM0PLUS)
 #define IS_LL_DMA_2D_CHANNEL_INSTANCE(INSTANCE, Channel)  0U
 #else
-#define IS_LL_DMA_2D_CHANNEL_INSTANCE(INSTANCE, Channel)  ((((INSTANCE) == HPDMA1)              && \
+#define IS_LL_DMA_2D_CHANNEL_INSTANCE(INSTANCE, Channel)  ((((INSTANCE) == HPDMA1)                && \
                                                             (((Channel)  == LL_DMA_CHANNEL_12)    || \
                                                              ((Channel)  == LL_DMA_CHANNEL_13)    || \
                                                              ((Channel)  == LL_DMA_CHANNEL_14)    || \
                                                              ((Channel)  == LL_DMA_CHANNEL_15)))  || \
-                                                           (((INSTANCE) == HPDMA2)               && \
-                                                            (((Channel)  == LL_DMA_CHANNEL_12)   || \
+                                                           (((INSTANCE) == HPDMA2)                && \
+                                                            (((Channel)  == LL_DMA_CHANNEL_12)    || \
                                                              ((Channel)  == LL_DMA_CHANNEL_13)    || \
                                                              ((Channel)  == LL_DMA_CHANNEL_14)    || \
                                                              ((Channel)  == LL_DMA_CHANNEL_15)))  || \
-                                                           (((INSTANCE) == HPDMA3)               && \
-                                                            (((Channel)  == LL_DMA_CHANNEL_12)   || \
+                                                           (((INSTANCE) == HPDMA3)                && \
+                                                            (((Channel)  == LL_DMA_CHANNEL_12)    || \
                                                              ((Channel)  == LL_DMA_CHANNEL_13)    || \
                                                              ((Channel)  == LL_DMA_CHANNEL_14)    || \
                                                              ((Channel)  == LL_DMA_CHANNEL_15))))
 #endif /* ! CORE_CM0PLUS */
+
+#define IS_LL_DMA_MODE(__VALUE__)                         (((__VALUE__) == LL_DMA_NORMAL) || \
+                                                           ((__VALUE__) == LL_DMA_PFCTRL))
+
+#define IS_LL_DMA_PFREQ_INSTANCE(INSTANCE, Channel)       ((((INSTANCE) == HPDMA1)                && \
+                                                            (((Channel)  == LL_DMA_CHANNEL_12)    || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_13)    || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_14)    || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_15)))  || \
+                                                           (((INSTANCE) == HPDMA2)                && \
+                                                            (((Channel)  == LL_DMA_CHANNEL_12)    || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_13)    || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_14)    || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_15)))  || \
+                                                           (((INSTANCE) == HPDMA3)                && \
+                                                            (((Channel)  == LL_DMA_CHANNEL_12)    || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_13)    || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_14)    || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_15)))  || \
+                                                           (((INSTANCE) == LPDMA)                 && \
+                                                            (((Channel)  == LL_DMA_CHANNEL_0)     || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_1)     || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_2)     || \
+                                                             ((Channel)  == LL_DMA_CHANNEL_3))))
 
 #define IS_LL_DMA_DIRECTION(__VALUE__)                    (((__VALUE__) == LL_DMA_DIRECTION_MEMORY_TO_MEMORY) || \
                                                            ((__VALUE__) == LL_DMA_DIRECTION_PERIPH_TO_MEMORY) || \
@@ -221,13 +245,15 @@
 
 #define IS_LL_DMA_BURST_LENGTH(__VALUE__)                 (((__VALUE__) > 0U) && ((__VALUE__) <= 64U))
 
-#define IS_LL_DMA_SRC_DATA_WIDTH(__VALUE__)               (((__VALUE__) == LL_DMA_SRC_DATAWIDTH_BYTE)     || \
-                                                           ((__VALUE__) == LL_DMA_SRC_DATAWIDTH_HALFWORD) || \
-                                                           ((__VALUE__) == LL_DMA_SRC_DATAWIDTH_WORD))
+#define IS_LL_DMA_SRC_DATA_WIDTH(__VALUE__)               (((__VALUE__) == LL_DMA_SRC_DATAWIDTH_BYTE)        || \
+                                                           ((__VALUE__) == LL_DMA_SRC_DATAWIDTH_HALFWORD)    || \
+                                                           ((__VALUE__) == LL_DMA_SRC_DATAWIDTH_WORD)        || \
+                                                           ((__VALUE__) == LL_DMA_SRC_DATAWIDTH_DOUBLEWORD))
 
-#define IS_LL_DMA_DEST_DATA_WIDTH(__VALUE__)              (((__VALUE__) == LL_DMA_DEST_DATAWIDTH_BYTE)     || \
-                                                           ((__VALUE__) == LL_DMA_DEST_DATAWIDTH_HALFWORD) || \
-                                                           ((__VALUE__) == LL_DMA_DEST_DATAWIDTH_WORD))
+#define IS_LL_DMA_DEST_DATA_WIDTH(__VALUE__)              (((__VALUE__) == LL_DMA_DEST_DATAWIDTH_BYTE)        || \
+                                                           ((__VALUE__) == LL_DMA_DEST_DATAWIDTH_HALFWORD)    || \
+                                                           ((__VALUE__) == LL_DMA_DEST_DATAWIDTH_WORD)        || \
+                                                           ((__VALUE__) == LL_DMA_DEST_DATAWIDTH_DOUBLEWORD))
 
 #define IS_LL_DMA_SRC_INCREMENT_MODE(__VALUE__)           (((__VALUE__) == LL_DMA_SRC_FIXED) || \
                                                            ((__VALUE__) == LL_DMA_SRC_INCREMENT))
@@ -268,6 +294,9 @@
                                                            ((__VALUE__) == LL_DMA_TCEM_RPT_BLK_TRANSFER)     || \
                                                            ((__VALUE__) == LL_DMA_TCEM_EACH_LLITEM_TRANSFER) || \
                                                            ((__VALUE__) == LL_DMA_TCEM_LAST_LLITEM_TRANSFER))
+
+#define IS_LL_DMA_DEST_WORD_EXCHANGE(__VALUE__)           (((__VALUE__) == LL_DMA_DEST_WORD_PRESERVE) || \
+                                                           ((__VALUE__) == LL_DMA_DEST_WORD_EXCHANGE))
 
 #define IS_LL_DMA_DEST_HALFWORD_EXCHANGE(__VALUE__)       (((__VALUE__) == LL_DMA_DEST_HALFWORD_PRESERVE) || \
                                                            ((__VALUE__) == LL_DMA_DEST_HALFWORD_EXCHANGE))
@@ -322,7 +351,24 @@
 
 #define IS_LL_DMA_CHANNEL_DEST_SEC(__VALUE__)             (((__VALUE__) == LL_DMA_CHANNEL_DEST_NSEC) || \
                                                            ((__VALUE__) == LL_DMA_CHANNEL_DEST_SEC))
-#endif /* defined CORTEX_IN_SECURE_STATE */
+
+#endif /* CORTEX_IN_SECURE_STATE */
+#define IS_LL_DMA_LIMIT_CHANNEL_INSTANCE(INSTANCE, Channel)    ((((INSTANCE) == HPDMA1)               && \
+                                                                 (((Channel)  == LL_DMA_CHANNEL_12)    || \
+                                                                  ((Channel)  == LL_DMA_CHANNEL_13)    || \
+                                                                  ((Channel)  == LL_DMA_CHANNEL_14)    || \
+                                                                  ((Channel)  == LL_DMA_CHANNEL_15)))  || \
+                                                                (((INSTANCE) == HPDMA2)               && \
+                                                                 (((Channel)  == LL_DMA_CHANNEL_12)    || \
+                                                                  ((Channel)  == LL_DMA_CHANNEL_13)    || \
+                                                                  ((Channel)  == LL_DMA_CHANNEL_14)    || \
+                                                                  ((Channel)  == LL_DMA_CHANNEL_15)))  || \
+                                                                (((INSTANCE) == HPDMA3)               && \
+                                                                 (((Channel)  == LL_DMA_CHANNEL_12)    || \
+                                                                  ((Channel)  == LL_DMA_CHANNEL_13)    || \
+                                                                  ((Channel)  == LL_DMA_CHANNEL_14)    || \
+                                                                  ((Channel)  == LL_DMA_CHANNEL_15))))
+
 /**
   * @}
   */
@@ -380,7 +426,7 @@ uint32_t LL_DMA_DeInit(DMA_TypeDef *DMAx, uint32_t Channel)
 #if ! defined(CORE_CM0PLUS)
     if (DMAx == HPDMA1)
     {
-      /* Force reset of HDMA1 clock */      // EME Must be replace by LL when there will be available in RCC
+      /* Force reset of HDMA1 clock */      /* Must be replaced by LL when there will be available in RCC */
       __HAL_RCC_HPDMA1_FORCE_RESET();
 
       /* Release reset of HDMA1 clock */
@@ -388,7 +434,7 @@ uint32_t LL_DMA_DeInit(DMA_TypeDef *DMAx, uint32_t Channel)
     }
     else if (DMAx == HPDMA2)
     {
-      /* Force reset of HDMA2 clock */      // EME Must be replace by LL when there will be available in RCC
+      /* Force reset of HDMA2 clock */      /* Must be replaced by LL when there will be available in RCC */
       __HAL_RCC_HPDMA2_FORCE_RESET();
 
       /* Release reset of HDMA2 clock */
@@ -396,7 +442,7 @@ uint32_t LL_DMA_DeInit(DMA_TypeDef *DMAx, uint32_t Channel)
     }
     else if (DMAx == HPDMA3)
     {
-      /* Force reset of HDMA3 clock */      // EME Must be replace by LL when there will be available in RCC
+      /* Force reset of HDMA3 clock */      /* Must be replaced by LL when there will be available in RCC */
       __HAL_RCC_HPDMA3_FORCE_RESET();
 
       /* Release reset of HDMA3 clock */
@@ -404,14 +450,14 @@ uint32_t LL_DMA_DeInit(DMA_TypeDef *DMAx, uint32_t Channel)
     }
     else
     {
-      /* Force reset of LPDMA clock */      // EME Must be replace by LL when there will be available in RCC
+      /* Force reset of LPDMA clock */      /* Must be replace dby LL when there will be available in RCC */
       __HAL_RCC_LPDMA_FORCE_RESET();
 
       /* Release reset of LPDMA clock */
       __HAL_RCC_LPDMA_RELEASE_RESET();
     }
 #else
-    /* Force reset of LPDMA clock */      // EME Must be replace by LL when there will be available in RCC
+    /* Force reset of LPDMA clock */       /* EME Must be replace by LL when there will be available in RCC */
     __HAL_RCC_LPDMA_FORCE_RESET();
 
     /* Release reset of LPDMA clock */
@@ -468,9 +514,10 @@ uint32_t LL_DMA_DeInit(DMA_TypeDef *DMAx, uint32_t Channel)
 
     /* Reset DMAx_Channely attribute */
     LL_DMA_DisableChannelPrivilege(DMAx, Channel);
+
 #if defined CORTEX_IN_SECURE_STATE
     LL_DMA_DisableChannelSecure(DMAx, Channel);
-#endif /* defined CORTEX_IN_SECURE_STATE */
+#endif /* CORTEX_IN_SECURE_STATE */
   }
 
   return (uint32_t)status;
@@ -536,12 +583,18 @@ uint32_t LL_DMA_Init(DMA_TypeDef *DMAx, uint32_t Channel, LL_DMA_InitTypeDef *DM
   assert_param(IS_LL_DMA_LINK_STEP_MODE(DMA_InitStruct->LinkStepMode));
   assert_param(IS_LL_DMA_LINK_BASEADDR(DMA_InitStruct->LinkedListBaseAddr));
   assert_param(IS_LL_DMA_LINK_ADDR_OFFSET(DMA_InitStruct->LinkedListAddrOffset));
+  assert_param(IS_LL_DMA_MODE(DMA_InitStruct->Mode));
+  if (DMA_InitStruct->Mode == LL_DMA_PFCTRL)
+  {
+    assert_param(IS_LL_DMA_PFREQ_INSTANCE(DMAx, Channel));
+  }
 
   /* Check DMA instance */
   if (IS_LL_HPDMA_CHANNEL_INSTANCE(DMAx, Channel) != 0U)
   {
     assert_param(IS_LL_DMA_BURST_LENGTH(DMA_InitStruct->SrcBurstLength));
     assert_param(IS_LL_DMA_BURST_LENGTH(DMA_InitStruct->DestBurstLength));
+    assert_param(IS_LL_DMA_DEST_WORD_EXCHANGE(DMA_InitStruct->DestWordExchange));
     assert_param(IS_LL_DMA_DEST_HALFWORD_EXCHANGE(DMA_InitStruct->DestHWordExchange));
     assert_param(IS_LL_DMA_DEST_BYTE_EXCHANGE(DMA_InitStruct->DestByteExchange));
     assert_param(IS_LL_DMA_SRC_BYTE_EXCHANGE(DMA_InitStruct->SrcByteExchange));
@@ -571,6 +624,24 @@ uint32_t LL_DMA_Init(DMA_TypeDef *DMAx, uint32_t Channel, LL_DMA_InitTypeDef *DM
     assert_param(IS_LL_DMA_BLKRPT_ADDR_UPDATE_VALUE(DMA_InitStruct->BlkRptDestAddrOffset));
   }
 
+  if (IS_LL_DMA_LIMIT_CHANNEL_INSTANCE(DMAx, Channel) != 0U)
+  {
+    if ((DMA_InitStruct->SrcAllocatedPort == LL_DMA_SRC_ALLOCATED_PORT0) &&
+        (DMA_InitStruct->SrcDataWidth == LL_DMA_SRC_DATAWIDTH_BYTE) &&
+        (DMA_InitStruct->SrcBurstLength > 31U))
+    {
+      /* This setting is rejected as it leads to deadlock */
+      return ERROR;
+    }
+    if ((DMA_InitStruct->DestAllocatedPort == LL_DMA_DEST_ALLOCATED_PORT0) &&
+        (DMA_InitStruct->DestDataWidth == LL_DMA_DEST_DATAWIDTH_BYTE) &&
+        (DMA_InitStruct->DestBurstLength > 31U))
+    {
+      /* This setting is rejected as it leads to incomplete DMA transfer */
+      return ERROR;
+    }
+  }
+
   /*-------------------------- DMAx CLBAR Configuration ------------------------
    * Configure the Transfer linked list address with parameter :
    * - LinkedListBaseAdd:                              DMA_CLBAR_LBA[31:16] bits
@@ -592,6 +663,8 @@ uint32_t LL_DMA_Init(DMA_TypeDef *DMAx, uint32_t Channel, LL_DMA_InitTypeDef *DM
    * Configure the Data transfer  parameter :
    * - DestAllocatedPort:                         DMA_CTR1_DAP bit
    *   DestAllocatedPort field is not supported by LPDMA channels.
+   * - DestWordExchange:                          DMA_CTR1_DWX bit
+   *   DestWordExchange field is not supported by LPDMA channels.
    * - DestHWordExchange:                         DMA_CTR1_DHX bit
    *   DestHWordExchange field is not supported by LPDMA channels.
    * - DestByteExchange:                          DMA_CTR1_DBX bit
@@ -612,6 +685,7 @@ uint32_t LL_DMA_Init(DMA_TypeDef *DMAx, uint32_t Channel, LL_DMA_InitTypeDef *DM
    *   DestBurstLength field is not supported by LPDMA channels.
    */
   LL_DMA_ConfigTransfer(DMAx, Channel, DMA_InitStruct->DestAllocatedPort | \
+                        DMA_InitStruct->DestWordExchange                 | \
                         DMA_InitStruct->DestHWordExchange                | \
                         DMA_InitStruct->DestByteExchange                 | \
                         DMA_InitStruct->DestIncMode                      | \
@@ -634,6 +708,7 @@ uint32_t LL_DMA_Init(DMA_TypeDef *DMAx, uint32_t Channel, LL_DMA_InitTypeDef *DM
    * - TriggerPolarity:                            DMA_CTR2_TRIGPOL [25:24] bits
    * - TriggerMode:                                DMA_CTR2_TRIGM  [15:14] bits
    * - BlkHWRequest:                               DMA_CTR2_BREQ bit
+   * - Mode:                                       DMA_CTR2_PFREQ bit
    * - Direction:                                  DMA_CTR2_DREQ bit
    * - Direction:                                  DMA_CTR2_SWREQ bit
    *   Direction field is reduced to one bit for LPDMA channels (SWREQ).
@@ -645,6 +720,7 @@ uint32_t LL_DMA_Init(DMA_TypeDef *DMAx, uint32_t Channel, LL_DMA_InitTypeDef *DM
   LL_DMA_ConfigChannelTransfer(DMAx, Channel, DMA_InitStruct->TransferEventMode | \
                                DMA_InitStruct->TriggerPolarity                  | \
                                DMA_InitStruct->BlkHWRequest                     | \
+                               DMA_InitStruct->Mode                             | \
                                DMA_InitStruct->Direction);
 
   /* Check direction */
@@ -746,12 +822,14 @@ void LL_DMA_StructInit(LL_DMA_InitTypeDef *DMA_InitStruct)
   DMA_InitStruct->DestIncMode              = LL_DMA_DEST_FIXED;
   DMA_InitStruct->Priority                 = LL_DMA_LOW_PRIORITY_LOW_WEIGHT;
   DMA_InitStruct->BlkDataLength            = 0x00000000U;
+  DMA_InitStruct->Mode                     = LL_DMA_NORMAL;
   DMA_InitStruct->BlkRptCount              = 0x00000000U;
   DMA_InitStruct->TriggerMode              = LL_DMA_TRIGM_BLK_TRANSFER;
   DMA_InitStruct->TriggerPolarity          = LL_DMA_TRIG_POLARITY_MASKED;
   DMA_InitStruct->TriggerSelection         = 0x00000000U;
   DMA_InitStruct->Request                  = 0x00000000U;
   DMA_InitStruct->TransferEventMode        = LL_DMA_TCEM_BLK_TRANSFER;
+  DMA_InitStruct->DestWordExchange         = LL_DMA_DEST_WORD_PRESERVE;
   DMA_InitStruct->DestHWordExchange        = LL_DMA_DEST_HALFWORD_PRESERVE;
   DMA_InitStruct->DestByteExchange         = LL_DMA_DEST_BYTE_PRESERVE;
   DMA_InitStruct->SrcByteExchange          = LL_DMA_SRC_BYTE_PRESERVE;
@@ -769,7 +847,7 @@ void LL_DMA_StructInit(LL_DMA_InitTypeDef *DMA_InitStruct)
   DMA_InitStruct->BlkRptDestAddrOffset     = 0x00000000U;
   DMA_InitStruct->LinkedListBaseAddr       = 0x00000000U;
   DMA_InitStruct->LinkedListAddrOffset     = 0x00000000U;
-};
+}
 
 /**
   * @brief  Set each @ref LL_DMA_InitLinkedListTypeDef field to default value.
@@ -784,7 +862,7 @@ void LL_DMA_ListStructInit(LL_DMA_InitLinkedListTypeDef *DMA_InitLinkedListStruc
   DMA_InitLinkedListStruct->LinkStepMode      = LL_DMA_LSM_FULL_EXECUTION;
   DMA_InitLinkedListStruct->TransferEventMode = LL_DMA_TCEM_LAST_LLITEM_TRANSFER;
   DMA_InitLinkedListStruct->LinkAllocatedPort = LL_DMA_LINK_ALLOCATED_PORT0;
-};
+}
 
 /**
   * @brief De-initialize the DMA linked list.
@@ -898,8 +976,9 @@ void LL_DMA_NodeStructInit(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct)
   /* Set DMA_InitNodeStruct fields to default values */
 #if defined CORTEX_IN_SECURE_STATE
   DMA_InitNodeStruct->DestSecure               = LL_DMA_CHANNEL_DEST_NSEC;
-#endif /* defined CORTEX_IN_SECURE_STATE */
+#endif /* CORTEX_IN_SECURE_STATE */
   DMA_InitNodeStruct->DestAllocatedPort        = LL_DMA_DEST_ALLOCATED_PORT0;
+  DMA_InitNodeStruct->DestWordExchange         = LL_DMA_DEST_WORD_PRESERVE;
   DMA_InitNodeStruct->DestHWordExchange        = LL_DMA_DEST_HALFWORD_PRESERVE;
   DMA_InitNodeStruct->DestByteExchange         = LL_DMA_DEST_BYTE_PRESERVE;
   DMA_InitNodeStruct->DestBurstLength          = 1U;
@@ -907,7 +986,7 @@ void LL_DMA_NodeStructInit(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct)
   DMA_InitNodeStruct->DestDataWidth            = LL_DMA_DEST_DATAWIDTH_BYTE;
 #if defined CORTEX_IN_SECURE_STATE
   DMA_InitNodeStruct->SrcSecure                = LL_DMA_CHANNEL_SRC_NSEC;
-#endif /* defined CORTEX_IN_SECURE_STATE */
+#endif /* CORTEX_IN_SECURE_STATE */
   DMA_InitNodeStruct->SrcAllocatedPort         = LL_DMA_SRC_ALLOCATED_PORT0;
   DMA_InitNodeStruct->SrcByteExchange          = LL_DMA_SRC_BYTE_PRESERVE;
   DMA_InitNodeStruct->DataAlignment            = LL_DMA_DATA_ALIGN_ZEROPADD;
@@ -921,6 +1000,7 @@ void LL_DMA_NodeStructInit(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct)
   DMA_InitNodeStruct->BlkHWRequest             = LL_DMA_HWREQUEST_SINGLEBURST;
   DMA_InitNodeStruct->Direction                = LL_DMA_DIRECTION_MEMORY_TO_MEMORY;
   DMA_InitNodeStruct->Request                  = 0x00000000U;
+  DMA_InitNodeStruct->Mode                     = LL_DMA_NORMAL;
   DMA_InitNodeStruct->BlkRptDestAddrUpdateMode = LL_DMA_BLKRPT_DEST_ADDR_INCREMENT;
   DMA_InitNodeStruct->BlkRptSrcAddrUpdateMode  = LL_DMA_BLKRPT_SRC_ADDR_INCREMENT;
   DMA_InitNodeStruct->DestAddrUpdateMode       = LL_DMA_BURST_DEST_ADDR_INCREMENT;
@@ -938,7 +1018,7 @@ void LL_DMA_NodeStructInit(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct)
                                                   LL_DMA_UPDATE_CDAR | LL_DMA_UPDATE_CTR3 | \
                                                   LL_DMA_UPDATE_CBR2 | LL_DMA_UPDATE_CLLR);
   DMA_InitNodeStruct->NodeType                 = LL_DMA_HPDMA_LINEAR_NODE;
-};
+}
 
 /**
   * @brief  Initializes DMA linked list node according to the specified
@@ -976,11 +1056,12 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
   assert_param(IS_LL_DMA_BLKHW_REQUEST(DMA_InitNodeStruct->BlkHWRequest));
   assert_param(IS_LL_DMA_TRANSFER_EVENT_MODE(DMA_InitNodeStruct->TransferEventMode));
   assert_param(IS_LL_DMA_LINK_UPDATE_REGISTERS(DMA_InitNodeStruct->UpdateRegisters));
+  assert_param(IS_LL_DMA_MODE(DMA_InitNodeStruct->Mode));
 
 #if defined CORTEX_IN_SECURE_STATE
   assert_param(IS_LL_DMA_CHANNEL_SRC_SEC(DMA_InitNodeStruct->SrcSecure));
   assert_param(IS_LL_DMA_CHANNEL_DEST_SEC(DMA_InitNodeStruct->DestSecure));
-#endif /* defined CORTEX_IN_SECURE_STATE */
+#endif /* CORTEX_IN_SECURE_STATE */
 
   /* Check trigger polarity */
   if (DMA_InitNodeStruct->TriggerPolarity != LL_DMA_TRIG_POLARITY_MASKED)
@@ -994,6 +1075,7 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
   {
     assert_param(IS_LL_DMA_BURST_LENGTH(DMA_InitNodeStruct->SrcBurstLength));
     assert_param(IS_LL_DMA_BURST_LENGTH(DMA_InitNodeStruct->DestBurstLength));
+    assert_param(IS_LL_DMA_DEST_WORD_EXCHANGE(DMA_InitNodeStruct->DestWordExchange));
     assert_param(IS_LL_DMA_DEST_HALFWORD_EXCHANGE(DMA_InitNodeStruct->DestHWordExchange));
     assert_param(IS_LL_DMA_DEST_BYTE_EXCHANGE(DMA_InitNodeStruct->DestByteExchange));
     assert_param(IS_LL_DMA_SRC_BYTE_EXCHANGE(DMA_InitNodeStruct->SrcByteExchange));
@@ -1022,6 +1104,8 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
     * Configure the Data transfer  parameter :
     * - DestAllocatedPort:                        DMA_CTR1_DAP bit
     *   DestAllocatedPort field is not supported by LPDMA channels.
+    * - DestWordExchange:                         DMA_CTR1_DWX bit
+    *   DestWordExchange field is not supported by LPDMA channels.
     * - DestHWordExchange:                        DMA_CTR1_DHX bit
     *   DestHWordExchange field is not supported by LPDMA channels.
     * - DestByteExchange:                         DMA_CTR1_DBX bit
@@ -1051,7 +1135,7 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
 #if defined CORTEX_IN_SECURE_STATE
     pNode->LinkRegisters[reg_counter] |= (DMA_InitNodeStruct->DestSecure | \
                                           DMA_InitNodeStruct->SrcSecure);
-#endif /* defined CORTEX_IN_SECURE_STATE */
+#endif /* CORTEX_IN_SECURE_STATE */
 
     /* Update CTR1 register fields for not LPDMA channels */
     if (DMA_InitNodeStruct->NodeType != LL_DMA_LPDMA_LINEAR_NODE)
@@ -1078,6 +1162,7 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
      * - TransferEventMode:                        DMA_CTR2_TCEM [31:30] bits
      * - TriggerPolarity:                          DMA_CTR2_TRIGPOL [25:24] bits
      * - TriggerMode:                              DMA_CTR2_TRIGM  [15:14] bits
+     * - Mode:                                     DMA_CTR2_PFREQ bit
      * - BlkHWRequest:                             DMA_CTR2_BREQ bit
      * - Direction:                                DMA_CTR2_DREQ bit
      * - Direction:                                DMA_CTR2_SWREQ bit
@@ -1090,6 +1175,7 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
     pNode->LinkRegisters[reg_counter] = (DMA_InitNodeStruct->TransferEventMode | \
                                          DMA_InitNodeStruct->TriggerPolarity   | \
                                          DMA_InitNodeStruct->BlkHWRequest      | \
+                                         DMA_InitNodeStruct->Mode              | \
                                          DMA_InitNodeStruct->Direction);
 
     /* Check direction */
@@ -1114,7 +1200,6 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
     /* Increment counter for the next register */
     reg_counter++;
   }
-
 
   /* Check if CBR1 register update is enabled */
   if ((DMA_InitNodeStruct->UpdateRegisters & LL_DMA_UPDATE_CBR1) == LL_DMA_UPDATE_CBR1)
@@ -1148,7 +1233,6 @@ uint32_t LL_DMA_CreateLinkNode(LL_DMA_InitNodeTypeDef *DMA_InitNodeStruct, LL_DM
     /* Increment counter for the next register */
     reg_counter++;
   }
-
 
   /* Check if CSAR register update is enabled */
   if ((DMA_InitNodeStruct->UpdateRegisters & LL_DMA_UPDATE_CSAR) == LL_DMA_UPDATE_CSAR)
@@ -1294,11 +1378,11 @@ void LL_DMA_DisconnectNextLinkNode(LL_DMA_LinkNodeTypeDef *pLinkNode, uint32_t L
   * @}
   */
 
-#endif /* (defined (HPDMA1) || defined (HPDMA2) || defined (HPDMA3) || defined (LPDMA)) */
+#endif /* HPDMA1 || HPDMA2 || HPDMA3 || LPDMA */
 
 /**
   * @}
   */
 
-#endif /* defined (USE_FULL_LL_DRIVER) */
+#endif /* USE_FULL_LL_DRIVER */
 

@@ -189,9 +189,6 @@ void LVDS_PHY_SetPLL(LVDS_HandleTypeDef *hlvds, LVDS_PLLInitTypeDef *PLLInit)
 		//i_lvds_pll_sd_int_ratio = feedback_divider;
 		hlvds->Instance->PMPLLSDCR1 = PLLInit->PLLMDIV << LVDS_PMPLLSDCR1_MST_PLL_SD_INT_RATIO_Pos;
 
-		hlvds->Instance->PMPLLSDCR2 = 0x400000;
-		hlvds->Instance->PMPLLSDCR2 = 0x11D;
-		hlvds->Instance->PMPLLSDCR2 = 0x24DD;
 
 		//i_lvds_pll_test_div_setting = test_divider;
 		hlvds->Instance->PMPLLTESTCR  = PLLInit->TESTDIV << LVDS_PMPLLTESTCR_MST_PLL_TEST_DIV_SETTINGS_Pos;

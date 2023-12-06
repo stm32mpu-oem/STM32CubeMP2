@@ -23,23 +23,28 @@
 #ifndef NX_DRIVER_EMW3080_H
 #define NX_DRIVER_EMW3080_H
 
-#ifdef   __cplusplus
-extern   "C" {
-#endif
-  
-/* Indicate that driver source is being compiled.  */
+
+#ifdef __cplusplus
+/* Yes, C++ compiler is present. Use standard C. */
+extern "C" {
+#endif /* __cplusplus */
+
+/* Indicate that driver source is being compiled. */
 #define NX_DRIVER_SOURCE
-  
-/* Include driver framework include file.  */
+
+/* Include driver framework include file. */
 #include "nx_driver_framework.h"
 
 /* Public API */
+/* Define global driver entry function. */
 void nx_driver_emw3080_entry(NX_IP_DRIVER *driver_req_ptr);
-void nx_driver_emw3080_interrupt();
+void nx_driver_emw3080_interrupt(void);
 
+extern uint8_t WifiMode;
 
-#ifdef   __cplusplus
-    }
-#endif
+#ifdef __cplusplus
+/* Yes, C++ compiler is present. Use standard C. */
+}
+#endif /* __cplusplus */
 
-#endif
+#endif /* NX_DRIVER_EMW3080_H */

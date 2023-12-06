@@ -39,6 +39,9 @@
 #define BSP_ERROR_MSP_FAILURE            -10
 #define BSP_ERROR_FEATURE_NOT_SUPPORTED  -11
 
+/* BSP PMIC error codes */
+#define BSP_ERROR_PMIC                   -20
+
 /* BSP OSPI error codes */
 #define BSP_ERROR_QSPI_ASSIGN_FAILURE     -24
 #define BSP_ERROR_QSPI_SETUP_FAILURE      -25
