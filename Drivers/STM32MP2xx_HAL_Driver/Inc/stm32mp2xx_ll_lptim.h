@@ -383,6 +383,26 @@ typedef struct
   * @}
   */
 
+/** @defgroup LPTIM_EC_INPUT1_SRC Input1 Source
+  * @{
+  */
+#define LL_LPTIM_INPUT1_SRC_GPIO         0x00000000UL                                           /*!< For LPTIM1 and LPTIM2 */
+#define LL_LPTIM_INPUT1_SRC_COMP1                  /*!< For LPTIM1 and LPTIM2 */
+#define LL_LPTIM_INPUT1_SRC_COMP2                  /*!< For LPTIM2 */
+#define LL_LPTIM_INPUT1_SRC_COMP1_COMP2            /*!< For LPTIM2 */
+/**
+  * @}
+  */
+
+/** @defgroup LPTIM_EC_INPUT2_SRC Input2 Source
+  * @{
+  */
+#define LL_LPTIM_INPUT2_SRC_GPIO         0x00000000U                   /*!< For LPTIM1 */
+#define LL_LPTIM_INPUT2_SRC_COMP2                  /*!< For LPTIM1 */
+/**
+  * @}
+  */
+
 /** @defgroup LPTIM_EC_LPTIM1_IC1_RMP LPTIM1 Input Ch1 Remap
   * @{
   */
@@ -987,6 +1007,36 @@ __STATIC_INLINE void LL_LPTIM_SetPrescaler(LPTIM_TypeDef *LPTIMx, uint32_t Presc
 __STATIC_INLINE uint32_t LL_LPTIM_GetPrescaler(LPTIM_TypeDef *LPTIMx)
 {
   return (uint32_t)(READ_BIT(LPTIMx->CFGR, LPTIM_CFGR_PRESC));
+}
+
+/**
+  * @brief  Set LPTIM input 1 source (default GPIO).
+  * @rmtoll CFGR2      IN1SEL       LL_LPTIM_SetInput1Src
+  * @param  LPTIMx Low-Power Timer instance
+  * @param  Src This parameter can be one of the following values:
+  *         @arg @ref LL_LPTIM_INPUT1_SRC_GPIO
+  *         @arg @ref LL_LPTIM_INPUT1_SRC_COMP1
+  *         @arg @ref LL_LPTIM_INPUT1_SRC_COMP2
+  *         @arg @ref LL_LPTIM_INPUT1_SRC_COMP1_COMP2
+  * @retval None
+  */
+__STATIC_INLINE void LL_LPTIM_SetInput1Src(LPTIM_TypeDef *LPTIMx, uint32_t Src)
+{
+  MODIFY_REG(LPTIMx->CFGR2, LPTIM_CFGR2_IN1SEL, Src);
+}
+
+/**
+  * @brief  Set LPTIM input 2 source (default GPIO).
+  * @rmtoll CFGR2      IN2SEL       LL_LPTIM_SetInput2Src
+  * @param  LPTIMx Low-Power Timer instance
+  * @param  Src This parameter can be one of the following values:
+  *         @arg @ref LL_LPTIM_INPUT2_SRC_GPIO
+  *         @arg @ref LL_LPTIM_INPUT2_SRC_COMP2
+  * @retval None
+  */
+__STATIC_INLINE void LL_LPTIM_SetInput2Src(LPTIM_TypeDef *LPTIMx, uint32_t Src)
+{
+  MODIFY_REG(LPTIMx->CFGR2, LPTIM_CFGR2_IN2SEL, Src);
 }
 
 /**

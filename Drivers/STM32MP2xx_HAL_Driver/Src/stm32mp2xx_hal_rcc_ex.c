@@ -65,7 +65,7 @@
 /** @defgroup RCCEx_Private_Functions RCCEx Private Functions
   * @{
   */
-static uint32_t RCCEx_ComputePLLClockFreq(RCC_PLLInitTypeDef *pll);
+static uint32_t RCCEx_ComputePLLClockFreq(const RCC_PLLInitTypeDef *pll);
 
 /**
   * @}
@@ -168,44 +168,44 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *pPeriphCl
   uint32_t       tickstart;
   uint32_t       xbar_channel;
   uint32_t       xbar_channel_msk;
-  __IO uint32_t *p_SRreg;
+  const __IO uint32_t *p_SRreg;
 
   /* Check parameters */
 
   xbar_channel = pPeriphClkInit->XBAR_Channel;
-  xbar_channel_msk = 0x1UL << (pPeriphClkInit->XBAR_Channel % 32);
+  xbar_channel_msk = 0x1UL << (pPeriphClkInit->XBAR_Channel % 32U);
 
   /* Remember that final clock gating is handled through (existing) macros */
   /* xbar/findiv gating is propagating the clocks by default; we do not provide
      any means to change this */
 
-  if (pPeriphClkInit->Div <= 64)
+  if (pPeriphClkInit->Div <= 64U)
   {
     RCC->PREDIVxCFGR[xbar_channel] = 0x0;
-    RCC->FINDIVxCFGR[xbar_channel] = ((pPeriphClkInit->Div) - 1) | (1 << 6);
+    RCC->FINDIVxCFGR[xbar_channel] = ((pPeriphClkInit->Div) - 1U) | (1U << 6);
   }
-  else if (pPeriphClkInit->Div <= 128)
+  else if (pPeriphClkInit->Div <= 128U)
   {
-    RCC->FINDIVxCFGR[xbar_channel] = ((pPeriphClkInit->Div / 2) - 1) | (1 << 6);
+    RCC->FINDIVxCFGR[xbar_channel] = ((pPeriphClkInit->Div / 2U) - 1U) | (1U << 6);
     RCC->PREDIVxCFGR[xbar_channel] = 0x1;
   }
-  else if (pPeriphClkInit->Div <= 256)
+  else if (pPeriphClkInit->Div <= 256U)
   {
-    RCC->FINDIVxCFGR[xbar_channel] = ((pPeriphClkInit->Div / 4) - 1) | (1 << 6);
+    RCC->FINDIVxCFGR[xbar_channel] = ((pPeriphClkInit->Div / 4U) - 1U) | (1U << 6);
     RCC->PREDIVxCFGR[xbar_channel] = 0x3;
   }
   else
   {
-    RCC->FINDIVxCFGR[xbar_channel] = ((pPeriphClkInit->Div / 1024) - 1) | (1 << 6);
+    RCC->FINDIVxCFGR[xbar_channel] = ((pPeriphClkInit->Div / 1024U) - 1U) | (1U << 6);
     RCC->PREDIVxCFGR[xbar_channel] = 0x3FF;
   }
 
-  p_SRreg = (xbar_channel < 32) ? &RCC->PREDIVSR1 : &RCC->PREDIVSR2;
+  p_SRreg = (xbar_channel < 32U) ? &RCC->PREDIVSR1 : &RCC->PREDIVSR2;
 
   /* Wait for prediv to be ready */
   tickstart = HAL_GetTick();
 
-  while ((*p_SRreg & xbar_channel_msk) != RESET)
+  while ((*p_SRreg & xbar_channel_msk) != (uint32_t)RESET)
   {
     if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
     {
@@ -213,12 +213,12 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *pPeriphCl
     }
   }
 
-  p_SRreg = (xbar_channel < 32) ? &RCC->FINDIVSR1 : &RCC->FINDIVSR2;
+  p_SRreg = (xbar_channel < 32U) ? &RCC->FINDIVSR1 : &RCC->FINDIVSR2;
 
   /* Wait for findiv to be ready */
   tickstart = HAL_GetTick();
 
-  while ((*p_SRreg & xbar_channel_msk) != RESET)
+  while ((*p_SRreg & xbar_channel_msk) != (uint32_t)RESET)
   {
     if ((HAL_GetTick() - tickstart) > FINDIV_TIMEOUT_VALUE)
     {
@@ -231,7 +231,7 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *pPeriphCl
   /* Wait for xbar to be ready */
   tickstart = HAL_GetTick();
 
-  while ((RCC->XBARxCFGR[xbar_channel] & 0x80) != RESET)
+  while ((RCC->XBARxCFGR[xbar_channel] & 0x80U) != (uint32_t)RESET)
   {
     if ((HAL_GetTick() - tickstart) > XBAR_TIMEOUT_VALUE)
     {
@@ -321,12 +321,12 @@ HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *pPeriphCl
 void HAL_RCCEx_GetPeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *pPeriphClkInit)
 {
   uint32_t xbar_channel;
-
+  uint32_t config;
   /* Check parameters */
 
   xbar_channel = pPeriphClkInit->XBAR_Channel;
-
-  pPeriphClkInit->Div = (((RCC->FINDIVxCFGR[xbar_channel] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1) * ((RCC->PREDIVxCFGR[xbar_channel] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1));
+  config = ((RCC->FINDIVxCFGR[xbar_channel] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1U) ;
+  pPeriphClkInit->Div = config * ((RCC->PREDIVxCFGR[xbar_channel] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1U);
   pPeriphClkInit->XBAR_ClkSrc = RCC->XBARxCFGR[xbar_channel] & RCC_XBARxCFGR_XBARxSEL_Msk;
 }
 
@@ -522,7 +522,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL2Config(RCC_PLLInitTypeDef *pll_config)
 
   LL_RCC_PLL2_SetFRACIN(pll_config->FRACIN);
 
-  if (pll_config->FRACIN != 0)
+  if (pll_config->FRACIN != 0U)
   {
     LL_RCC_PLL2_CSG_Disable();
     LL_RCC_PLL2_DSMEN_Enable();
@@ -543,7 +543,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL2Config(RCC_PLLInitTypeDef *pll_config)
     /* Wait for lock */
     tickstart = HAL_GetTick();
 
-    while (LL_RCC_PLL2_IsReady() == RESET)
+    while (LL_RCC_PLL2_IsReady() == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > LOCK_TIMEOUT_VALUE)
       {
@@ -628,7 +628,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL3Config(RCC_PLLInitTypeDef *pll_config)
 
   LL_RCC_PLL3_SetFRACIN(pll_config->FRACIN);
 
-  if (pll_config->FRACIN != 0)
+  if (pll_config->FRACIN != 0U)
   {
     LL_RCC_PLL3_CSG_Disable();
     LL_RCC_PLL3_DSMEN_Enable();
@@ -642,7 +642,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL3Config(RCC_PLLInitTypeDef *pll_config)
     /* Wait for lock */
     tickstart = HAL_GetTick();
 
-    while (LL_RCC_PLL3_IsReady() == RESET)
+    while (LL_RCC_PLL3_IsReady() == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > LOCK_TIMEOUT_VALUE)
       {
@@ -719,7 +719,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL4Config(RCC_PLLInitTypeDef *pll_config)
 
   LL_RCC_PLL4_SetFRACIN(pll_config->FRACIN);
 
-  if (pll_config->FRACIN != 0)
+  if (pll_config->FRACIN != 0U)
   {
     LL_RCC_PLL4_CSG_Disable();
     LL_RCC_PLL4_DSMEN_Enable();
@@ -733,7 +733,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL4Config(RCC_PLLInitTypeDef *pll_config)
     /* Wait for lock */
     tickstart = HAL_GetTick();
 
-    while (LL_RCC_PLL4_IsReady() == RESET)
+    while (LL_RCC_PLL4_IsReady() == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > LOCK_TIMEOUT_VALUE)
       {
@@ -809,7 +809,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL5Config(RCC_PLLInitTypeDef *pll_config)
 
   LL_RCC_PLL5_SetFRACIN(pll_config->FRACIN);
 
-  if (pll_config->FRACIN != 0)
+  if (pll_config->FRACIN != 0U)
   {
     LL_RCC_PLL5_CSG_Disable();
     LL_RCC_PLL5_DSMEN_Enable();
@@ -823,7 +823,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL5Config(RCC_PLLInitTypeDef *pll_config)
     /* Wait for lock */
     tickstart = HAL_GetTick();
 
-    while (LL_RCC_PLL5_IsReady() == RESET)
+    while (LL_RCC_PLL5_IsReady() == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > LOCK_TIMEOUT_VALUE)
       {
@@ -899,7 +899,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL6Config(RCC_PLLInitTypeDef *pll_config)
 
   LL_RCC_PLL6_SetFRACIN(pll_config->FRACIN);
 
-  if (pll_config->FRACIN != 0)
+  if (pll_config->FRACIN != 0U)
   {
     LL_RCC_PLL6_CSG_Disable();
     LL_RCC_PLL6_DSMEN_Enable();
@@ -913,7 +913,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL6Config(RCC_PLLInitTypeDef *pll_config)
     /* Wait for lock */
     tickstart = HAL_GetTick();
 
-    while (LL_RCC_PLL6_IsReady() == RESET)
+    while (LL_RCC_PLL6_IsReady() == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > LOCK_TIMEOUT_VALUE)
       {
@@ -988,7 +988,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL7Config(RCC_PLLInitTypeDef *pll_config)
 
   LL_RCC_PLL7_SetFRACIN(pll_config->FRACIN);
 
-  if (pll_config->FRACIN != 0)
+  if (pll_config->FRACIN != 0U)
   {
     LL_RCC_PLL7_CSG_Disable();
     LL_RCC_PLL7_DSMEN_Enable();
@@ -1002,7 +1002,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL7Config(RCC_PLLInitTypeDef *pll_config)
     /* Wait for lock */
     tickstart = HAL_GetTick();
 
-    while (LL_RCC_PLL7_IsReady() == RESET)
+    while (LL_RCC_PLL7_IsReady() == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > LOCK_TIMEOUT_VALUE)
       {
@@ -1079,7 +1079,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL8Config(RCC_PLLInitTypeDef *pll_config)
 
   LL_RCC_PLL8_SetFRACIN(pll_config->FRACIN);
 
-  if (pll_config->FRACIN != 0)
+  if (pll_config->FRACIN != 0U)
   {
     LL_RCC_PLL8_CSG_Disable();
     LL_RCC_PLL8_DSMEN_Enable();
@@ -1093,7 +1093,7 @@ HAL_StatusTypeDef HAL_RCCEx_PLL8Config(RCC_PLLInitTypeDef *pll_config)
     /* Wait for lock */
     tickstart = HAL_GetTick();
 
-    while (LL_RCC_PLL8_IsReady() == RESET)
+    while (LL_RCC_PLL8_IsReady() == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > LOCK_TIMEOUT_VALUE)
       {
@@ -1158,15 +1158,15 @@ void HAL_RCCEx_CA35SS_GetPLL1Config(RCC_PLLInitTypeDef *pll_config)
 void HAL_RCCEx_GetPLL2Config(RCC_PLLInitTypeDef  *pll_config)
 {
   pll_config->id = 2;
-  pll_config->PLLState = ((RCC->PLL2CFGR1 & RCC_PLL2CFGR1_PLLEN) == RCC_PLL2CFGR1_PLLEN ? RCC_PLL_ON : RCC_PLL_OFF);
+  pll_config->PLLState = (((RCC->PLL2CFGR1 & RCC_PLL2CFGR1_PLLEN) == RCC_PLL2CFGR1_PLLEN) ? RCC_PLL_ON : RCC_PLL_OFF);
   pll_config->PLLSource = (RCC->MUXSELCFGR & RCC_MUXSELCFGR_MUXSEL6_Msk) >> RCC_MUXSELCFGR_MUXSEL6_Pos;
-  pll_config->FREFDIV = (RCC->PLL2CFGR2 & RCC_PLL2CFGR2_FREFDIV_Msk) >> RCC_PLL2CFGR2_FREFDIV_Pos;
-  pll_config->FBDIV = (RCC->PLL2CFGR2 & RCC_PLL2CFGR2_FBDIV_Msk) >> RCC_PLL2CFGR2_FBDIV_Pos;
+  pll_config->FREFDIV = (uint8_t)((RCC->PLL2CFGR2 & RCC_PLL2CFGR2_FREFDIV_Msk) >> RCC_PLL2CFGR2_FREFDIV_Pos);
+  pll_config->FBDIV = (uint16_t)((RCC->PLL2CFGR2 & RCC_PLL2CFGR2_FBDIV_Msk) >> RCC_PLL2CFGR2_FBDIV_Pos);
   pll_config->FRACIN = (RCC->PLL2CFGR3 & RCC_PLL2CFGR3_FRACIN_Msk) >> RCC_PLL2CFGR3_FRACIN_Pos;
   pll_config->POSTDIV1 = (RCC->PLL2CFGR6 & RCC_PLL2CFGR6_POSTDIV1_Msk) >> RCC_PLL2CFGR6_POSTDIV1_Pos;
   pll_config->POSTDIV2 = (RCC->PLL2CFGR7 & RCC_PLL2CFGR7_POSTDIV2_Msk) >> RCC_PLL2CFGR7_POSTDIV2_Pos;
   pll_config->PLLMode = 0;
-  if (LL_RCC_PLL2_CSG_IsEnabled())
+  if (LL_RCC_PLL2_CSG_IsEnabled() != 0U)
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
     pll_config->SSM_DIVVAL = (RCC->PLL2CFGR5 & RCC_PLL2CFGR5_DIVVAL_Msk) >> RCC_PLL2CFGR5_DIVVAL_Pos;
@@ -1184,15 +1184,15 @@ void HAL_RCCEx_GetPLL2Config(RCC_PLLInitTypeDef  *pll_config)
 void HAL_RCCEx_GetPLL3Config(RCC_PLLInitTypeDef  *pll_config)
 {
   pll_config->id = 3;
-  pll_config->PLLState = ((RCC->PLL3CFGR1 & RCC_PLL3CFGR1_PLLEN) == RCC_PLL3CFGR1_PLLEN ? RCC_PLL_ON : RCC_PLL_OFF);
+  pll_config->PLLState = (((RCC->PLL3CFGR1 & RCC_PLL3CFGR1_PLLEN) == RCC_PLL3CFGR1_PLLEN) ? RCC_PLL_ON : RCC_PLL_OFF);
   pll_config->PLLSource = (RCC->MUXSELCFGR & RCC_MUXSELCFGR_MUXSEL7_Msk) >> RCC_MUXSELCFGR_MUXSEL7_Pos;
-  pll_config->FREFDIV = (RCC->PLL3CFGR2 & RCC_PLL3CFGR2_FREFDIV_Msk) >> RCC_PLL3CFGR2_FREFDIV_Pos;
-  pll_config->FBDIV = (RCC->PLL3CFGR2 & RCC_PLL3CFGR2_FBDIV_Msk) >> RCC_PLL3CFGR2_FBDIV_Pos;
+  pll_config->FREFDIV = (uint8_t)((RCC->PLL3CFGR2 & RCC_PLL3CFGR2_FREFDIV_Msk) >> RCC_PLL3CFGR2_FREFDIV_Pos);
+  pll_config->FBDIV = (uint16_t)((RCC->PLL3CFGR2 & RCC_PLL3CFGR2_FBDIV_Msk) >> RCC_PLL3CFGR2_FBDIV_Pos);
   pll_config->FRACIN = (RCC->PLL3CFGR3 & RCC_PLL3CFGR3_FRACIN_Msk) >> RCC_PLL3CFGR3_FRACIN_Pos;
   pll_config->POSTDIV1 = (RCC->PLL3CFGR6 & RCC_PLL3CFGR6_POSTDIV1_Msk) >> RCC_PLL3CFGR6_POSTDIV1_Pos;
   pll_config->POSTDIV2 = (RCC->PLL3CFGR7 & RCC_PLL3CFGR7_POSTDIV2_Msk) >> RCC_PLL3CFGR7_POSTDIV2_Pos;
   pll_config->PLLMode = 0;
-  if (LL_RCC_PLL3_CSG_IsEnabled())
+  if (LL_RCC_PLL3_CSG_IsEnabled() != 0U)
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
     pll_config->SSM_DIVVAL = (RCC->PLL3CFGR5 & RCC_PLL3CFGR5_DIVVAL_Msk) >> RCC_PLL3CFGR5_DIVVAL_Pos;
@@ -1209,15 +1209,15 @@ void HAL_RCCEx_GetPLL3Config(RCC_PLLInitTypeDef  *pll_config)
 void HAL_RCCEx_GetPLL4Config(RCC_PLLInitTypeDef  *pll_config)
 {
   pll_config->id = 4;
-  pll_config->PLLState = ((RCC->PLL4CFGR1 & RCC_PLL4CFGR1_PLLEN) == RCC_PLL4CFGR1_PLLEN ? RCC_PLL_ON : RCC_PLL_OFF);
+  pll_config->PLLState = (((RCC->PLL4CFGR1 & RCC_PLL4CFGR1_PLLEN) == RCC_PLL4CFGR1_PLLEN) ? RCC_PLL_ON : RCC_PLL_OFF);
   pll_config->PLLSource = (RCC->MUXSELCFGR & RCC_MUXSELCFGR_MUXSEL0_Msk) >> RCC_MUXSELCFGR_MUXSEL0_Pos;
-  pll_config->FREFDIV = (RCC->PLL4CFGR2 & RCC_PLL4CFGR2_FREFDIV_Msk) >> RCC_PLL4CFGR2_FREFDIV_Pos;
-  pll_config->FBDIV = (RCC->PLL4CFGR2 & RCC_PLL4CFGR2_FBDIV_Msk) >> RCC_PLL4CFGR2_FBDIV_Pos;
+  pll_config->FREFDIV = (uint8_t)((RCC->PLL4CFGR2 & RCC_PLL4CFGR2_FREFDIV_Msk) >> RCC_PLL4CFGR2_FREFDIV_Pos);
+  pll_config->FBDIV = (uint16_t)((RCC->PLL4CFGR2 & RCC_PLL4CFGR2_FBDIV_Msk) >> RCC_PLL4CFGR2_FBDIV_Pos);
   pll_config->FRACIN = (RCC->PLL4CFGR3 & RCC_PLL4CFGR3_FRACIN_Msk) >> RCC_PLL4CFGR3_FRACIN_Pos;
   pll_config->POSTDIV1 = (RCC->PLL4CFGR6 & RCC_PLL4CFGR6_POSTDIV1_Msk) >> RCC_PLL4CFGR6_POSTDIV1_Pos;
   pll_config->POSTDIV2 = (RCC->PLL4CFGR7 & RCC_PLL4CFGR7_POSTDIV2_Msk) >> RCC_PLL4CFGR7_POSTDIV2_Pos;
   pll_config->PLLMode = 0;
-  if (LL_RCC_PLL4_CSG_IsEnabled())
+  if (LL_RCC_PLL4_CSG_IsEnabled() != 0U)
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
     pll_config->SSM_DIVVAL = (RCC->PLL4CFGR5 & RCC_PLL4CFGR5_DIVVAL_Msk) >> RCC_PLL4CFGR5_DIVVAL_Pos;
@@ -1234,15 +1234,15 @@ void HAL_RCCEx_GetPLL4Config(RCC_PLLInitTypeDef  *pll_config)
 void HAL_RCCEx_GetPLL5Config(RCC_PLLInitTypeDef  *pll_config)
 {
   pll_config->id = 5;
-  pll_config->PLLState = ((RCC->PLL5CFGR1 & RCC_PLL5CFGR1_PLLEN) == RCC_PLL5CFGR1_PLLEN ? RCC_PLL_ON : RCC_PLL_OFF);
+  pll_config->PLLState = (((RCC->PLL5CFGR1 & RCC_PLL5CFGR1_PLLEN) == RCC_PLL5CFGR1_PLLEN) ? RCC_PLL_ON : RCC_PLL_OFF);
   pll_config->PLLSource = (RCC->MUXSELCFGR & RCC_MUXSELCFGR_MUXSEL1_Msk) >> RCC_MUXSELCFGR_MUXSEL1_Pos;
-  pll_config->FREFDIV = (RCC->PLL5CFGR2 & RCC_PLL5CFGR2_FREFDIV_Msk) >> RCC_PLL5CFGR2_FREFDIV_Pos;
-  pll_config->FBDIV = (RCC->PLL5CFGR2 & RCC_PLL5CFGR2_FBDIV_Msk) >> RCC_PLL5CFGR2_FBDIV_Pos;
+  pll_config->FREFDIV = (uint8_t)((RCC->PLL5CFGR2 & RCC_PLL5CFGR2_FREFDIV_Msk) >> RCC_PLL5CFGR2_FREFDIV_Pos);
+  pll_config->FBDIV = (uint16_t)((RCC->PLL5CFGR2 & RCC_PLL5CFGR2_FBDIV_Msk) >> RCC_PLL5CFGR2_FBDIV_Pos);
   pll_config->FRACIN = (RCC->PLL5CFGR3 & RCC_PLL5CFGR3_FRACIN_Msk) >> RCC_PLL5CFGR3_FRACIN_Pos;
   pll_config->POSTDIV1 = (RCC->PLL5CFGR6 & RCC_PLL5CFGR6_POSTDIV1_Msk) >> RCC_PLL5CFGR6_POSTDIV1_Pos;
   pll_config->POSTDIV2 = (RCC->PLL5CFGR7 & RCC_PLL5CFGR7_POSTDIV2_Msk) >> RCC_PLL5CFGR7_POSTDIV2_Pos;
   pll_config->PLLMode = 0;
-  if (LL_RCC_PLL5_CSG_IsEnabled())
+  if (LL_RCC_PLL5_CSG_IsEnabled() != 0U)
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
     pll_config->SSM_DIVVAL = (RCC->PLL5CFGR5 & RCC_PLL5CFGR5_DIVVAL_Msk) >> RCC_PLL5CFGR5_DIVVAL_Pos;
@@ -1259,15 +1259,15 @@ void HAL_RCCEx_GetPLL5Config(RCC_PLLInitTypeDef  *pll_config)
 void HAL_RCCEx_GetPLL6Config(RCC_PLLInitTypeDef  *pll_config)
 {
   pll_config->id = 6;
-  pll_config->PLLState = ((RCC->PLL6CFGR1 & RCC_PLL6CFGR1_PLLEN) == RCC_PLL6CFGR1_PLLEN ? RCC_PLL_ON : RCC_PLL_OFF);
+  pll_config->PLLState = (((RCC->PLL6CFGR1 & RCC_PLL6CFGR1_PLLEN) == RCC_PLL6CFGR1_PLLEN) ? RCC_PLL_ON : RCC_PLL_OFF);
   pll_config->PLLSource = (RCC->MUXSELCFGR & RCC_MUXSELCFGR_MUXSEL2_Msk) >> RCC_MUXSELCFGR_MUXSEL2_Pos;
-  pll_config->FREFDIV = (RCC->PLL6CFGR2 & RCC_PLL6CFGR2_FREFDIV_Msk) >> RCC_PLL6CFGR2_FREFDIV_Pos;
-  pll_config->FBDIV = (RCC->PLL6CFGR2 & RCC_PLL6CFGR2_FBDIV_Msk) >> RCC_PLL6CFGR2_FBDIV_Pos;
+  pll_config->FREFDIV = (uint8_t)((RCC->PLL6CFGR2 & RCC_PLL6CFGR2_FREFDIV_Msk) >> RCC_PLL6CFGR2_FREFDIV_Pos);
+  pll_config->FBDIV = (uint16_t)((RCC->PLL6CFGR2 & RCC_PLL6CFGR2_FBDIV_Msk) >> RCC_PLL6CFGR2_FBDIV_Pos);
   pll_config->FRACIN = (RCC->PLL6CFGR3 & RCC_PLL6CFGR3_FRACIN_Msk) >> RCC_PLL6CFGR3_FRACIN_Pos;
   pll_config->POSTDIV1 = (RCC->PLL6CFGR6 & RCC_PLL6CFGR6_POSTDIV1_Msk) >> RCC_PLL6CFGR6_POSTDIV1_Pos;
   pll_config->POSTDIV2 = (RCC->PLL6CFGR7 & RCC_PLL6CFGR7_POSTDIV2_Msk) >> RCC_PLL6CFGR7_POSTDIV2_Pos;
   pll_config->PLLMode = 0;
-  if (LL_RCC_PLL6_CSG_IsEnabled())
+  if (LL_RCC_PLL6_CSG_IsEnabled() != 0U)
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
     pll_config->SSM_DIVVAL = (RCC->PLL6CFGR5 & RCC_PLL6CFGR5_DIVVAL_Msk) >> RCC_PLL6CFGR5_DIVVAL_Pos;
@@ -1284,15 +1284,15 @@ void HAL_RCCEx_GetPLL6Config(RCC_PLLInitTypeDef  *pll_config)
 void HAL_RCCEx_GetPLL7Config(RCC_PLLInitTypeDef  *pll_config)
 {
   pll_config->id = 7;
-  pll_config->PLLState = ((RCC->PLL7CFGR1 & RCC_PLL7CFGR1_PLLEN) == RCC_PLL7CFGR1_PLLEN ? RCC_PLL_ON : RCC_PLL_OFF);
+  pll_config->PLLState = (((RCC->PLL7CFGR1 & RCC_PLL7CFGR1_PLLEN) == RCC_PLL7CFGR1_PLLEN) ? RCC_PLL_ON : RCC_PLL_OFF);
   pll_config->PLLSource = (RCC->MUXSELCFGR & RCC_MUXSELCFGR_MUXSEL3_Msk) >> RCC_MUXSELCFGR_MUXSEL3_Pos;
-  pll_config->FREFDIV = (RCC->PLL7CFGR2 & RCC_PLL7CFGR2_FREFDIV_Msk) >> RCC_PLL7CFGR2_FREFDIV_Pos;
-  pll_config->FBDIV = (RCC->PLL7CFGR2 & RCC_PLL7CFGR2_FBDIV_Msk) >> RCC_PLL7CFGR2_FBDIV_Pos;
+  pll_config->FREFDIV = (uint8_t)((RCC->PLL7CFGR2 & RCC_PLL7CFGR2_FREFDIV_Msk) >> RCC_PLL7CFGR2_FREFDIV_Pos);
+  pll_config->FBDIV = (uint16_t)((RCC->PLL7CFGR2 & RCC_PLL7CFGR2_FBDIV_Msk) >> RCC_PLL7CFGR2_FBDIV_Pos);
   pll_config->FRACIN = (RCC->PLL7CFGR3 & RCC_PLL7CFGR3_FRACIN_Msk) >> RCC_PLL7CFGR3_FRACIN_Pos;
   pll_config->POSTDIV1 = (RCC->PLL7CFGR6 & RCC_PLL7CFGR6_POSTDIV1_Msk) >> RCC_PLL7CFGR6_POSTDIV1_Pos;
   pll_config->POSTDIV2 = (RCC->PLL7CFGR7 & RCC_PLL7CFGR7_POSTDIV2_Msk) >> RCC_PLL7CFGR7_POSTDIV2_Pos;
   pll_config->PLLMode = 0;
-  if (LL_RCC_PLL7_CSG_IsEnabled())
+  if (LL_RCC_PLL7_CSG_IsEnabled() != 0U)
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
     pll_config->SSM_DIVVAL = (RCC->PLL7CFGR5 & RCC_PLL7CFGR5_DIVVAL_Msk) >> RCC_PLL7CFGR5_DIVVAL_Pos;
@@ -1309,15 +1309,15 @@ void HAL_RCCEx_GetPLL7Config(RCC_PLLInitTypeDef  *pll_config)
 void HAL_RCCEx_GetPLL8Config(RCC_PLLInitTypeDef  *pll_config)
 {
   pll_config->id = 8;
-  pll_config->PLLState = ((RCC->PLL8CFGR1 & RCC_PLL8CFGR1_PLLEN) == RCC_PLL8CFGR1_PLLEN ? RCC_PLL_ON : RCC_PLL_OFF);
+  pll_config->PLLState = (((RCC->PLL8CFGR1 & RCC_PLL8CFGR1_PLLEN) == RCC_PLL8CFGR1_PLLEN) ? RCC_PLL_ON : RCC_PLL_OFF);
   pll_config->PLLSource = (RCC->MUXSELCFGR & RCC_MUXSELCFGR_MUXSEL4_Msk) >> RCC_MUXSELCFGR_MUXSEL4_Pos;
-  pll_config->FREFDIV = (RCC->PLL8CFGR2 & RCC_PLL8CFGR2_FREFDIV_Msk) >> RCC_PLL8CFGR2_FREFDIV_Pos;
-  pll_config->FBDIV = (RCC->PLL8CFGR2 & RCC_PLL8CFGR2_FBDIV_Msk) >> RCC_PLL8CFGR2_FBDIV_Pos;
+  pll_config->FREFDIV = (uint8_t)((RCC->PLL8CFGR2 & RCC_PLL8CFGR2_FREFDIV_Msk) >> RCC_PLL8CFGR2_FREFDIV_Pos);
+  pll_config->FBDIV = (uint16_t)((RCC->PLL8CFGR2 & RCC_PLL8CFGR2_FBDIV_Msk) >> RCC_PLL8CFGR2_FBDIV_Pos);
   pll_config->FRACIN = (RCC->PLL8CFGR3 & RCC_PLL8CFGR3_FRACIN_Msk) >> RCC_PLL8CFGR3_FRACIN_Pos;
   pll_config->POSTDIV1 = (RCC->PLL8CFGR6 & RCC_PLL8CFGR6_POSTDIV1_Msk) >> RCC_PLL8CFGR6_POSTDIV1_Pos;
   pll_config->POSTDIV2 = (RCC->PLL8CFGR7 & RCC_PLL8CFGR7_POSTDIV2_Msk) >> RCC_PLL8CFGR7_POSTDIV2_Pos;
   pll_config->PLLMode = 0;
-  if (LL_RCC_PLL8_CSG_IsEnabled())
+  if (LL_RCC_PLL8_CSG_IsEnabled() != 0U)
   {
     pll_config->PLLMode |= RCC_PLL_SPREAD_SPECTRUM;
     pll_config->SSM_DIVVAL = (RCC->PLL8CFGR5 & RCC_PLL8CFGR5_DIVVAL_Msk) >> RCC_PLL8CFGR5_DIVVAL_Pos;
@@ -1519,7 +1519,7 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk)
   uint32_t xbar_source;
   uint32_t xbar_source_freq;
   uint32_t periph_freq;
-
+  uint32_t config;
   /* Identify xbar source */
   xbar_source = RCC->XBARxCFGR[PeriphClk] & RCC_XBARxCFGR_XBARxSEL_Msk;
 
@@ -1547,7 +1547,7 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk)
       break;
     case RCC_XBAR_CLKSRC_MSI:
     case RCC_XBAR_CLKSRC_MSI_KER:
-      if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0)
+      if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0U)
       {
         xbar_source_freq = RCC_MSI_4MHZ;
       }
@@ -1578,8 +1578,8 @@ uint32_t HAL_RCCEx_GetPeriphCLKFreq(uint32_t PeriphClk)
   }
 
   /* Then apply the fgen dividers to calculate exact periph frequency */
-  periph_freq = xbar_source_freq / (((RCC->FINDIVxCFGR[PeriphClk] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1) * ((RCC->PREDIVxCFGR[PeriphClk] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1));
-
+  config = (((RCC->FINDIVxCFGR[PeriphClk]) & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1U);
+  periph_freq = xbar_source_freq / config * ((RCC->PREDIVxCFGR[PeriphClk] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1U);
   return (periph_freq);
 }
 
@@ -1611,7 +1611,7 @@ uint32_t HAL_RCCEx_GetTimerCLKFreq(uint32_t TimerId)
 {
   uint32_t apbdiv;
   uint32_t timprer;
-  uint32_t timfreq = 0;
+  uint32_t timfreq;
   uint32_t icn_ls_mcu;
 
   icn_ls_mcu = HAL_RCC_GetFreq(RCC_CLOCKTYPE_ICN_LS_MCU);
@@ -1654,9 +1654,9 @@ uint32_t HAL_RCCEx_GetTimerCLKFreq(uint32_t TimerId)
       timfreq = icn_ls_mcu;
       break;
     case LL_RCC_APB1_DIV_4:
-      if (timprer == 0)
+      if (timprer == 0U)
       {
-        timfreq = icn_ls_mcu / 2;
+        timfreq = icn_ls_mcu / 2U;
       }
       else
       {
@@ -1664,23 +1664,23 @@ uint32_t HAL_RCCEx_GetTimerCLKFreq(uint32_t TimerId)
       }
       break;
     case LL_RCC_APB1_DIV_8:
-      if (timprer == 0)
+      if (timprer == 0U)
       {
-        timfreq = icn_ls_mcu / 4;
+        timfreq = icn_ls_mcu / 4U;
       }
       else
       {
-        timfreq = icn_ls_mcu / 2;
+        timfreq = icn_ls_mcu / 2U;
       }
       break;
     case LL_RCC_APB1_DIV_16:
-      if (timprer == 0)
+      if (timprer == 0U)
       {
-        timfreq = icn_ls_mcu / 8;
+        timfreq = icn_ls_mcu / 8U;
       }
       else
       {
-        timfreq = icn_ls_mcu / 4;
+        timfreq = icn_ls_mcu / 4U;
       }
       break;
     default:
@@ -1823,9 +1823,9 @@ void HAL_RCCEx_BootMCU(void)
   *         freq contains the result of the measurement
   * @retval fstatus
   */
-int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
+int32_t HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
 {
-  int fstatus = 0;
+  int32_t fstatus = 0;
   uint32_t freq_meas_complete_flag, fcalctwc_val, min_fcalctwc;
   uint32_t regval, fcalcrefcksel, fcalcsts_bit, overflow_flag;
   uint32_t ckintsel, ckextsel, fcalcckextsel;
@@ -1833,8 +1833,9 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
   uint64_t timeout_duration, start_time, end_time, current_time;
   uint64_t ckin_freq_val;
   uint32_t ref_freq, freq_div;
-  uint32_t gfg, muxsel_val = 0;
-
+  uint32_t gfg, muxsel_val;
+  uint64_t config;
+  uint32_t tmp = 0;
   /* Initialize reference value for STGENR value low register */
   /* (see check that STGEN is running here below) */
   regval = STGENR->CNTCVL;
@@ -1859,10 +1860,17 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
 #define STGEN_FREQ_IN_HZ 32000000
 #endif /* defined(USE_STM32MP257CXX_VALID1) || defined(USE_STM32MP257CXX_VALID2) || defined(USE_STM32MP257CXX_VALID3) */
   /* . by checking STGENC clock is enabled and STGENR value low is changing */
-  if ((0 == (RCC->STGENCFGR & RCC_STGENCFGR_STGENEN))
-      || (regval == STGENR->CNTCVL))
+  if (0U == (RCC->STGENCFGR & RCC_STGENCFGR_STGENEN))
   {
     return 2;
+  }
+  else if (regval == STGENR->CNTCVL)
+  {
+    return 2;
+  }
+  else
+  {
+    /*  do nothing  */
   }
 
   /* Find reference clock frequency */
@@ -1885,7 +1893,13 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
       muxsel_val = ((gfg & RCC_MUXSELCFGR_MUXSEL4_Msk) >> RCC_MUXSELCFGR_MUXSEL4_Pos);
       break;
     default:
-      return 1;
+      tmp = 1UL;
+      muxsel_val = 0xFFU;
+      break;
+  }
+  if (tmp == 1UL)
+  {
+    return 1;
   }
   fcalcrefcksel = ref_id;
   switch (muxsel_val)
@@ -1902,11 +1916,14 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
     case 3:
       ref_freq = LSI_VALUE;
       break;
-    case 4:
-      ref_freq = LSE_VALUE;
-      break;
     default:
-      return 1;
+      tmp = 1UL;
+      ref_freq = 0;
+      break;
+  }
+  if (tmp == 1UL)
+  {
+    return 1;
   }
 
   /* set the CKINTSEL (or CKEXTSEL if FCALCCKEXTSEL bit is set) field in the RCC */
@@ -1922,7 +1939,7 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
   else
   {
     ckintsel = 0;
-    ckextsel = clk_id & 0x7;
+    ckextsel = clk_id & 0x7U;
     fcalcckextsel = 1;
     if (RCC_FCALC_EXTOBSCLK_PLL1DIV42 == clk_id)
     {
@@ -1936,6 +1953,10 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
     {
       freq_div = 2;
     }
+    else
+    {
+      /*  do nothing  */
+    }
   }
 
   /* ALGORITHM STARTS HERE. It is the following : */
@@ -1946,7 +1967,7 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
   min_fcalctwc = 0x1;
   *freq = 0;
   while ((fcalctwc_val >= min_fcalctwc)
-         && (freq_meas_complete_flag == 0))
+         && (freq_meas_complete_flag == 0U))
   {
     /* set the FCALCRSTN bit in the RCC Clock Frequency Calculator and Observation 1
      * clock Configuration Register (RCC_FCALCOBS1CFGR) to enable the clock frequency
@@ -1992,7 +2013,7 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
      * Register 2 (RCC_FCALCCR2) to select the frequency value type.
      */
     regval = RCC->FCALCCR2;
-    regval |= (0xC << RCC_FCALCCR2_FCALCTYP_Pos);
+    regval |= (0xCU << RCC_FCALCCR2_FCALCTYP_Pos);
     WRITE_REG(RCC->FCALCCR2, regval);
 
     /* select the application mode via the FCALCMD field in the RCC Clock Frequency
@@ -2014,13 +2035,14 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
     /* C.ICORD : Systick shall not be used as timeout mechanism, because it requires an interrupt */
     /*           USE RATHER A POLLING MECHANISM ON ALWAYS-ON TIMER STGEN */
     /* wait 1ms (to be better tuned later) */
-    timeout_duration = (uint64_t)STGEN_FREQ_IN_HZ / 1000;
-    start_time = (uint64_t)STGENR->CNTCVL + ((uint64_t)STGENR->CNTCVU << 32);
+    timeout_duration = (uint64_t)STGEN_FREQ_IN_HZ / 1000U;
+    config = (uint64_t)STGENR->CNTCVL;
+    start_time = config + ((uint64_t)STGENR->CNTCVU << 32);
     end_time = start_time + timeout_duration;
     current_time = start_time;
     while (current_time < end_time)
     {
-      current_time = (uint64_t)STGENR->CNTCVL + ((uint64_t)STGENR->CNTCVU << 32);
+      current_time = config + ((uint64_t)STGENR->CNTCVU << 32);
     }
 
     /* poll the FCALCSTS bit in the RCC Clock Frequency Calculator Status Register
@@ -2032,25 +2054,24 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
 
     /* Timeout value (in ms) to be tuned according to the longest */
     /* measurement duration (65535 LSI/LSE cycles ~2 seconds)     */
-    timeout_duration = 2 * (uint64_t)STGEN_FREQ_IN_HZ;
-    start_time = (uint64_t)STGENR->CNTCVL + ((uint64_t)STGENR->CNTCVU << 32);
+    timeout_duration = 2UL * (uint64_t)STGEN_FREQ_IN_HZ;
+    start_time = config + ((uint64_t)STGENR->CNTCVU << 32);
     end_time = start_time + timeout_duration;
-    current_time = start_time;
 
-    while ((fcalcsts_bit == 0)
-           && (overflow_flag == 0)
-           && (timeout_flag == 0))
+    while ((fcalcsts_bit == 0U)
+           && (overflow_flag == 0U)
+           && (timeout_flag == 0U))
     {
       regval = RCC->FCALCSR;
       fcalcsts_bit = (regval & RCC_FCALCSR_FCALCSTS) >> RCC_FCALCSR_FCALCSTS_Pos;
       /* detect timeout (time expired whereas counter still zero) */
-      current_time = (uint64_t)STGENR->CNTCVL + ((uint64_t)STGENR->CNTCVU << 32);
+      current_time = config + ((uint64_t)STGENR->CNTCVU << 32);
       if (current_time > end_time)
       {
         timeout_flag = 1;
       }
       /* detect overflow */
-      if ((1 << 16) == (regval & (1 << 16)))
+      if ((1U << 16) == (regval & (1U << 16)))
       {
         overflow_flag = 1;
       }
@@ -2060,19 +2081,19 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
      * Status Register (RCC_FCALCSR). If FVAL[16] is 1 then the measured value is false.
      */
     /* overflow case */
-    if (1 == overflow_flag)
+    if (1U == overflow_flag)
     {
       /* set status for next measurement iteration */
       fstatus = 0;
     }
-    else if (1 == timeout_flag)
+    else if (1U == timeout_flag)
     {
       /* set status for leaving measurement algorithm */
       fstatus = -1;
     }
     else
     {
-      if (0 == (regval & 0xFFFF))
+      if (0U == (regval & 0xFFFFU))
       {
         /* set status for leaving measurement algorithm */
         fstatus = -1;
@@ -2080,8 +2101,8 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
       else
       {
         /* compute measured frequency */
-        ckin_freq_val = (uint64_t)((regval & 0xFFFF) - 16) * (uint64_t)ref_freq;
-        uint32_t denom_val = (1 << (fcalctwc_val + 1)) + 5;
+        ckin_freq_val = (uint64_t)(((uint64_t)regval & 0xFFFFU) - 16U) * (uint64_t)ref_freq;
+        uint32_t denom_val = (1UL << (fcalctwc_val + 1U)) + 5U;
         ckin_freq_val /= (uint64_t)denom_val;
         ckin_freq_val *= (uint64_t)freq_div;
         *freq = (uint32_t)ckin_freq_val;
@@ -2105,31 +2126,30 @@ int HAL_RCCEx_MeasureClockFreq(uint32_t clk_id, uint32_t ref_id, uint32_t *freq)
     /* Waiting for status register to be cleared : NOT SPECIFIED */
     timeout_flag = 0;
     /* timeout duration set to 1ms : to be better tuned later if needed */
-    timeout_duration = (uint64_t)STGEN_FREQ_IN_HZ / 1000;
-    start_time = (uint64_t)STGENR->CNTCVL + ((uint64_t)STGENR->CNTCVU << 32);
+    timeout_duration = (uint64_t)STGEN_FREQ_IN_HZ / 1000U;
+    start_time = config + ((uint64_t)STGENR->CNTCVU << 32);
     end_time = start_time + timeout_duration;
-    current_time = start_time;
     regval = READ_REG(RCC->FCALCSR);
 
-    while (((regval & 0xffff) != 0)
-           && (timeout_flag == 0))
+    while (((regval & 0xffffU) != 0U)
+           && (timeout_flag == 0U))
     {
       regval = READ_REG(RCC->FCALCSR);
       /* detect timeout */
-      current_time = (uint64_t)STGENR->CNTCVL + ((uint64_t)STGENR->CNTCVU << 32);
+      current_time = config + ((uint64_t)STGENR->CNTCVU << 32);
       if (current_time > end_time)
       {
         timeout_flag = 1;
       }
     }
 
-    if (1 == timeout_flag)
+    if (1U == timeout_flag)
     {
       fstatus = -1;
     }
 
     /* decrease FCALCTWC value */
-    fcalctwc_val -= 1;
+    fcalctwc_val -= 1U;
 
     /* check status */
     if (-1 == fstatus)
@@ -2161,7 +2181,7 @@ HAL_StatusTypeDef HAL_RCCEx_EnableLSECSS(void)
     /* Wait for Backup domain Write protection disable */
     tickstart = HAL_GetTick();
 
-    while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == RESET)
+    while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > DBP_TIMEOUT_VALUE)
       {
@@ -2176,7 +2196,7 @@ HAL_StatusTypeDef HAL_RCCEx_EnableLSECSS(void)
 
   LL_RCC_LSE_EnableCSS();
 
-  if (backup_domain == 1)
+  if (backup_domain == 1U)
   {
     CLEAR_BIT(PWR->BDCR1, PWR_BDCR1_DBD3P);
   }
@@ -2204,7 +2224,7 @@ HAL_StatusTypeDef HAL_RCCEx_DisableLSECSS(void)
     /* Wait for Backup domain Write protection disable */
     tickstart = HAL_GetTick();
 
-    while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == RESET)
+    while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > DBP_TIMEOUT_VALUE)
       {
@@ -2219,7 +2239,7 @@ HAL_StatusTypeDef HAL_RCCEx_DisableLSECSS(void)
 
   LL_RCC_LSE_DisableCSS();
 
-  if (backup_domain == 1)
+  if (backup_domain == 1U)
   {
     CLEAR_BIT(PWR->BDCR1, PWR_BDCR1_DBD3P);
   }
@@ -2332,8 +2352,8 @@ void HAL_RCCEx_EnableHSECSS(void)
   */
 void HAL_RCCEx_ConfigureClockObserver(uint32_t PeriphClk, RCC_ObserverTypeDef *OBSConf)
 {
-  uint32_t tmpreg = 0;
-
+  uint32_t tmpreg;
+  uint32_t config = PeriphClk;
   /* Asserts can be added here for parameters check */
 
 
@@ -2341,16 +2361,16 @@ void HAL_RCCEx_ConfigureClockObserver(uint32_t PeriphClk, RCC_ObserverTypeDef *O
   /* Build mask in case of flexgen observation */
   if (OBSConf->ObsType == RCC_FLEXGEN_OBS)
   {
-    PeriphClk = (PeriphClk | 0xC0);
+    config = (config | 0xC0U);
   }
 
   if (OBSConf->ClockType == RCC_INTERNAL_OBS)
   {
-    tmpreg = (PeriphClk << RCC_FCALCOBS0CFGR_CKINTSEL_Pos);
+    tmpreg = (config << RCC_FCALCOBS0CFGR_CKINTSEL_Pos);
   }
   else
   {
-    tmpreg = (PeriphClk << RCC_FCALCOBS0CFGR_CKEXTSEL_Pos);
+    tmpreg = (config << RCC_FCALCOBS0CFGR_CKEXTSEL_Pos);
     tmpreg |= RCC_FCALCOBS0CFGR_CKOBSEXTSEL;
   }
 
@@ -2410,7 +2430,7 @@ __weak void HAL_RCCEx_LSECSS_Callback(void)
 /** @addtogroup RCCEx_Private_Functions
   * @{
   */
-static uint32_t RCCEx_ComputePLLClockFreq(RCC_PLLInitTypeDef *pll)
+static uint32_t RCCEx_ComputePLLClockFreq(const RCC_PLLInitTypeDef *pll)
 {
   uint32_t source_freq;
   uint64_t pll_output;
@@ -2427,7 +2447,7 @@ static uint32_t RCCEx_ComputePLLClockFreq(RCC_PLLInitTypeDef *pll)
       source_freq = HSE_VALUE;
       break;
     case RCC_PLLSOURCE_MSI:
-      if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0)
+      if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0U)
       {
         source_freq = RCC_MSI_4MHZ;
       }
@@ -2445,16 +2465,16 @@ static uint32_t RCCEx_ComputePLLClockFreq(RCC_PLLInitTypeDef *pll)
   /* Compute PLL frequency from PLL parameters according to fractional mode selection */
   /* Note : keep maximum computing precision by doubling integer resolution */
   /*        and process numerator before applying dividers */
-  if (0 == pll->FRACIN)
+  if (0U == pll->FRACIN)
   {
     pll_output = (uint64_t)source_freq * (uint64_t)pll->FBDIV;
   }
   else
   {
-    pll_output = (uint64_t)source_freq * ((1 << 24) * (uint64_t)pll->FBDIV + (uint64_t)pll->FRACIN);
-    pll_output /= (1 << 24);
+    pll_output = (uint64_t)source_freq * (((uint64_t)(1U << 24) * (uint64_t)pll->FBDIV) + (uint64_t)pll->FRACIN);
+    pll_output /= (1U << 24);
   }
-  pll_output /= (uint64_t)(pll->FREFDIV * pll->POSTDIV1 * pll->POSTDIV2);
+  pll_output /= ((uint64_t)(pll->FREFDIV) * (uint64_t)(pll->POSTDIV1) * (uint64_t)(pll->POSTDIV2));
 
   return (uint32_t)pll_output;
 }

@@ -84,18 +84,18 @@
 #define RCC_GET_MCO_GPIO_PIN(__RCC_MCOx__)    ((__RCC_MCOx__) & GPIO_PIN_MASK)
 #define RCC_GET_MCO_GPIO_AF(__RCC_MCOx__)     (((__RCC_MCOx__) & RCC_MCO_GPIOAF_MASK) >> RCC_MCO_GPIOAF_POS)
 #define RCC_GET_MCO_GPIO_INDEX(__RCC_MCOx__)  (((__RCC_MCOx__) & RCC_MCO_GPIOPORT_MASK) >> RCC_MCO_GPIOPORT_POS)
-#define RCC_GET_MCO_GPIO_PORT(__RCC_MCOx__)   (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  0U ? GPIOA : \
-                                               (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  1U ? GPIOB : \
-                                                (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  2U ? GPIOC : \
-                                                 (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  3U ? GPIOD : \
-                                                  (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  4U ? GPIOE : \
-                                                   (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  5U ? GPIOF : \
-                                                    (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  6U ? GPIOG : \
-                                                     (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  7U ? GPIOH : \
-                                                      (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  8U ? GPIOI : \
-                                                       (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  9U ? GPIOH : \
-                                                        (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) == 10U ? GPIOK : \
-                                                         (RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) == 11U ? GPIOZ : NULL))))))))))))
+#define RCC_GET_MCO_GPIO_PORT(__RCC_MCOx__)   ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  0U) ? GPIOA : \
+                                               ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  1U) ? GPIOB : \
+                                                ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  2U) ? GPIOC : \
+                                                 ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  3U) ? GPIOD : \
+                                                  ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  4U) ? GPIOE : \
+                                                   ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  5U) ? GPIOF : \
+                                                    ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  6U) ? GPIOG : \
+                                                     ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  7U) ? GPIOH : \
+                                                      ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  8U) ? GPIOI : \
+                                                       ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) ==  9U) ? GPIOJ : \
+                                                        ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) == 10U) ? GPIOK : \
+                                                         ((RCC_GET_MCO_GPIO_INDEX((__RCC_MCOx__)) == 11U) ? GPIOZ : NULL))))))))))))
 
 /**
   * @}
@@ -133,7 +133,8 @@
 /**
   * @}
   */
-
+void HAL_RCC_HSIMON_IRQHandler(void);
+__weak void HAL_RCC_CSSCallback(void);
 /* Private functions ---------------------------------------------------------*/
 /**
   * @brief  Returns the state of HSE clock (used or not).
@@ -151,20 +152,20 @@ static uint32_t RCC_is_hse_in_use(void)
   /* Check GFG */
   gfg = RCC->MUXSELCFGR;
 
-  if ((((gfg & RCC_MUXSELCFGR_MUXSEL0_Msk) >> RCC_MUXSELCFGR_MUXSEL0_Pos) == 0x1) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL1_Msk) >> RCC_MUXSELCFGR_MUXSEL1_Pos) == 0x1) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL2_Msk) >> RCC_MUXSELCFGR_MUXSEL2_Pos) == 0x1) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL3_Msk) >> RCC_MUXSELCFGR_MUXSEL3_Pos) == 0x1) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL4_Msk) >> RCC_MUXSELCFGR_MUXSEL4_Pos) == 0x1) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL5_Msk) >> RCC_MUXSELCFGR_MUXSEL5_Pos) == 0x1) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL6_Msk) >> RCC_MUXSELCFGR_MUXSEL6_Pos) == 0x1) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL7_Msk) >> RCC_MUXSELCFGR_MUXSEL7_Pos) == 0x1))
+  if ((((gfg & RCC_MUXSELCFGR_MUXSEL0_Msk) >> RCC_MUXSELCFGR_MUXSEL0_Pos) == 0x1U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL1_Msk) >> RCC_MUXSELCFGR_MUXSEL1_Pos) == 0x1U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL2_Msk) >> RCC_MUXSELCFGR_MUXSEL2_Pos) == 0x1U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL3_Msk) >> RCC_MUXSELCFGR_MUXSEL3_Pos) == 0x1U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL4_Msk) >> RCC_MUXSELCFGR_MUXSEL4_Pos) == 0x1U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL5_Msk) >> RCC_MUXSELCFGR_MUXSEL5_Pos) == 0x1U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL6_Msk) >> RCC_MUXSELCFGR_MUXSEL6_Pos) == 0x1U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL7_Msk) >> RCC_MUXSELCFGR_MUXSEL7_Pos) == 0x1U))
   {
     return 1;
   }
 
   /* HSE is ON but no pll is client so check xbar */
-  for (i = 0; i < 64; i++)
+  for (i = 0U; i < 64U; i++)
   {
     if ((RCC->XBARxCFGR[i] & RCC_XBARxCFGR_XBARxSEL_Msk) == RCC_XBARxCFGR_XBARxSEL_6)
     {
@@ -192,20 +193,20 @@ static uint32_t RCC_is_hsi_in_use(void)
   /* Check GFG */
   gfg = RCC->MUXSELCFGR;
 
-  if ((((gfg & RCC_MUXSELCFGR_MUXSEL0_Msk) >> RCC_MUXSELCFGR_MUXSEL0_Pos) == 0x0) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL1_Msk) >> RCC_MUXSELCFGR_MUXSEL1_Pos) == 0x0) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL2_Msk) >> RCC_MUXSELCFGR_MUXSEL2_Pos) == 0x0) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL3_Msk) >> RCC_MUXSELCFGR_MUXSEL3_Pos) == 0x0) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL4_Msk) >> RCC_MUXSELCFGR_MUXSEL4_Pos) == 0x0) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL5_Msk) >> RCC_MUXSELCFGR_MUXSEL5_Pos) == 0x0) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL6_Msk) >> RCC_MUXSELCFGR_MUXSEL6_Pos) == 0x0) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL7_Msk) >> RCC_MUXSELCFGR_MUXSEL7_Pos) == 0x0))
+  if ((((gfg & RCC_MUXSELCFGR_MUXSEL0_Msk) >> RCC_MUXSELCFGR_MUXSEL0_Pos) == 0x0U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL1_Msk) >> RCC_MUXSELCFGR_MUXSEL1_Pos) == 0x0U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL2_Msk) >> RCC_MUXSELCFGR_MUXSEL2_Pos) == 0x0U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL3_Msk) >> RCC_MUXSELCFGR_MUXSEL3_Pos) == 0x0U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL4_Msk) >> RCC_MUXSELCFGR_MUXSEL4_Pos) == 0x0U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL5_Msk) >> RCC_MUXSELCFGR_MUXSEL5_Pos) == 0x0U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL6_Msk) >> RCC_MUXSELCFGR_MUXSEL6_Pos) == 0x0U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL7_Msk) >> RCC_MUXSELCFGR_MUXSEL7_Pos) == 0x0U))
   {
     return 1;
   }
 
   /* HSI is ON but no pll is client so check xbar */
-  for (i = 0; i < 64; i++)
+  for (i = 0U; i < 64U; i++)
   {
     if ((RCC->XBARxCFGR[i] & RCC_XBARxCFGR_XBARxSEL_Msk) == RCC_XBARxCFGR_XBARxSEL_5)
     {
@@ -233,20 +234,20 @@ static uint32_t RCC_is_msi_in_use(void)
   /* Check GFG */
   gfg = RCC->MUXSELCFGR;
 
-  if ((((gfg & RCC_MUXSELCFGR_MUXSEL0_Msk) >> RCC_MUXSELCFGR_MUXSEL0_Pos) == 0x2) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL1_Msk) >> RCC_MUXSELCFGR_MUXSEL1_Pos) == 0x2) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL2_Msk) >> RCC_MUXSELCFGR_MUXSEL2_Pos) == 0x2) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL3_Msk) >> RCC_MUXSELCFGR_MUXSEL3_Pos) == 0x2) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL4_Msk) >> RCC_MUXSELCFGR_MUXSEL4_Pos) == 0x2) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL5_Msk) >> RCC_MUXSELCFGR_MUXSEL5_Pos) == 0x2) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL6_Msk) >> RCC_MUXSELCFGR_MUXSEL6_Pos) == 0x2) ||
-      (((gfg & RCC_MUXSELCFGR_MUXSEL7_Msk) >> RCC_MUXSELCFGR_MUXSEL7_Pos) == 0x2))
+  if ((((gfg & RCC_MUXSELCFGR_MUXSEL0_Msk) >> RCC_MUXSELCFGR_MUXSEL0_Pos) == 0x2U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL1_Msk) >> RCC_MUXSELCFGR_MUXSEL1_Pos) == 0x2U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL2_Msk) >> RCC_MUXSELCFGR_MUXSEL2_Pos) == 0x2U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL3_Msk) >> RCC_MUXSELCFGR_MUXSEL3_Pos) == 0x2U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL4_Msk) >> RCC_MUXSELCFGR_MUXSEL4_Pos) == 0x2U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL5_Msk) >> RCC_MUXSELCFGR_MUXSEL5_Pos) == 0x2U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL6_Msk) >> RCC_MUXSELCFGR_MUXSEL6_Pos) == 0x2U) ||
+      (((gfg & RCC_MUXSELCFGR_MUXSEL7_Msk) >> RCC_MUXSELCFGR_MUXSEL7_Pos) == 0x2U))
   {
     return 1;
   }
 
   /* HSE is ON but no pll is client so check xbar */
-  for (i = 0; i < 64; i++)
+  for (i = 0U; i < 64U; i++)
   {
     if ((RCC->XBARxCFGR[i] & RCC_XBARxCFGR_XBARxSEL_Msk) == RCC_XBARxCFGR_XBARxSEL_7)
     {
@@ -271,7 +272,7 @@ static uint32_t RCC_is_lsi_in_use(void)
   uint32_t status = 0;
 
   /* check xbar */
-  for (i = 0; i < 64; i++)
+  for (i = 0U; i < 64U; i++)
   {
     if ((RCC->XBARxCFGR[i] & RCC_XBARxCFGR_XBARxSEL_Msk) == RCC_XBARxCFGR_XBARxSEL_D)
     {
@@ -296,7 +297,7 @@ static uint32_t RCC_is_lse_in_use(void)
   uint32_t status = 0;
 
   /* check xbar */
-  for (i = 0; i < 64; i++)
+  for (i = 0U; i < 64U; i++)
   {
     if ((RCC->XBARxCFGR[i] & RCC_XBARxCFGR_XBARxSEL_Msk) == RCC_XBARxCFGR_XBARxSEL_E)
     {
@@ -431,10 +432,10 @@ HAL_StatusTypeDef HAL_RCC_DeInit(void)
 
   /* Reset xbar channels inputs */
   /* Reset FINDIVx, PREDIVx */
-  for (i = 0; i < 64; i++)
+  for (i = 0U; i < 64U; i++)
   {
-    RCC->XBARxCFGR[i] = RCC_XBAR_CLKSRC_HSI | (1 << 6);
-    WRITE_REG(RCC->FINDIVxCFGR[i], 0x00000040U | (1 << 6));
+    RCC->XBARxCFGR[i] = RCC_XBAR_CLKSRC_HSI | (1U << 6);
+    WRITE_REG(RCC->FINDIVxCFGR[i], 0x00000040U | (1U << 6));
     CLEAR_REG(RCC->PREDIVxCFGR[i]);
   }
 
@@ -546,7 +547,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
     assert_param(IS_RCC_HSE(pRCC_OscInitStruct->HSEState));
 
     /* When the HSE is used somewhere in the system it will not be disabled */
-    if (RCC_is_hse_in_use())
+    if (RCC_is_hse_in_use() != 0U)
     {
       if (pRCC_OscInitStruct->HSEState != (RCC->OCENSETR & RCC_HSE_BYPASS_DIGITAL))
       {
@@ -581,7 +582,10 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
       {
         LL_RCC_HSE_EnableBypass();
       }
-
+      else
+      {
+        /* do nothing */
+      }
       /* Enable oscillator */
       LL_RCC_HSE_Enable();
 
@@ -607,7 +611,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
     assert_param(IS_RCC_HSICALIBRATION_VALUE(pRCC_OscInitStruct->HSICalibrationValue));
 
     /* When the HSI is used as system clock it will not disabled */
-    if (RCC_is_hsi_in_use())
+    if (RCC_is_hsi_in_use() != 0U)
     {
       /* When HSI is used as system clock it will not disabled */
       if (pRCC_OscInitStruct->HSIState != RCC_HSI_ON)
@@ -672,7 +676,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
     assert_param(IS_RCC_MSICALIBRATION_VALUE(pRCC_OscInitStruct->MSICalibrationValue));
 
     /* When the MSI is used as system clock it will not be disabled */
-    if (RCC_is_msi_in_use())
+    if (RCC_is_msi_in_use() != 0U)
     {
       if (pRCC_OscInitStruct->MSIState != RCC_MSI_ON)
       {
@@ -700,7 +704,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
           /* Wait for Backup domain Write protection disable */
           tickstart = HAL_GetTick();
 
-          while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == RESET)
+          while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == (uint32_t)RESET)
           {
             if ((HAL_GetTick() - tickstart) > DBP_TIMEOUT_VALUE)
             {
@@ -741,7 +745,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
         __HAL_RCC_MSI_CALIBRATIONVALUE_ADJUST(pRCC_OscInitStruct->MSICalibrationValue);
 
         /* Enable backup domain write protection */
-        if (backup_domain == 1)
+        if (backup_domain == 1U)
         {
           HAL_PWR_DisableBkUpD3Access();
         }
@@ -760,7 +764,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
     /* Check the parameters */
     assert_param(IS_RCC_LSI(pRCC_OscInitStruct->LSIState));
 
-    if (RCC_is_lsi_in_use())
+    if (RCC_is_lsi_in_use() != 0U)
     {
       if (pRCC_OscInitStruct->LSIState != RCC_LSI_ON)
       {
@@ -779,7 +783,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
       /* Wait for Backup domain Write protection disable */
       tickstart = HAL_GetTick();
 
-      while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == RESET)
+      while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > DBP_TIMEOUT_VALUE)
         {
@@ -831,7 +835,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
       }
     }
 
-    if (backup_domain == 1)
+    if (backup_domain == 1U)
     {
       HAL_PWR_DisableBkUpD3Access();
     }
@@ -843,12 +847,14 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
     /* Check the parameters */
     assert_param(IS_RCC_LSE(pRCC_OscInitStruct->LSEState));
 
-    if (RCC_is_lse_in_use())
+    if (RCC_is_lse_in_use() != 0U)
     {
-      if ((__HAL_RCC_GET_FLAG(RCC_FLAG_LSERDY) != RESET) &&
-          (pRCC_OscInitStruct->LSEState != (RCC->BDCR & RCC_LSE_BYPASS_DIGITAL)))
+      if (__HAL_RCC_GET_FLAG(RCC_FLAG_LSERDY) != RESET)
       {
-        return HAL_ERROR;
+        if (pRCC_OscInitStruct->LSEState != (RCC->BDCR & RCC_LSE_BYPASS_DIGITAL))
+        {
+          return HAL_ERROR;
+        }
       }
       /* Otherwise, just the calibration is allowed */
     }
@@ -863,7 +869,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
       /* Wait for Backup domain Write protection disable */
       tickstart = HAL_GetTick();
 
-      while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == RESET)
+      while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > DBP_TIMEOUT_VALUE)
         {
@@ -904,7 +910,10 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
       {
         LL_RCC_LSE_EnableBypass();
       }
-
+      else
+      {
+        /* do nothing */
+      }
       /* LSEDrv */
       LL_RCC_LSE_SetDriveCapability(pRCC_OscInitStruct->LSEDriveValue);
 
@@ -924,7 +933,7 @@ HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
       }
     }
 
-    if (backup_domain == 1)
+    if (backup_domain == 1U)
     {
       HAL_PWR_DisableBkUpD3Access();
     }
@@ -959,6 +968,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
 {
   uint32_t tickstart;
   uint32_t backup_domain;
+  UNUSED(FLatency);/*unused variable*/
 
   /* Check Null pointer */
   if (pRCC_ClkInitStruct == NULL)
@@ -967,8 +977,8 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
   }
 
   assert_param(IS_RCC_CLOCKTYPE(pRCC_ClkInitStruct->ClockType));
-  
-  /* Process LSMCUDIV to avoid potential crash, because ck_icn_ls_mcu exceeds his limit, 
+
+  /* Process LSMCUDIV to avoid potential crash, because ck_icn_ls_mcu exceeds his limit,
      when maximum frequency is applied to ck_icn_hs_mcu."
   */
   if ((pRCC_ClkInitStruct->ClockType & RCC_CLOCKTYPE_ICN_LS_MCU) == RCC_CLOCKTYPE_ICN_LS_MCU)
@@ -981,7 +991,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for divider to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->LSMCUDIVR & RCC_LSMCUDIVR_LSMCUDIVRDY) == RESET)
+    while ((RCC->LSMCUDIVR & RCC_LSMCUDIVR_LSMCUDIVRDY) == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > LSMCUDIV_TIMEOUT_VALUE)
       {
@@ -989,20 +999,20 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
       }
     }
   }
-  
+
   if ((pRCC_ClkInitStruct->ClockType & RCC_CLOCKTYPE_ICN_HS_MCU) == RCC_CLOCKTYPE_ICN_HS_MCU)
   {
     /* Set flexgen dividers */
     /* if divider is < 64, use findiv */
-    if (pRCC_ClkInitStruct->ICN_HS_MCU.Div <= 64)
+    if (pRCC_ClkInitStruct->ICN_HS_MCU.Div <= 64U)
     {
       RCC->PREDIVxCFGR[0] = 0x0;
-      RCC->FINDIVxCFGR[0] = ((pRCC_ClkInitStruct->ICN_HS_MCU.Div) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[0] = ((pRCC_ClkInitStruct->ICN_HS_MCU.Div) - 1U) | (1U << 6);
 
       /* Wait for findiv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->FINDIVSR1 & 0x1) != RESET)
+      while ((RCC->FINDIVSR1 & 0x1U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > FINDIV_TIMEOUT_VALUE)
         {
@@ -1010,15 +1020,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_HS_MCU.Div <= 128)
+    else if (pRCC_ClkInitStruct->ICN_HS_MCU.Div <= 128U)
     {
-      RCC->FINDIVxCFGR[0] = ((pRCC_ClkInitStruct->ICN_HS_MCU.Div / 2) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[0] = ((pRCC_ClkInitStruct->ICN_HS_MCU.Div / 2U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[0] = 0x1;
 
       /* Wait for prediv & findiv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x1) != RESET)
+      while ((RCC->PREDIVSR1 & 0x1U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1026,15 +1036,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_HS_MCU.Div <= 256)
+    else if (pRCC_ClkInitStruct->ICN_HS_MCU.Div <= 256U)
     {
-      RCC->FINDIVxCFGR[0] = ((pRCC_ClkInitStruct->ICN_HS_MCU.Div / 4) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[0] = ((pRCC_ClkInitStruct->ICN_HS_MCU.Div / 4U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[0] = 0x3;
 
       /* Wait for prediv & findiv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x1) != RESET)
+      while ((RCC->PREDIVSR1 & 0x1U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1044,13 +1054,13 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     }
     else
     {
-      RCC->FINDIVxCFGR[0] = ((pRCC_ClkInitStruct->ICN_HS_MCU.Div / 1024) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[0] = ((pRCC_ClkInitStruct->ICN_HS_MCU.Div / 1024U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[0] = 0x3FF;
 
       /* Wait for prediv & findiv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x1) != RESET)
+      while ((RCC->PREDIVSR1 & 0x1U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1065,7 +1075,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for xbar to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->XBARxCFGR[0] & 0x80) != RESET)
+    while ((RCC->XBARxCFGR[0] & 0x80U) != (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > XBAR_TIMEOUT_VALUE)
       {
@@ -1092,7 +1102,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for divider to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->APB1DIVR & RCC_APB1DIVR_APB1DIVRDY) == RESET)
+    while ((RCC->APB1DIVR & RCC_APB1DIVR_APB1DIVRDY) == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > APB1DIV_TIMEOUT_VALUE)
       {
@@ -1109,7 +1119,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for divider to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->APB2DIVR & RCC_APB2DIVR_APB2DIVRDY) == RESET)
+    while ((RCC->APB2DIVR & RCC_APB2DIVR_APB2DIVRDY) == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > APB2DIV_TIMEOUT_VALUE)
       {
@@ -1126,7 +1136,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for divider to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->APB3DIVR & RCC_APB3DIVR_APB3DIVRDY) == RESET)
+    while ((RCC->APB3DIVR & RCC_APB3DIVR_APB3DIVRDY) == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > APB3DIV_TIMEOUT_VALUE)
       {
@@ -1143,7 +1153,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for divider to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->APB4DIVR & RCC_APB4DIVR_APB4DIVRDY) == RESET)
+    while ((RCC->APB4DIVR & RCC_APB4DIVR_APB4DIVRDY) == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > APB4DIV_TIMEOUT_VALUE)
       {
@@ -1160,7 +1170,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for divider to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->APBDBGDIVR & RCC_APBDBGDIVR_APBDBGDIVRDY) == RESET)
+    while ((RCC->APBDBGDIVR & RCC_APBDBGDIVR_APBDBGDIVRDY) == (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > APBDBGDIV_TIMEOUT_VALUE)
       {
@@ -1173,15 +1183,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
   {
     /* Set flexgen dividers */
     /* if divider is < 64, use findiv */
-    if (pRCC_ClkInitStruct->ICN_SDMMC.Div <= 64)
+    if (pRCC_ClkInitStruct->ICN_SDMMC.Div <= 64U)
     {
       RCC->PREDIVxCFGR[1] = 0x0;
-      RCC->FINDIVxCFGR[1] = ((pRCC_ClkInitStruct->ICN_SDMMC.Div) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[1] = ((pRCC_ClkInitStruct->ICN_SDMMC.Div) - 1U) | (1U << 6);
 
       /* Wait for findiv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->FINDIVSR1 & 0x2) != RESET)
+      while ((RCC->FINDIVSR1 & 0x2U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > FINDIV_TIMEOUT_VALUE)
         {
@@ -1189,15 +1199,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_SDMMC.Div <= 128)
+    else if (pRCC_ClkInitStruct->ICN_SDMMC.Div <= 128U)
     {
-      RCC->FINDIVxCFGR[1] = ((pRCC_ClkInitStruct->ICN_SDMMC.Div / 2) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[1] = ((pRCC_ClkInitStruct->ICN_SDMMC.Div / 2U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[1] = 0x1;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x2) != RESET)
+      while ((RCC->PREDIVSR1 & 0x2U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1205,15 +1215,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_SDMMC.Div <= 256)
+    else if (pRCC_ClkInitStruct->ICN_SDMMC.Div <= 256U)
     {
-      RCC->FINDIVxCFGR[1] = ((pRCC_ClkInitStruct->ICN_SDMMC.Div / 4) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[1] = ((pRCC_ClkInitStruct->ICN_SDMMC.Div / 4U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[1] = 0x3;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x2) != RESET)
+      while ((RCC->PREDIVSR1 & 0x2U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1223,13 +1233,13 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     }
     else
     {
-      RCC->FINDIVxCFGR[1] = ((pRCC_ClkInitStruct->ICN_SDMMC.Div / 1024) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[1] = ((pRCC_ClkInitStruct->ICN_SDMMC.Div / 1024U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[1] = 0x3FF;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x2) != RESET)
+      while ((RCC->PREDIVSR1 & 0x2U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1244,7 +1254,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for xbar to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->XBARxCFGR[1] & 0x80) != RESET)
+    while ((RCC->XBARxCFGR[1] & 0x80U) != (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > XBAR_TIMEOUT_VALUE)
       {
@@ -1257,15 +1267,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
   {
     /* Set flexgen dividers */
     /* if divider is < 64, use findiv */
-    if (pRCC_ClkInitStruct->ICN_DDR.Div <= 64)
+    if (pRCC_ClkInitStruct->ICN_DDR.Div <= 64U)
     {
       RCC->PREDIVxCFGR[2] = 0x0;
-      RCC->FINDIVxCFGR[2] = ((pRCC_ClkInitStruct->ICN_DDR.Div) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[2] = ((pRCC_ClkInitStruct->ICN_DDR.Div) - 1U) | (1U << 6);
 
       /* Wait for findiv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->FINDIVSR1 & 0x4) != RESET)
+      while ((RCC->FINDIVSR1 & 0x4U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > FINDIV_TIMEOUT_VALUE)
         {
@@ -1273,15 +1283,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_DDR.Div <= 128)
+    else if (pRCC_ClkInitStruct->ICN_DDR.Div <= 128U)
     {
-      RCC->FINDIVxCFGR[2] = ((pRCC_ClkInitStruct->ICN_DDR.Div / 2) - 1) | (1 << 6);;
+      RCC->FINDIVxCFGR[2] = ((pRCC_ClkInitStruct->ICN_DDR.Div / 2U) - 1U) | (1U << 6);;
       RCC->PREDIVxCFGR[2] = 0x1;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x4) != RESET)
+      while ((RCC->PREDIVSR1 & 0x4U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1289,15 +1299,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_DDR.Div <= 256)
+    else if (pRCC_ClkInitStruct->ICN_DDR.Div <= 256U)
     {
-      RCC->FINDIVxCFGR[2] = ((pRCC_ClkInitStruct->ICN_DDR.Div / 4) - 1) | (1 << 6);;
+      RCC->FINDIVxCFGR[2] = ((pRCC_ClkInitStruct->ICN_DDR.Div / 4U) - 1U) | (1U << 6);;
       RCC->PREDIVxCFGR[2] = 0x3;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x4) != RESET)
+      while ((RCC->PREDIVSR1 & 0x4U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1307,13 +1317,13 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     }
     else
     {
-      RCC->FINDIVxCFGR[2] = ((pRCC_ClkInitStruct->ICN_DDR.Div / 1024) - 1) | (1 << 6);;
+      RCC->FINDIVxCFGR[2] = ((pRCC_ClkInitStruct->ICN_DDR.Div / 1024U) - 1U) | (1U << 6);;
       RCC->PREDIVxCFGR[2] = 0x3FF;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x4) != RESET)
+      while ((RCC->PREDIVSR1 & 0x4U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1328,7 +1338,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for xbar to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->XBARxCFGR[2] & 0x80) != RESET)
+    while ((RCC->XBARxCFGR[2] & 0x80U) != (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > XBAR_TIMEOUT_VALUE)
       {
@@ -1341,15 +1351,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
   {
     /* Set flexgen dividers */
     /* if divider is < 64, use findiv */
-    if (pRCC_ClkInitStruct->ICN_DISPLAY.Div <= 64)
+    if (pRCC_ClkInitStruct->ICN_DISPLAY.Div <= 64U)
     {
       RCC->PREDIVxCFGR[3] = 0x0;
-      RCC->FINDIVxCFGR[3] = ((pRCC_ClkInitStruct->ICN_DISPLAY.Div) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[3] = ((pRCC_ClkInitStruct->ICN_DISPLAY.Div) - 1U) | (1U << 6);
 
       /* Wait for findiv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->FINDIVSR1 & 0x8) != RESET)
+      while ((RCC->FINDIVSR1 & 0x8U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > FINDIV_TIMEOUT_VALUE)
         {
@@ -1357,15 +1367,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_DISPLAY.Div <= 128)
+    else if (pRCC_ClkInitStruct->ICN_DISPLAY.Div <= 128U)
     {
-      RCC->FINDIVxCFGR[3] = ((pRCC_ClkInitStruct->ICN_DISPLAY.Div / 2) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[3] = ((pRCC_ClkInitStruct->ICN_DISPLAY.Div / 2U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[3] = 0x1;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x8) != RESET)
+      while ((RCC->PREDIVSR1 & 0x8U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1373,15 +1383,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_DISPLAY.Div <= 256)
+    else if (pRCC_ClkInitStruct->ICN_DISPLAY.Div <= 256U)
     {
-      RCC->FINDIVxCFGR[3] = ((pRCC_ClkInitStruct->ICN_DISPLAY.Div / 4) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[3] = ((pRCC_ClkInitStruct->ICN_DISPLAY.Div / 4U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[3] = 0x3;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x8) != RESET)
+      while ((RCC->PREDIVSR1 & 0x8U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1391,13 +1401,13 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     }
     else
     {
-      RCC->FINDIVxCFGR[3] = ((pRCC_ClkInitStruct->ICN_DISPLAY.Div / 1024) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[3] = ((pRCC_ClkInitStruct->ICN_DISPLAY.Div / 1024U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[3] = 0x3FF;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x8) != RESET)
+      while ((RCC->PREDIVSR1 & 0x8U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1412,7 +1422,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for xbar to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->XBARxCFGR[3] & 0x80) != RESET)
+    while ((RCC->XBARxCFGR[3] & 0x80U) != (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > XBAR_TIMEOUT_VALUE)
       {
@@ -1425,15 +1435,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
   {
     /* Set flexgen dividers */
     /* if divider is < 64, use findiv */
-    if (pRCC_ClkInitStruct->ICN_HCL.Div <= 64)
+    if (pRCC_ClkInitStruct->ICN_HCL.Div <= 64U)
     {
       RCC->PREDIVxCFGR[4] = 0x0;
-      RCC->FINDIVxCFGR[4] = ((pRCC_ClkInitStruct->ICN_HCL.Div) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[4] = ((pRCC_ClkInitStruct->ICN_HCL.Div) - 1U) | (1U << 6);
 
       /* Wait for findiv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->FINDIVSR1 & 0x10) != RESET)
+      while ((RCC->FINDIVSR1 & 0x10U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > FINDIV_TIMEOUT_VALUE)
         {
@@ -1441,15 +1451,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_HCL.Div <= 128)
+    else if (pRCC_ClkInitStruct->ICN_HCL.Div <= 128U)
     {
-      RCC->FINDIVxCFGR[4] = ((pRCC_ClkInitStruct->ICN_HCL.Div / 2) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[4] = ((pRCC_ClkInitStruct->ICN_HCL.Div / 2U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[4] = 0x1;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x10) != RESET)
+      while ((RCC->PREDIVSR1 & 0x10U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1457,15 +1467,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_HCL.Div <= 256)
+    else if (pRCC_ClkInitStruct->ICN_HCL.Div <= 256U)
     {
-      RCC->FINDIVxCFGR[4] = ((pRCC_ClkInitStruct->ICN_HCL.Div / 4) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[4] = ((pRCC_ClkInitStruct->ICN_HCL.Div / 4U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[4] = 0x3;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x10) != RESET)
+      while ((RCC->PREDIVSR1 & 0x10U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1475,13 +1485,13 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     }
     else
     {
-      RCC->FINDIVxCFGR[4] = ((pRCC_ClkInitStruct->ICN_HCL.Div / 1024) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[4] = ((pRCC_ClkInitStruct->ICN_HCL.Div / 1024U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[4] = 0x3FF;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x10) != RESET)
+      while ((RCC->PREDIVSR1 & 0x10U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1496,7 +1506,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for xbar to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->XBARxCFGR[4] & 0x80) != RESET)
+    while ((RCC->XBARxCFGR[4] & 0x80U) != (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > XBAR_TIMEOUT_VALUE)
       {
@@ -1509,15 +1519,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
   {
     /* Set flexgen dividers */
     /* if divider is < 64, use findiv */
-    if (pRCC_ClkInitStruct->ICN_NIC.Div <= 64)
+    if (pRCC_ClkInitStruct->ICN_NIC.Div <= 64U)
     {
       RCC->PREDIVxCFGR[5] = 0x0;
-      RCC->FINDIVxCFGR[5] = ((pRCC_ClkInitStruct->ICN_NIC.Div) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[5] = ((pRCC_ClkInitStruct->ICN_NIC.Div) - 1U) | (1U << 6);
 
       /* Wait for findiv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->FINDIVSR1 & 0x20) != RESET)
+      while ((RCC->FINDIVSR1 & 0x20U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > FINDIV_TIMEOUT_VALUE)
         {
@@ -1525,15 +1535,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_NIC.Div <= 128)
+    else if (pRCC_ClkInitStruct->ICN_NIC.Div <= 128U)
     {
-      RCC->FINDIVxCFGR[5] = ((pRCC_ClkInitStruct->ICN_NIC.Div / 2) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[5] = ((pRCC_ClkInitStruct->ICN_NIC.Div / 2U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[5] = 0x1;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x20) != RESET)
+      while ((RCC->PREDIVSR1 & 0x20U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1541,15 +1551,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_NIC.Div <= 256)
+    else if (pRCC_ClkInitStruct->ICN_NIC.Div <= 256U)
     {
-      RCC->FINDIVxCFGR[5] = ((pRCC_ClkInitStruct->ICN_NIC.Div / 4) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[5] = ((pRCC_ClkInitStruct->ICN_NIC.Div / 4U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[5] = 0x3;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x20) != RESET)
+      while ((RCC->PREDIVSR1 & 0x20U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1559,13 +1569,13 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     }
     else
     {
-      RCC->FINDIVxCFGR[5] = ((pRCC_ClkInitStruct->ICN_NIC.Div / 1024) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[5] = ((pRCC_ClkInitStruct->ICN_NIC.Div / 1024U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[5] = 0x3FF;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x20) != RESET)
+      while ((RCC->PREDIVSR1 & 0x20U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1580,7 +1590,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for xbar to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->XBARxCFGR[5] & 0x80) != RESET)
+    while ((RCC->XBARxCFGR[5] & 0x80U) != (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > XBAR_TIMEOUT_VALUE)
       {
@@ -1593,15 +1603,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
   {
     /* Set flexgen dividers */
     /* if divider is < 64, use findiv */
-    if (pRCC_ClkInitStruct->ICN_VID.Div <= 64)
+    if (pRCC_ClkInitStruct->ICN_VID.Div <= 64U)
     {
       RCC->PREDIVxCFGR[6] = 0x0;
-      RCC->FINDIVxCFGR[6] = ((pRCC_ClkInitStruct->ICN_VID.Div) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[6] = ((pRCC_ClkInitStruct->ICN_VID.Div) - 1U) | (1U << 6);
 
       /* Wait for findiv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->FINDIVSR1 & 0x40) != RESET)
+      while ((RCC->FINDIVSR1 & 0x40U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > FINDIV_TIMEOUT_VALUE)
         {
@@ -1609,15 +1619,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_VID.Div <= 128)
+    else if (pRCC_ClkInitStruct->ICN_VID.Div <= 128U)
     {
-      RCC->FINDIVxCFGR[6] = ((pRCC_ClkInitStruct->ICN_VID.Div / 2) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[6] = ((pRCC_ClkInitStruct->ICN_VID.Div / 2U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[6] = 0x1;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x40) != RESET)
+      while ((RCC->PREDIVSR1 & 0x40U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1625,15 +1635,15 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
         }
       }
     }
-    else if (pRCC_ClkInitStruct->ICN_VID.Div <= 256)
+    else if (pRCC_ClkInitStruct->ICN_VID.Div <= 256U)
     {
-      RCC->FINDIVxCFGR[6] = ((pRCC_ClkInitStruct->ICN_VID.Div / 4) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[6] = ((pRCC_ClkInitStruct->ICN_VID.Div / 4U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[6] = 0x3;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x40) != RESET)
+      while ((RCC->PREDIVSR1 & 0x40U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1643,13 +1653,13 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     }
     else
     {
-      RCC->FINDIVxCFGR[6] = ((pRCC_ClkInitStruct->ICN_VID.Div / 1024) - 1) | (1 << 6);
+      RCC->FINDIVxCFGR[6] = ((pRCC_ClkInitStruct->ICN_VID.Div / 1024U) - 1U) | (1U << 6);
       RCC->PREDIVxCFGR[6] = 0x3FF;
 
       /* Wait for prediv to be ready */
       tickstart = HAL_GetTick();
 
-      while ((RCC->PREDIVSR1 & 0x40) != RESET)
+      while ((RCC->PREDIVSR1 & 0x40U) != (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > PREDIV_TIMEOUT_VALUE)
         {
@@ -1664,7 +1674,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
     /* Wait for xbar to be ready */
     tickstart = HAL_GetTick();
 
-    while ((RCC->XBARxCFGR[6] & 0x80) != RESET)
+    while ((RCC->XBARxCFGR[6] & 0x80U) != (uint32_t)RESET)
     {
       if ((HAL_GetTick() - tickstart) > XBAR_TIMEOUT_VALUE)
       {
@@ -1685,7 +1695,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
       /* Wait for Backup domain Write protection disable */
       tickstart = HAL_GetTick();
 
-      while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == RESET)
+      while ((PWR->BDCR1 & PWR_BDCR1_DBD3P) == (uint32_t)RESET)
       {
         if ((HAL_GetTick() - tickstart) > DBP_TIMEOUT_VALUE)
         {
@@ -1715,7 +1725,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef   *const pRCC_Clk
       LL_RCC_DisableRTC();
     }
 
-    if (backup_domain == 1)
+    if (backup_domain == 1U)
     {
       HAL_PWR_DisableBkUpD3Access();
     }
@@ -1905,7 +1915,7 @@ void HAL_RCC_MCOConfig(uint32_t RCC_MCOx, uint32_t RCC_MCOSource, uint32_t RCC_M
       RCC_PeriphCLKInit.XBAR_Channel = RCC_PERIPHCLK_MCO1;
       RCC_PeriphCLKInit.XBAR_ClkSrc = RCC_MCOSource & 0xFFUL;
       RCC_PeriphCLKInit.Div = RCC_MCODiv;
-      HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphCLKInit);
+      (void)HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphCLKInit);
     }
   }
   else if (mcoindex == RCC_MCO2_INDEX)
@@ -1932,8 +1942,12 @@ void HAL_RCC_MCOConfig(uint32_t RCC_MCOx, uint32_t RCC_MCOSource, uint32_t RCC_M
       RCC_PeriphCLKInit.XBAR_Channel = RCC_PERIPHCLK_MCO2;
       RCC_PeriphCLKInit.XBAR_ClkSrc = RCC_MCOSource & 0xFFUL;
       RCC_PeriphCLKInit.Div = RCC_MCODiv;
-      HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphCLKInit);
+      (void)HAL_RCCEx_PeriphCLKConfig(&RCC_PeriphCLKInit);
     }
+  }
+  else
+  {
+    /* nothing to do */
   }
 }
 
@@ -1995,7 +2009,7 @@ void HAL_RCC_GetOscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
   }
   pRCC_OscInitStruct->MSICalibrationValue = LL_RCC_MSI_GetCalibTrimming();
 
-  if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0)
+  if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0U)
   {
     pRCC_OscInitStruct->MSIFrequency = RCC_MSI_4MHZ;
   }
@@ -2044,43 +2058,51 @@ void HAL_RCC_GetOscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct)
   * @param  pFLatency  This parameter is not used on STM32MP25.
   * @retval None
   */
-void HAL_RCC_GetClockConfig(RCC_ClkInitTypeDef  *pRCC_ClkInitStruct, uint32_t *pFLatency)
+void HAL_RCC_GetClockConfig(RCC_ClkInitTypeDef  *pRCC_ClkInitStruct, const uint32_t *pFLatency)
 {
   pRCC_ClkInitStruct->ClockType = RCC_CLOCKTYPE_ICN_HS_MCU | RCC_CLOCKTYPE_ICN_LS_MCU | RCC_CLOCKTYPE_ICN_SDMMC |
                                   RCC_CLOCKTYPE_ICN_DDR | RCC_CLOCKTYPE_ICN_DISPLAY | RCC_CLOCKTYPE_ICN_HCL | RCC_CLOCKTYPE_ICN_NIC |
                                   RCC_CLOCKTYPE_ICN_VID | RCC_CLOCKTYPE_ICN_APB1 | RCC_CLOCKTYPE_ICN_APB2 | RCC_CLOCKTYPE_ICN_APB3 |
                                   RCC_CLOCKTYPE_ICN_APB4 | RCC_CLOCKTYPE_ICN_APBDBG | RCC_CLOCKTYPE_RTC;
-
+  uint32_t config;
   /* Get ICN_HS_MCU config */
+  UNUSED(pFLatency); /*unused variable*/
   pRCC_ClkInitStruct->ICN_HS_MCU.XBAR_ClkSrc = LL_RCC_GetCrossbarSource(0);
-  pRCC_ClkInitStruct->ICN_HS_MCU.Div = ((RCC->FINDIVxCFGR[0] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1) * ((RCC->PREDIVxCFGR[0] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1);
+  config = ((RCC->FINDIVxCFGR[0] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1U);
+  pRCC_ClkInitStruct->ICN_HS_MCU.Div = config * ((RCC->PREDIVxCFGR[0] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1U);
 
   /* Get ICN_LS_MCU config */
-  pRCC_ClkInitStruct->ICN_LSMCU_Div = RCC->LSMCUDIVR & 1;
+  pRCC_ClkInitStruct->ICN_LSMCU_Div = RCC->LSMCUDIVR & 1U;
 
   /* Get ICN_SDMMC config */
   pRCC_ClkInitStruct->ICN_SDMMC.XBAR_ClkSrc = LL_RCC_GetCrossbarSource(1);
-  pRCC_ClkInitStruct->ICN_SDMMC.Div = ((RCC->FINDIVxCFGR[1] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1) * ((RCC->PREDIVxCFGR[1] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1);
+  config = ((RCC->FINDIVxCFGR[1] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1U);
+  pRCC_ClkInitStruct->ICN_SDMMC.Div = config * ((RCC->PREDIVxCFGR[1] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1U);
 
   /* Get ICN_DDR config */
   pRCC_ClkInitStruct->ICN_DDR.XBAR_ClkSrc = LL_RCC_GetCrossbarSource(2);
-  pRCC_ClkInitStruct->ICN_DDR.Div = ((RCC->FINDIVxCFGR[2] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1) * ((RCC->PREDIVxCFGR[2] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1);
+  config = ((RCC->FINDIVxCFGR[2] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1U);
+  pRCC_ClkInitStruct->ICN_DDR.Div = config * ((RCC->PREDIVxCFGR[2] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1U);
 
   /* Get ICN_DISPLAY config */
   pRCC_ClkInitStruct->ICN_DISPLAY.XBAR_ClkSrc = LL_RCC_GetCrossbarSource(3);
-  pRCC_ClkInitStruct->ICN_DISPLAY.Div = ((RCC->FINDIVxCFGR[3] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1) * ((RCC->PREDIVxCFGR[3] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1);
+  config = ((RCC->FINDIVxCFGR[3] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1U);
+  pRCC_ClkInitStruct->ICN_DISPLAY.Div = config * ((RCC->PREDIVxCFGR[3] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1U);
 
   /* Get ICN_HCL config */
   pRCC_ClkInitStruct->ICN_HCL.XBAR_ClkSrc = LL_RCC_GetCrossbarSource(4);
-  pRCC_ClkInitStruct->ICN_HCL.Div = ((RCC->FINDIVxCFGR[4] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1) * ((RCC->PREDIVxCFGR[4] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1);
+  config = ((RCC->FINDIVxCFGR[4] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1U);
+  pRCC_ClkInitStruct->ICN_HCL.Div = config * ((RCC->PREDIVxCFGR[4] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1U);
 
   /* Get ICN_NIC config */
   pRCC_ClkInitStruct->ICN_NIC.XBAR_ClkSrc = LL_RCC_GetCrossbarSource(5);
-  pRCC_ClkInitStruct->ICN_NIC.Div = ((RCC->FINDIVxCFGR[5] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1) * ((RCC->PREDIVxCFGR[5] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1);
+  config = ((RCC->FINDIVxCFGR[5] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1U);
+  pRCC_ClkInitStruct->ICN_NIC.Div = config * ((RCC->PREDIVxCFGR[5] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1U);
 
   /* Get ICN_VID config */
   pRCC_ClkInitStruct->ICN_VID.XBAR_ClkSrc = LL_RCC_GetCrossbarSource(6);
-  pRCC_ClkInitStruct->ICN_VID.Div = ((RCC->FINDIVxCFGR[6] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1) * ((RCC->PREDIVxCFGR[6] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1);
+  config = ((RCC->FINDIVxCFGR[6] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1U);
+  pRCC_ClkInitStruct->ICN_VID.Div = config * ((RCC->PREDIVxCFGR[6] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1U);
 
   /* Get ICN_APB1 config */
   pRCC_ClkInitStruct->APB1_Div = LL_RCC_GetAPB1Prescaler();
@@ -2098,7 +2120,7 @@ void HAL_RCC_GetClockConfig(RCC_ClkInitTypeDef  *pRCC_ClkInitStruct, uint32_t *p
   pRCC_ClkInitStruct->APBDBG_Div = LL_RCC_GetAPBDBGPrescaler();
 
   /* Get RTC settings */
-  if (READ_BIT(RCC->BDCR, RCC_BDCR_RTCCKEN) == 0)
+  if (READ_BIT(RCC->BDCR, RCC_BDCR_RTCCKEN) == 0U)
   {
     pRCC_ClkInitStruct->RTCState = RCC_RTC_OFF;
   }
@@ -2142,7 +2164,7 @@ uint32_t HAL_RCC_GetFreq(uint32_t clk)
   uint32_t fgindex;
   uint32_t xbar_source;
   uint32_t xbar_source_freq;
-
+  uint32_t config;
   /* Identify flexgen id based on 'clk' */
   switch (clk)
   {
@@ -2212,22 +2234,24 @@ uint32_t HAL_RCC_GetFreq(uint32_t clk)
       break;
 
     case RCC_XBAR_CLKSRC_MSI:
-      if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0)
+      if (READ_BIT(RCC->BDCR, RCC_BDCR_MSIFREQSEL) == 0U)
       {
         xbar_source_freq = RCC_MSI_4MHZ;
       }
       else
+      {
         xbar_source_freq = RCC_MSI_16MHZ;
+      }
       break;
 
     default:
       xbar_source_freq = 0;
       break;
   }
+  config = ((RCC->FINDIVxCFGR[fgindex] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1U);
+  fg_freq = xbar_source_freq / (config * ((RCC->PREDIVxCFGR[fgindex] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1U));
 
-  fg_freq = xbar_source_freq / (((RCC->FINDIVxCFGR[fgindex] & RCC_FINDIVxCFGR_FINDIVx_Msk) + 1) * ((RCC->PREDIVxCFGR[fgindex] & RCC_PREDIVxCFGR_PREDIVx_Msk) + 1));
-
-  lsmcudiv = ((uint32_t)(RCC->LSMCUDIVR) & RCC_LSMCUDIVR_LSMCUDIV_Msk) + 1;
+  lsmcudiv = ((uint32_t)(RCC->LSMCUDIVR) & RCC_LSMCUDIVR_LSMCUDIV_Msk) + 1U;
 
   switch (clk)
   {
@@ -2265,7 +2289,7 @@ uint32_t HAL_RCC_GetFreq(uint32_t clk)
       freq = fg_freq / ((uint32_t)(1UL << READ_BIT(RCC->APBDBGDIVR, RCC_APBDBGDIVR_APBDBGDIV)) * lsmcudiv);
       break;
     default: /* Unknown clock */
-      freq = 0xFFFFFFFF;
+      freq = 0xFFFFFFFFU;
       break;
   }
 
@@ -2339,7 +2363,7 @@ uint32_t HAL_RCC_GetFreq(uint32_t clk)
   */
 uint32_t HAL_RCC_GetSource(uint32_t clk_id)
 {
-  uint32_t source = 0;
+  uint32_t source;
   RCC_PeriphCLKInitTypeDef PeriphCLKConfig = {0};
 
   PeriphCLKConfig.XBAR_Channel = clk_id;
@@ -2368,7 +2392,7 @@ void HAL_RCC_IRQHandler(void)
 {
   uint32_t Flags = 0;
 
-  __HAL_RCC_CLEAR_IT(0xFFFFFFFF);
+  __HAL_RCC_CLEAR_IT(0xFFFFFFFFU);
 
   /* RCC interrupt user callback */
   HAL_RCC_Callback(Flags);
@@ -2385,6 +2409,7 @@ __weak void HAL_RCC_Callback(uint32_t Flags)
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_RCC_Callback could be implemented in the user file
   */
+  UNUSED(Flags); /* unused variable */
 }
 
 /**
@@ -2410,6 +2435,7 @@ __weak void HAL_RCC_WAKEUP_Callback(uint32_t Flags)
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_RCC_WAKEUP_Callback could be implemented in the user file
   */
+  UNUSED(Flags); /* unused variable */
 }
 
 /**
@@ -2435,6 +2461,7 @@ __weak void HAL_RCC_HSIMON_Callback(uint32_t Flags)
   /* NOTE : This function Should not be modified, when the callback is needed,
             the HAL_RCC_HSIMON_Callback could be implemented in the user file
   */
+  UNUSED(Flags); /* unused variable */
 }
 
 /**
@@ -2459,7 +2486,9 @@ __STATIC_INLINE HAL_StatusTypeDef WAIT_MUTEX_WRITTEN_IN_RCC_RxSEMCR(uint32_t Loc
     return HAL_OK;
   }
   else
+  {
     return HAL_ERROR;
+  }
 }
 
 /**
@@ -2683,14 +2712,14 @@ HAL_StatusTypeDef HAL_RCC_GetConfigAttributes(uint32_t LocalResIndex, uint32_t *
   *pLocalResAttributes = RCC_LOCALRES_ATTR_INVALID;
 
   /* Get local resource lock state */
-  if (LL_RCC_IsLockedLocalResConfig(LocalResIndex) == 1)
+  if (LL_RCC_IsLockedLocalResConfig(LocalResIndex) == 1U)
   {
     /* to set lock configuration attribute accordingly */
     local_res_attr |= RCC_LOCALRES_LOCKED;
   }
 
   /* Get local resource security filtering state */
-  if (LL_RCC_IsEnabledLocalResSecure(LocalResIndex) == 1)
+  if (LL_RCC_IsEnabledLocalResSecure(LocalResIndex) == 1U)
   {
     /* to set security filtering attribute accordingly */
     local_res_attr |= RCC_LOCALRES_SEC;
@@ -2701,7 +2730,7 @@ HAL_StatusTypeDef HAL_RCC_GetConfigAttributes(uint32_t LocalResIndex, uint32_t *
   }
 
   /* Get local resource privilege filtering state */
-  if (LL_RCC_IsEnabledLocalResPrivilege(LocalResIndex) == 1)
+  if (LL_RCC_IsEnabledLocalResPrivilege(LocalResIndex) == 1U)
   {
     /* to set privilege filtering attribute accordingly */
     local_res_attr |= RCC_LOCALRES_PRIV;
@@ -2752,7 +2781,7 @@ HAL_StatusTypeDef HAL_RCC_TakeLocalResSemaphore(uint32_t LocalResIndex)
   /* - take semaphore */
   LL_RCC_TakeLocalResSem(LocalResIndex);
   /* - once mutex has been updated in target register, */
-  WAIT_MUTEX_WRITTEN_IN_RCC_RxSEMCR(LocalResIndex);
+  (void)WAIT_MUTEX_WRITTEN_IN_RCC_RxSEMCR(LocalResIndex);
   /*   check semaphore has been taken */
   /*   and set output status accordingly */
   /*   <=> if semaphore has not been taken by : */
@@ -2810,7 +2839,7 @@ HAL_StatusTypeDef HAL_RCC_ReleaseLocalResSemaphore(uint32_t LocalResIndex)
   /* - release semaphore */
   LL_RCC_ReleaseLocalResSem(LocalResIndex);
   /* - once mutex has been updated in target register, */
-  WAIT_MUTEX_WRITTEN_IN_RCC_RxSEMCR(LocalResIndex);
+  (void)WAIT_MUTEX_WRITTEN_IN_RCC_RxSEMCR(LocalResIndex);
   /*   check semaphore has been released */
   /*   and set output status accordingly */
   /*   <=> if semaphore has not been released by : */

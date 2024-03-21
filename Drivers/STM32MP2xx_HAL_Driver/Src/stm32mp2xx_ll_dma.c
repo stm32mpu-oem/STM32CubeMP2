@@ -426,42 +426,42 @@ uint32_t LL_DMA_DeInit(DMA_TypeDef *DMAx, uint32_t Channel)
 #if ! defined(CORE_CM0PLUS)
     if (DMAx == HPDMA1)
     {
-      /* Force reset of HDMA1 clock */      /* Must be replaced by LL when there will be available in RCC */
-      __HAL_RCC_HPDMA1_FORCE_RESET();
+      /* Force reset of HDMA1 clock */
+      LL_RCC_HPDMA1_ForceReset();
 
       /* Release reset of HDMA1 clock */
-      __HAL_RCC_HPDMA1_RELEASE_RESET();
+      LL_RCC_HPDMA1_ReleaseReset();
     }
     else if (DMAx == HPDMA2)
     {
-      /* Force reset of HDMA2 clock */      /* Must be replaced by LL when there will be available in RCC */
-      __HAL_RCC_HPDMA2_FORCE_RESET();
+      /* Force reset of HDMA2 clock */
+      LL_RCC_HPDMA2_ForceReset();
 
       /* Release reset of HDMA2 clock */
-      __HAL_RCC_HPDMA2_RELEASE_RESET();
+      LL_RCC_HPDMA2_ReleaseReset();
     }
     else if (DMAx == HPDMA3)
     {
-      /* Force reset of HDMA3 clock */      /* Must be replaced by LL when there will be available in RCC */
-      __HAL_RCC_HPDMA3_FORCE_RESET();
+      /* Force reset of HDMA3 clock */
+      LL_RCC_HPDMA3_ForceReset();
 
       /* Release reset of HDMA3 clock */
-      __HAL_RCC_HPDMA3_RELEASE_RESET();
+      LL_RCC_HPDMA3_ReleaseReset();
     }
     else
     {
-      /* Force reset of LPDMA clock */      /* Must be replace dby LL when there will be available in RCC */
-      __HAL_RCC_LPDMA_FORCE_RESET();
+      /* Force reset of LPDMA clock */
+      LL_RCC_LPDMA_ForceReset();
 
       /* Release reset of LPDMA clock */
-      __HAL_RCC_LPDMA_RELEASE_RESET();
+      LL_RCC_LPDMA_ReleaseReset();
     }
 #else
-    /* Force reset of LPDMA clock */       /* EME Must be replace by LL when there will be available in RCC */
-    __HAL_RCC_LPDMA_FORCE_RESET();
+    /* Force reset of LPDMA clock */
+    LL_RCC_LPDMA_ForceReset();
 
     /* Release reset of LPDMA clock */
-    __HAL_RCC_LPDMA_RELEASE_RESET();
+    LL_RCC_LPDMA_ReleaseReset();
 #endif /* ! CORE_CM0PLUS */
   }
   else

@@ -59,6 +59,9 @@
          (++) UpdateMode: specifies whether the update of the autoreload and
               the compare values is done immediately or after the end of current
               period.
+         (++) Input1Source: Source selected for input1 (GPIO or comparator output).
+         (++) Input2Source: Source selected for input2 (GPIO or comparator output).
+              Input2 is used only for encoder feature so is used only for LPTIM1 instance.
 
       (#)Six modes are available:
 
@@ -397,6 +400,25 @@ HAL_StatusTypeDef HAL_LPTIM_Init(LPTIM_HandleTypeDef *hlptim)
 
   /* Write to LPTIMx CFGR */
   hlptim->Instance->CFGR = tmpcfgr;
+
+  /* Configure LPTIM input sources */
+  if (hlptim->Instance == LPTIM1)
+  {
+    /* Check LPTIM Input1 and Input2 sources */
+    assert_param(IS_LPTIM_INPUT1_SOURCE(hlptim->Instance, hlptim->Init.Input1Source));
+    assert_param(IS_LPTIM_INPUT2_SOURCE(hlptim->Instance, hlptim->Init.Input2Source));
+
+    /* Configure LPTIM Input1 and Input2 sources */
+    hlptim->Instance->CFGR2 = (hlptim->Init.Input1Source | hlptim->Init.Input2Source);
+  }
+  else
+  {
+    /* Check LPTIM2 Input1 source */
+    assert_param(IS_LPTIM_INPUT1_SOURCE(hlptim->Instance, hlptim->Init.Input1Source));
+
+    /* Configure LPTIM2 Input1 source */
+    hlptim->Instance->CFGR2 = hlptim->Init.Input1Source;
+  }
 
   /* Initialize the LPTIM channels state */
   LPTIM_CHANNEL_STATE_SET_ALL(hlptim, HAL_LPTIM_CHANNEL_STATE_READY);

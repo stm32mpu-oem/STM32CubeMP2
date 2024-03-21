@@ -121,6 +121,14 @@ typedef struct
                                                   or each external event.
                                                   This parameter can be a value of @ref LPTIM_Counter_Source */
 
+  uint32_t                     Input1Source;      /*!< Specifies source selected for input1 (GPIO or comparator output).
+                                                  This parameter can be a value of @ref LPTIM_Input1_Source */
+
+  uint32_t                     Input2Source;      /*!< Specifies source selected for input2 (GPIO or comparator output).
+                                                  Note: This parameter is used only for encoder feature so is used only
+                                                  for LPTIM1 instance.
+                                                  This parameter can be a value of @ref LPTIM_Input2_Source */
+
   uint32_t                     RepetitionCounter;/*!< Specifies the repetition counter value.
                                                   Each time the RCR downcounter reaches zero, an update event is
                                                   generated and counting restarts from the RCR value (N).
@@ -373,6 +381,27 @@ typedef  void (*pLPTIM_CallbackTypeDef)(LPTIM_HandleTypeDef *hlptim);  /*!< poin
 
 #define LPTIM_COUNTERSOURCE_INTERNAL            0x00000000U
 #define LPTIM_COUNTERSOURCE_EXTERNAL            LPTIM_CFGR_COUNTMODE
+/**
+  * @}
+  */
+
+/** @defgroup LPTIM_Input1_Source LPTIM Input1 Source
+  * @{
+  */
+
+#define LPTIM_INPUT1SOURCE_GPIO          0x00000000UL                                  /*!< For LPTIM1 and LPTIM2 */
+#define LPTIM_INPUT1SOURCE_COMP1          /*!< For LPTIM1 and LPTIM2 */
+#define LPTIM_INPUT1SOURCE_COMP2          /*!< For LPTIM2 */
+#define LPTIM_INPUT1SOURCE_COMP1_COMP2    /*!< For LPTIM2 */
+/**
+  * @}
+  */
+
+/** @defgroup LPTIM_Input2_Source LPTIM Input2 Source
+  * @{
+  */
+
+#define LPTIM_INPUT2SOURCE_GPIO         0x00000000UL                                           /*!< For LPTIM1 and LPTIM2 */
 /**
   * @}
   */
@@ -1142,6 +1171,24 @@ HAL_LPTIM_StateTypeDef HAL_LPTIM_GetState(LPTIM_HandleTypeDef *hlptim);
                                                  ((__FILTER__) == LPTIM_ICFLT_CLOCK_DIV8))
 
 #define IS_LPTIM_REPETITION(__REPETITION__)     ((__REPETITION__) <= 0x000000FFUL)
+
+#define IS_LPTIM_INPUT1_SOURCE(__INSTANCE__, __SOURCE__) \
+  ((((__INSTANCE__) == LPTIM1) || \
+    ((__INSTANCE__) == LPTIM2) || \
+    ((__INSTANCE__) == LPTIM3) || \
+    ((__INSTANCE__) == LPTIM4) || \
+    ((__INSTANCE__) == LPTIM5)) && \
+   ((__SOURCE__) == LPTIM_INPUT1SOURCE_GPIO))
+
+#if defined(CORE_CM0PLUS)
+#define IS_LPTIM_INPUT2_SOURCE(__INSTANCE__, __SOURCE__) \
+  (0 == 1)
+#else /* CORE_CM0PLUS */
+#define IS_LPTIM_INPUT2_SOURCE(__INSTANCE__, __SOURCE__) \
+  ((((__INSTANCE__) == LPTIM1) || \
+    ((__INSTANCE__) == LPTIM2)) && \
+   (((__SOURCE__) == LPTIM_INPUT2SOURCE_GPIO)))
+#endif /* else CORE_CM0PLUS */
 
 #if defined(CORE_CM0PLUS)
 #define IS_LPTIM_IC1_SOURCE(__INSTANCE__, __SOURCE__) \

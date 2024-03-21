@@ -80,10 +80,10 @@ ErrorStatus LL_I3C_DeInit(I3C_TypeDef *I3Cx)
   assert_param(IS_I3C_ALL_INSTANCE(I3Cx));
 
   /* Force reset of I3C clock */
-  LL_APB1_GRP1_ForceReset(LL_APB1_GRP1_PERIPH_I3C1);
+  LL_RCC_I3C1_ForceReset();
 
   /* Release reset of I3C clock */
-  LL_APB1_GRP1_ReleaseReset(LL_APB1_GRP1_PERIPH_I3C1);
+  LL_RCC_I3C1_ReleaseReset();
 
   return status;
 }

@@ -49,16 +49,13 @@
 /**
   * @brief   AF 0 selection
   */
-#if defined(STM32MP2XX_ASSY3_1_0)
-#define GPIO_AF0_HDP           ((uint8_t)0x00)  /* HDP Alternate Function mapping for HDP0-6                    */
-#endif
 #define GPIO_AF0_TRACE         ((uint8_t)0x00)  /* TRACE Alternate Function mapping for TRACED0-15 et TRACECLK  */
 #define GPIO_AF0_DBTRGI        ((uint8_t)0x00)  /* DBTRGI Alternate Function mapping                            */
 
 /**
  * @brief   AF 1 selection
  */
-#define GPIO_AF1_HDP           ((uint8_t)0x01)  /* HDP Alternate Function mapping HDP 0 1 2 6 7                 */
+#define GPIO_AF1_HDP           ((uint8_t)0x01)  /* HDP Alternate Function mapping                               */
 #define GPIO_AF1_LPTIM1        ((uint8_t)0x01)  /* LPTIM1 Alternate Function mapping IN1 IN2 CH1 CH2 ETR        */
 #define GPIO_AF1_LPTIM2        ((uint8_t)0x01)  /* LPTIM2 Alternate Function mapping IN1 IN2 CH1 CH2 ETR        */
 #define GPIO_AF1_MCO1          ((uint8_t)0x01)  /* MCO1 Alternate Function mapping                              */
@@ -75,9 +72,7 @@
 /**
   * @brief   AF 2 selection
   */
-#if defined(STM32MP2XX_ASSY3_1_0)
 #define GPIO_AF2_HDP           ((uint8_t)0x02)  /* HDP Alternate Function mapping    */
-#endif
 #define GPIO_AF2_LPTIM3        ((uint8_t)0x02)  /* LPTIM3 Alternate Function mapping */
 #define GPIO_AF2_LPTIM2        ((uint8_t)0x02)  /* LPTIM2 Alternate Function mapping */
 #define GPIO_AF2_SPDIFRX       ((uint8_t)0x02)  /* SPDIFRX Alternate Function mapping */

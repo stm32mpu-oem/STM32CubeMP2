@@ -227,7 +227,7 @@ typedef struct
 #define HSI_TIMEOUT_VALUE          (2U)    /* 2 ms (minimum Tick + 1) */
 #define MSI_TIMEOUT_VALUE          (2U)    /* 2 ms (minimum Tick + 1) */
 #define XBAR_TIMEOUT_VALUE         (2U)    /* 2 ms (minimum Tick + 1) */
-#define DBP_TIMEOUT_VALUE          ((uint32_t)100)
+#define DBP_TIMEOUT_VALUE          ((uint32_t)100U)
 
 /**
   * @}
@@ -535,32 +535,32 @@ typedef struct
 #define RCC_OCRDYR_FLAGS_ID             4UL
 #define RCC_D3DCR_FLAGS_ID              5UL
 #define RCC_BDCR_FLAGS_ID               6UL
-#define RCC_FLAG_PORRST                 ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_PORRSTF_Pos)
-#define RCC_FLAG_BORRST                 ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_BORRSTF_Pos)
-#define RCC_FLAG_PADRST                 ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_PADRSTF_Pos)
-#define RCC_FLAG_HCSSRST                ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_HCSSRSTF_Pos)
-#define RCC_FLAG_VCORERST               ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_VCORERSTF_Pos)
-#define RCC_FLAG_VCPURSTF               ((RCC_C1HWRSTSCLRR_FLAGS_ID << 5) | RCC_C1HWRSTSCLRR_VCPURSTF_Pos)
-#define RCC_FLAG_SYSC1RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_SYSC1RSTF_Pos)
-#define RCC_FLAG_SYSC2RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_SYSC2RSTF_Pos)
-#define RCC_FLAG_IWDG1RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_IWDG1SYSRSTF_Pos)
-#define RCC_FLAG_IWDG2RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_IWDG2SYSRSTF_Pos)
-#define RCC_FLAG_IWDG3RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_IWDG3SYSRSTF_Pos)
-#define RCC_FLAG_IWDG4RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_IWDG4SYSRSTF_Pos)
-#define RCC_FLAG_IWDG5RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_IWDG5SYSRSTF_Pos)
-#define RCC_FLAG_C1RSTF                 ((RCC_C1HWRSTSCLRR_FLAGS_ID << 5) | RCC_C1HWRSTSCLRR_C1RSTF_Pos)
-#define RCC_FLAG_C2RSTF                 ((RCC_C2HWRSTSCLRR_FLAGS_ID << 5) | RCC_C2HWRSTSCLRR_C2RSTF_Pos)
-#define RCC_FLAG_C1P1RSTF               ((RCC_C1HWRSTSCLRR_FLAGS_ID << 5) | RCC_C1HWRSTSCLRR_C1P1RSTF_Pos)
-#define RCC_FLAG_RETCRCERRRSTF          ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_RETCRCERRRSTF_Pos)
-#define RCC_FLAG_RETECCFAILCRCRSTF      ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_RETECCFAILCRCRSTF_Pos)
-#define RCC_FLAG_RETECCFAILRESTRSTF     ((RCC_HWRSTSCLRR_FLAGS_ID   << 5) | RCC_HWRSTSCLRR_RETECCFAILRESTRSTF_Pos)
+#define RCC_FLAG_PORRST                 ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_PORRSTF_Pos)
+#define RCC_FLAG_BORRST                 ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_BORRSTF_Pos)
+#define RCC_FLAG_PADRST                 ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_PADRSTF_Pos)
+#define RCC_FLAG_HCSSRST                ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_HCSSRSTF_Pos)
+#define RCC_FLAG_VCORERST               ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_VCORERSTF_Pos)
+#define RCC_FLAG_VCPURSTF               ((RCC_C1HWRSTSCLRR_FLAGS_ID << 5UL) | RCC_C1HWRSTSCLRR_VCPURSTF_Pos)
+#define RCC_FLAG_SYSC1RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_SYSC1RSTF_Pos)
+#define RCC_FLAG_SYSC2RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_SYSC2RSTF_Pos)
+#define RCC_FLAG_IWDG1RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_IWDG1SYSRSTF_Pos)
+#define RCC_FLAG_IWDG2RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_IWDG2SYSRSTF_Pos)
+#define RCC_FLAG_IWDG3RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_IWDG3SYSRSTF_Pos)
+#define RCC_FLAG_IWDG4RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_IWDG4SYSRSTF_Pos)
+#define RCC_FLAG_IWDG5RSTF              ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_IWDG5SYSRSTF_Pos)
+#define RCC_FLAG_C1RSTF                 ((RCC_C1HWRSTSCLRR_FLAGS_ID << 5UL) | RCC_C1HWRSTSCLRR_C1RSTF_Pos)
+#define RCC_FLAG_C2RSTF                 ((RCC_C2HWRSTSCLRR_FLAGS_ID << 5UL) | RCC_C2HWRSTSCLRR_C2RSTF_Pos)
+#define RCC_FLAG_C1P1RSTF               ((RCC_C1HWRSTSCLRR_FLAGS_ID << 5UL) | RCC_C1HWRSTSCLRR_C1P1RSTF_Pos)
+#define RCC_FLAG_RETCRCERRRSTF          ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_RETCRCERRRSTF_Pos)
+#define RCC_FLAG_RETECCFAILCRCRSTF      ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_RETECCFAILCRCRSTF_Pos)
+#define RCC_FLAG_RETECCFAILRESTRSTF     ((RCC_HWRSTSCLRR_FLAGS_ID   << 5UL) | RCC_HWRSTSCLRR_RETECCFAILRESTRSTF_Pos)
 
-#define RCC_FLAG_HSIRDY                 ((RCC_OCRDYR_FLAGS_ID       << 5) | RCC_OCRDYR_HSIRDY_Pos)
-#define RCC_FLAG_MSIRDY                 ((RCC_D3DCR_FLAGS_ID        << 5) | RCC_D3DCR_MSIRDY_Pos)
-#define RCC_FLAG_HSERDY                 ((RCC_OCRDYR_FLAGS_ID       << 5) | RCC_OCRDYR_HSERDY_Pos)
-#define RCC_FLAG_LSERDY                 ((RCC_BDCR_FLAGS_ID         << 5) | RCC_BDCR_LSERDY_Pos)
-#define RCC_FLAG_LSIRDY                 ((RCC_BDCR_FLAGS_ID         << 5) | RCC_BDCR_LSIRDY_Pos)
-#define RCC_FLAG_CKREST                 ((RCC_OCRDYR_FLAGS_ID       << 5) | RCC_OCRDYR_CKREST_Pos)
+#define RCC_FLAG_HSIRDY                 ((RCC_OCRDYR_FLAGS_ID       << 5UL) | RCC_OCRDYR_HSIRDY_Pos)
+#define RCC_FLAG_MSIRDY                 ((RCC_D3DCR_FLAGS_ID        << 5UL) | RCC_D3DCR_MSIRDY_Pos)
+#define RCC_FLAG_HSERDY                 ((RCC_OCRDYR_FLAGS_ID       << 5UL) | RCC_OCRDYR_HSERDY_Pos)
+#define RCC_FLAG_LSERDY                 ((RCC_BDCR_FLAGS_ID         << 5UL) | RCC_BDCR_LSERDY_Pos)
+#define RCC_FLAG_LSIRDY                 ((RCC_BDCR_FLAGS_ID         << 5UL) | RCC_BDCR_LSIRDY_Pos)
+#define RCC_FLAG_CKREST                 ((RCC_OCRDYR_FLAGS_ID       << 5UL) | RCC_OCRDYR_CKREST_Pos)
 
 /**
   * @}
@@ -631,15 +631,15 @@ typedef struct
 /*   accesses are allowed.                                                  */
 /****************************************************************************/
 
-#define RCC_LOCALRES_PRIV    0x00000E00   /*!< Privilege attribute for Local Resource Access Filtering */
-#define RCC_LOCALRES_NPRIV   0x00000300   /*!< No Privilege attribute for Local Resource Access Filtering */
-#define RCC_LOCALRES_NOPRIV  0x00000300   /*!< No Privilege attribute for Local Resource Access Filtering */
+#define RCC_LOCALRES_PRIV    0x00000E00U   /*!< Privilege attribute for Local Resource Access Filtering */
+#define RCC_LOCALRES_NPRIV   0x00000300U   /*!< No Privilege attribute for Local Resource Access Filtering */
+#define RCC_LOCALRES_NOPRIV  0x00000300U   /*!< No Privilege attribute for Local Resource Access Filtering */
 
-#define RCC_LOCALRES_SEC     0x00005000   /*!< Secure attribute for Local Resource Access Filtering */
-#define RCC_LOCALRES_NSEC    0x00002000   /*!< Unsecure/No Security attribute for Local Resource Access Filtering */
-#define RCC_LOCALRES_NOSEC   0x00002000   /*!< Unsecure/No Security attribute for Local Resource Access Filtering */
+#define RCC_LOCALRES_SEC     0x00005000U   /*!< Secure attribute for Local Resource Access Filtering */
+#define RCC_LOCALRES_NSEC    0x00002000U   /*!< Unsecure/No Security attribute for Local Resource Access Filtering */
+#define RCC_LOCALRES_NOSEC   0x00002000U   /*!< Unsecure/No Security attribute for Local Resource Access Filtering */
 
-#define RCC_LOCALRES_LOCKED  0xDD000000   /*!< Lock attribute for configuration of Local Resource Access Filtering */
+#define RCC_LOCALRES_LOCKED  0xDD000000U   /*!< Lock attribute for configuration of Local Resource Access Filtering */
 /**
   * @}
   */
@@ -647,8 +647,8 @@ typedef struct
 /** @defgroup RCC_HAL_EC_RIF_LOCALRES_ATTRIBUTES RCC HAL Attributes for Local Resource Access Filtering
   * @{
   */
-#define RCC_LOCALRES_ATTR_NONE     0x00000000   /*!< No Attribute value for Local Resource Access Filtering */
-#define RCC_LOCALRES_ATTR_INVALID  0x2200008C   /*!< Invalid Attribute value for Local Resource Access Filtering */
+#define RCC_LOCALRES_ATTR_NONE     0x00000000U   /*!< No Attribute value for Local Resource Access Filtering */
+#define RCC_LOCALRES_ATTR_INVALID  0x2200008CU   /*!< Invalid Attribute value for Local Resource Access Filtering */
 
 #define RCC_LOCALRES_ATTR_CID_TYPE_Pos      (0U)
 #define RCC_LOCALRES_ATTR_CID_TYPE_Msk      (0x3UL << RCC_LOCALRES_ATTR_CID_TYPE_Pos)
@@ -829,6 +829,11 @@ typedef struct
 #define __HAL_RCC_HSI_KER_CLK_ENABLE() SET_BIT(RCC->OCENSETR, RCC_OCENSETR_HSIKERON)
 #define __HAL_RCC_MSI_KER_CLK_ENABLE() SET_BIT(RCC->D3DCR, RCC_D3DCR_MSIKERON)
 
+#define __HAL_RCC_DCMI_CLK_ENABLE()           __HAL_RCC_CCI_CLK_ENABLE()   /* for API backward compatibility */
+#define __HAL_RCC_PSSI_CLK_ENABLE()           __HAL_RCC_CCI_CLK_ENABLE()   /* for API backward compatibility */
+#define __HAL_RCC_OTFDEC1_CLK_ENABLE()        __HAL_RCC_OSPI1_CLK_ENABLE() /* for API backward compatibility */
+#define __HAL_RCC_OTFDEC2_CLK_ENABLE()        __HAL_RCC_OSPI2_CLK_ENABLE() /* for API backward compatibility */
+
 /* Clock disable macros */
 #define __HAL_RCC_VDERAM_CLK_DISABLE() CLEAR_BIT(RCC->VDERAMCFGR, RCC_VDERAMCFGR_VDERAMEN)
 #define __HAL_RCC_SERC_CLK_DISABLE() CLEAR_BIT(RCC->SERCCFGR, RCC_SERCCFGR_SERCEN)
@@ -984,6 +989,11 @@ typedef struct
 #define __HAL_RCC_HSI_KER_CLK_DISABLE() SET_BIT(RCC->OCENCLKR, RCC_OCENSETR_HSIKERON)
 #define __HAL_RCC_MSI_KER_CLK_DISABLE() CLEAR_BIT(RCC->D3DCR, RCC_D3DCR_MSIKERON)
 
+#define __HAL_RCC_DCMI_CLK_DISABLE()    __HAL_RCC_CCI_CLK_DISABLE()    /* for API backward compatibility */
+#define __HAL_RCC_PSSI_CLK_DISABLE()    __HAL_RCC_CCI_CLK_DISABLE()    /* for API backward compatibility */
+#define __HAL_RCC_OTFDEC1_CLK_DISABLE() __HAL_RCC_OSPI1_CLK_DISABLE()  /* for API backward compatibility */
+#define __HAL_RCC_OTFDEC2_CLK_DISABLE() __HAL_RCC_OSPI2_CLK_DISABLE()  /* for API backward compatibility */
+
 /* Clock sleep enable macros */
 #define __HAL_RCC_VDERAM_CLK_SLEEP_ENABLE() SET_BIT(RCC->VDERAMCFGR, RCC_VDERAMCFGR_VDERAMLPEN)
 #define __HAL_RCC_SERC_CLK_SLEEP_ENABLE() SET_BIT(RCC->SERCCFGR, RCC_SERCCFGR_SERCLPEN)
@@ -1135,6 +1145,11 @@ typedef struct
 #define __HAL_RCC_I3C3_CLK_SLEEP_ENABLE() SET_BIT(RCC->I3C3CFGR, RCC_I3C3CFGR_I3C3LPEN)
 #define __HAL_RCC_I3C4_CLK_SLEEP_ENABLE() SET_BIT(RCC->I3C4CFGR, RCC_I3C4CFGR_I3C4LPEN)
 
+#define __HAL_RCC_DCMI_CLK_SLEEP_ENABLE()      __HAL_RCC_CCI_CLK_SLEEP_ENABLE()   /* for API backward compatibility */
+#define __HAL_RCC_PSSI_CLK_SLEEP_ENABLE()      __HAL_RCC_CCI_CLK_SLEEP_ENABLE()   /* for API backward compatibility */
+#define __HAL_RCC_OTFDEC1_CLK_SLEEP_ENABLE()   __HAL_RCC_OSPI1_CLK_SLEEP_ENABLE() /* for API backward compatibility */
+#define __HAL_RCC_OTFDEC2_CLK_SLEEP_ENABLE()   __HAL_RCC_OSPI2_CLK_SLEEP_ENABLE() /* for API backward compatibility */
+
 /* Clock sleep disable macros */
 #define __HAL_RCC_VDERAM_CLK_SLEEP_DISABLE() CLEAR_BIT(RCC->VDERAMCFGR, RCC_VDERAMCFGR_VDERAMLPEN)
 #define __HAL_RCC_SERC_CLK_SLEEP_DISABLE() CLEAR_BIT(RCC->SERCCFGR, RCC_SERCCFGR_SERCLPEN)
@@ -1285,6 +1300,11 @@ typedef struct
 #define __HAL_RCC_I3C2_CLK_SLEEP_DISABLE() CLEAR_BIT(RCC->I3C2CFGR, RCC_I3C2CFGR_I3C2LPEN)
 #define __HAL_RCC_I3C3_CLK_SLEEP_DISABLE() CLEAR_BIT(RCC->I3C3CFGR, RCC_I3C3CFGR_I3C3LPEN)
 #define __HAL_RCC_I3C4_CLK_SLEEP_DISABLE() CLEAR_BIT(RCC->I3C4CFGR, RCC_I3C4CFGR_I3C4LPEN)
+
+#define __HAL_RCC_DCMI_CLK_SLEEP_DISABLE()        __HAL_RCC_CCI_CLK_SLEEP_DISABLE()  /* for API backward compatibility */
+#define __HAL_RCC_PSSI_CLK_SLEEP_DISABLE()        __HAL_RCC_CCI_CLK_SLEEP_DISABLE()  /* for API backward compatibility */
+#define __HAL_RCC_OTFDEC1_CLK_SLEEP_DISABLE()     __HAL_RCC_OSPI1_CLK_SLEEP_DISABLE() /* for API backward compatibility */
+#define __HAL_RCC_OTFDEC2_CLK_SLEEP_DISABLE()     __HAL_RCC_OSPI2_CLK_SLEEP_DISABLE() /* for API backward compatibility */
 
 /* Clock autonomous mode enable macros */
 #define __HAL_RCC_C3_CLKAM_ENABLE() SET_BIT(RCC->C3CFGR, RCC_C3CFGR_C3AMEN)
@@ -1479,6 +1499,11 @@ typedef struct
 #define __HAL_RCC_I3C3_IS_CLK_ENABLED()        (READ_BIT(RCC->I3C3CFGR, RCC_I3C3CFGR_I3C3EN) != 0U)
 #define __HAL_RCC_I3C4_IS_CLK_ENABLED()        (READ_BIT(RCC->I3C4CFGR, RCC_I3C4CFGR_I3C4EN) != 0U)
 
+#define __HAL_RCC_DCMI_IS_CLK_ENABLED()       __HAL_RCC_CCI_IS_CLK_ENABLED()   /* for API backward compatibility */
+#define __HAL_RCC_PSSI_IS_CLK_ENABLED()       __HAL_RCC_CCI_IS_CLK_ENABLED()   /* for API backward compatibility */
+#define __HAL_RCC_OTFDEC1_IS_CLK_ENABLED()    __HAL_RCC_OSPI1_IS_CLK_ENABLED() /* for API backward compatibility */
+#define __HAL_RCC_OTFDEC2_IS_CLK_ENABLED()    __HAL_RCC_OSPI2_IS_CLK_ENABLED() /* for API backward compatibility */
+
 /* Reset force macros */
 #define __HAL_RCC_SERC_FORCE_RESET() SET_BIT(RCC->SERCCFGR, RCC_SERCCFGR_SERCRST)
 #define __HAL_RCC_OSPIIOM_FORCE_RESET() SET_BIT(RCC->OSPIIOMCFGR, RCC_OSPIIOMCFGR_OSPIIOMRST)
@@ -1605,6 +1630,9 @@ typedef struct
 #define __HAL_RCC_I3C2_FORCE_RESET() SET_BIT(RCC->I3C2CFGR, RCC_I3C2CFGR_I3C2RST)
 #define __HAL_RCC_I3C3_FORCE_RESET() SET_BIT(RCC->I3C3CFGR, RCC_I3C3CFGR_I3C3RST)
 #define __HAL_RCC_I3C4_FORCE_RESET() SET_BIT(RCC->I3C4CFGR, RCC_I3C4CFGR_I3C4RST)
+
+#define __HAL_RCC_DCMI_FORCE_RESET()    __HAL_RCC_CCI_FORCE_RESET()  /* for API backward compatibility */
+#define __HAL_RCC_PSSI_FORCE_RESET()    __HAL_RCC_CCI_FORCE_RESET()  /* for API backward compatibility */
 
 /* Reset release macros */
 #define __HAL_RCC_SERC_RELEASE_RESET() CLEAR_BIT(RCC->SERCCFGR, RCC_SERCCFGR_SERCRST)
@@ -1733,6 +1761,9 @@ typedef struct
 #define __HAL_RCC_I3C3_RELEASE_RESET() CLEAR_BIT(RCC->I3C3CFGR, RCC_I3C3CFGR_I3C3RST)
 #define __HAL_RCC_I3C4_RELEASE_RESET() CLEAR_BIT(RCC->I3C4CFGR, RCC_I3C4CFGR_I3C4RST)
 
+#define __HAL_RCC_DCMI_RELEASE_RESET()    __HAL_RCC_CCI_RELEASE_RESET()  /* for API backward compatibility */
+#define __HAL_RCC_PSSI_RELEASE_RESET()    __HAL_RCC_CCI_RELEASE_RESET()  /* for API backward compatibility */
+
 /* C3 allocation macros */
 #define __HAL_RCC_LPTIM3_C3_ALLOCATE() SET_BIT(RCC->C3CFGR, RCC_C3CFGR_LPTIM3C3EN)
 #define __HAL_RCC_LPTIM4_C3_ALLOCATE() SET_BIT(RCC->C3CFGR, RCC_C3CFGR_LPTIM4C3EN)
@@ -1830,6 +1861,467 @@ typedef struct
   *            @arg RCC_ADC3KERCLKSOURCE_CK_KER_ADC12:  "ck_ker_adc12"  Flexiclockgen output 46
   */
 #define __HAL_RCC_ADC3KERCLK_GETSOURCE() ( (RCC->ADC3CFGR & RCC_ADC3CFGR_ADC3KERSEL_Msk))
+
+/** @defgroup RCC_USB2PHY1_Kernel_Clock_Source RCC_USB2PHY1_Kernel_Clock_Source
+  * @{
+  */
+#define RCC_USB2PHY1KERCLKSOURCE_CK_KER_USB2PHY1    (0x0 << RCC_USB2PHY1CFGR_USB2PHY1CKREFSEL_Pos)
+#define RCC_USB2PHY1KERCLKSOURCE_HSE_KER_CLK        (0x1 << RCC_USB2PHY1CFGR_USB2PHY1CKREFSEL_Pos)
+
+#define IS_RCC_USB2PHY1KERCLKSOURCE(SOURCE) (((SOURCE) == RCC_USB2PHY1KERCLKSOURCE_CK_KER_USB2PHY1) || \
+                                             ((SOURCE) == RCC_USB2PHY1KERCLKSOURCE_HSE_KER_CLK))
+
+/**
+  * @brief  Macro to select USB2PHY1 kernel source clock
+  *
+  * @param  __RCC_USB2PHY1KERSOURCE__: specifies the USB2PHY1 entry kernel clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_USB2PHY1KERCLKSOURCE_CK_KER_USB2PHY1: "ck_ker_USB2PHY1"   Flexiclockgen output 57
+  *            @arg RCC_USB2PHY1KERCLKSOURCE_HSE_KER_CLK:     "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  *
+  * @retval None
+  */
+#define __HAL_RCC_USB2PHY1KERCLK_SETSOURCE(__RCC_USB2PHY1KERSOURCE__) \
+  MODIFY_REG( RCC->USB2PHY1CFGR, RCC_USB2PHY1CFGR_USB2PHY1CKREFSEL, (__RCC_USB2PHY1KERSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as USB2PHY1 kernel source clock.
+  * @retval The clock source used as USB2PHY1 kernel source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_USB2PHY1KERCLKSOURCE_CK_KER_USB2PHY1: "ck_ker_USB2PHY1"   Flexiclockgen output 57
+  *            @arg RCC_USB2PHY1KERCLKSOURCE_HSE_KER_CLK:     "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  */
+#define __HAL_RCC_USB2PHY1KERCLK_GETSOURCE() ( (RCC->USB2PHY1CFGR & RCC_USB2PHY1CFGR_USB2PHY1CKREFSEL_Msk))
+
+/** @defgroup RCC_USB2PHY2_Kernel_Clock_Source RCC_USB2PHY2_Kernel_Clock_Source
+  * @{
+  */
+#define RCC_USB2PHY2KERCLKSOURCE_CK_KER_USB2PHY2    (0x0 << RCC_USB2PHY2CFGR_USB2PHY2CKREFSEL_Pos)
+#define RCC_USB2PHY2KERCLKSOURCE_HSE_KER_CLK        (0x1 << RCC_USB2PHY2CFGR_USB2PHY2CKREFSEL_Pos)
+
+#define IS_RCC_USB2PHY2KERCLKSOURCE(SOURCE) (((SOURCE) == RCC_USB2PHY2KERCLKSOURCE_CK_KER_USB2PHY2) || \
+                                             ((SOURCE) == RCC_USB2PHY2KERCLKSOURCE_HSE_KER_CLK))
+
+/**
+  * @brief  Macro to select USB2PHY2 kernel source clock
+  *
+  * @param  __RCC_USB2PHY2KERSOURCE__: specifies the USB2PHY2 entry kernel clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_USB2PHY2KERCLKSOURCE_CK_KER_USB2PHY2: "ck_ker_USB2PHY2"   Flexiclockgen output 58
+  *            @arg RCC_USB2PHY2KERCLKSOURCE_HSE_KER_CLK:     "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  *
+  * @retval None
+  */
+#define __HAL_RCC_USB2PHY2KERCLK_SETSOURCE(__RCC_USB2PHY2KERSOURCE__) \
+  MODIFY_REG( RCC->USB2PHY2CFGR, RCC_USB2PHY2CFGR_USB2PHY2CKREFSEL, (__RCC_USB2PHY2KERSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as USB2PHY2 kernel source clock.
+  * @retval The clock source used as USB2PHY2 kernel source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_USB2PHY2KERCLKSOURCE_CK_KER_USB2PHY2: "ck_ker_USB2PHY2"   Flexiclockgen output 58
+  *            @arg RCC_USB2PHY2KERCLKSOURCE_HSE_KER_CLK:     "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  */
+#define __HAL_RCC_USB2PHY2KERCLK_GETSOURCE() ( (RCC->USB2PHY2CFGR & RCC_USB2PHY2CFGR_USB2PHY2CKREFSEL_Msk))
+
+/** @defgroup RCC_USB3PCIEPHY_Kernel_Clock_Source RCC_USB3PCIEPHY_Kernel_Clock_Source
+  * @{
+  */
+#define RCC_USB3PCIEPHYKERCLKSOURCE_CK_KER_USB3PCIEPHY    (0x0 << RCC_USB3PCIEPHYCFGR_USB3PCIEPHYCKREFSEL_Pos)
+#define RCC_USB3PCIEPHYKERCLKSOURCE_HSE_KER_CLK           (0x1 << RCC_USB3PCIEPHYCFGR_USB3PCIEPHYCKREFSEL_Pos)
+
+#define IS_RCC_USB3PCIEPHYKERCLKSOURCE(SOURCE) (((SOURCE) == RCC_USB3PCIEPHYKERCLKSOURCE_CK_KER_USB3PCIEPHY) || \
+                                                ((SOURCE) == RCC_USB3PCIEPHYKERCLKSOURCE_HSE_KER_CLK))
+
+/**
+  * @brief  Macro to select USB3PCIEPHY kernel source clock
+  *
+  * @param  __RCC_USB3PCIEPHYKERSOURCE__: specifies the USB3PCIEPHY entry kernel clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_USB3PCIEPHYKERCLKSOURCE_CK_KER_USB3PCIEPHY: "ck_ker_USB3PCIEPHY"   Flexiclockgen output 34
+  *            @arg RCC_USB3PCIEPHYKERCLKSOURCE_HSE_KER_CLK:     "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  *
+  * @retval None
+  */
+#define __HAL_RCC_USB3PCIEPHYKERCLK_SETSOURCE(__RCC_USB3PCIEPHYKERSOURCE__) \
+  MODIFY_REG( RCC->USB3PCIEPHYCFGR, RCC_USB3PCIEPHYCFGR_USB3PCIEPHYCKREFSEL, (__RCC_USB3PCIEPHYKERSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as USB3PCIEPHY kernel source clock.
+  * @retval The clock source used as USB3PCIEPHY kernel source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_USB3PCIEPHYKERCLKSOURCE_CK_KER_USB3PCIEPHY: "ck_ker_USB3PCIEPHY"   Flexiclockgen output 34
+  *            @arg RCC_USB3PCIEPHYKERCLKSOURCE_HSE_KER_CLK:     "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  */
+#define __HAL_RCC_USB3PCIEPHYKERCLK_GETSOURCE() ( (RCC->USB3PCIEPHYCFGR & RCC_USB3PCIEPHYCFGR_USB3PCIEPHYCKREFSEL_Msk))
+
+/** @defgroup RCC_DSIPHY_Kernel_Clock_Source RCC_DSIPHY_Kernel_Clock_Source
+  * @{
+  */
+#define RCC_DSIPHYKERCLKSOURCE_CK_KER_DSIPHY    (0x0 << RCC_DSICFGR_DSIPHYCKREFSEL_Pos)
+#define RCC_DSIPHYKERCLKSOURCE_HSE_KER_CLK      (0x1 << RCC_DSICFGR_DSIPHYCKREFSEL_Pos)
+
+#define IS_RCC_DSIPHYKERCLKSOURCE(SOURCE) (((SOURCE) == RCC_DSIPHYKERCLKSOURCE_CK_KER_DSIPHY) || \
+                                           ((SOURCE) == RCC_DSIPHYKERCLKSOURCE_HSE_KER_CLK))
+
+/**
+  * @brief  Macro to select DSIPHY kernel source clock
+  *
+  * @param  __RCC_DSIPHYKERSOURCE__: specifies the DSIPHY entry kernel clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_DSIPHYKERCLKSOURCE_CK_KER_DSIPHY: "ck_ker_DSIPHY"   Flexiclockgen output 28
+  *            @arg RCC_DSIPHYKERCLKSOURCE_HSE_KER_CLK:   "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  *
+  * @retval None
+  */
+#define __HAL_RCC_DSIPHYKERCLK_SETSOURCE(__RCC_DSIPHYKERSOURCE__) \
+  MODIFY_REG( RCC->DSICFGR, RCC_DSICFGR_DSIPHYCKREFSEL, (__RCC_DSIPHYKERSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as DSIPHY kernel source clock.
+  * @retval The clock source used as DSIPHY kernel source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_DSIPHYKERCLKSOURCE_CK_KER_DSIPHY: "ck_ker_DSIPHY"   Flexiclockgen output 28
+  *            @arg RCC_DSIPHYKERCLKSOURCE_HSE_KER_CLK:   "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  */
+#define __HAL_RCC_DSIPHYKERCLK_GETSOURCE() ( (RCC->DSICFGR & RCC_DSICFGR_DSIPHYCKREFSEL_Msk))
+
+/** @defgroup RCC_DSIBL_Kernel_Clock_Source RCC_DSIBL_Kernel_Clock_Source
+  * @{
+  */
+#define RCC_DSIBLKERCLKSOURCE_CK_DSIPHY_SEL    (0x0 << RCC_DSICFGR_DSIBLSEL_Pos)
+#define RCC_DSIBLKERCLKSOURCE_CK_KER_LTDC      (0x1 << RCC_DSICFGR_DSIBLSEL_Pos)
+
+#define IS_RCC_DSIBLKERCLKSOURCE(SOURCE) (((SOURCE) == RCC_DSIBLKERCLKSOURCE_CK_DSIPHY_SEL) || \
+                                          ((SOURCE) == RCC_DSIBLKERCLKSOURCE_CK_KER_LTDC))
+
+/**
+  * @brief  Macro to select DSIBL kernel source clock
+  *
+  * @param  __RCC_DSIBLKERSOURCE__: specifies the DSIBL entry kernel clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_DSIBLKERCLKSOURCE_CK_DSIPHY_SEL: DSIPHY clock is selected
+  *            @arg RCC_DSIBLKERCLKSOURCE_CK_KER_LTDC:  "ck_ker_LTDC"   Flexiclockgen output 27
+  *
+  * @retval None
+  */
+#define __HAL_RCC_DSIBLKERCLK_SETSOURCE(__RCC_DSIBLKERSOURCE__) \
+  MODIFY_REG( RCC->DSICFGR, RCC_DSICFGR_DSIBLSEL, (__RCC_DSIBLKERSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as DSIBL kernel source clock.
+  * @retval The clock source used as DSIBL kernel source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_DSIBLKERCLKSOURCE_CK_DSIPHY_SEL: DSIPHY clock is selected
+  *            @arg RCC_DSIBLKERCLKSOURCE_CK_KER_LTDC:  "ck_ker_LTDC"   Flexiclockgen output 27
+  */
+#define __HAL_RCC_DSIBLKERCLK_GETSOURCE() ( (RCC->DSICFGR & RCC_DSICFGR_DSIBLSEL_Msk))
+
+/** @defgroup RCC_LVDSPHY_Kernel_Clock_Source RCC_LVDSPHY_Kernel_Clock_Source
+  *  @{
+  */
+#define RCC_LVDSPHYKERCLKSOURCE_CK_KER_LVDSPHY    (0x0 << RCC_LVDSCFGR_LVDSPHYCKREFSEL_Pos)
+#define RCC_LVDSPHYKERCLKSOURCE_HSE_KER_CLK       (0x1 << RCC_LVDSCFGR_LVDSPHYCKREFSEL_Pos)
+
+#define IS_RCC_LVDSPHYKERCLKSOURCE(SOURCE) (((SOURCE) == RCC_LVDSPHYKERCLKSOURCE_CK_KER_LVDSPHY) || \
+                                            ((SOURCE) == RCC_LVDSPHYKERCLKSOURCE_HSE_KER_CLK))
+
+/**
+  * @brief  Macro to select LVDSPHY kernel source clock
+  *
+  * @param  __RCC_LVDSPHYKERSOURCE__: specifies the LVDSPHY entry kernel clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_LVDSPHYKERCLKSOURCE_CK_KER_LVDSPHY: "ck_ker_LVDSPHY"   Flexiclockgen output 32
+  *            @arg RCC_LVDSPHYKERCLKSOURCE_HSE_KER_CLK:     "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  *
+  * @retval None
+  */
+#define __HAL_RCC_LVDSPHYKERCLK_SETSOURCE(__RCC_LVDSPHYKERSOURCE__) \
+  MODIFY_REG( RCC->LVDSCFGR, RCC_LVDSCFGR_LVDSPHYCKREFSEL, (__RCC_LVDSPHYKERSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as LVDSPHY kernel source clock.
+  * @retval The clock source used as LVDSPHY kernel source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_LVDSPHYKERCLKSOURCE_CK_KER_LVDSPHY: "ck_ker_LVDSPHY"   Flexiclockgen output 32
+  *            @arg RCC_LVDSPHYKERCLKSOURCE_HSE_KER_CLK:     "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  */
+#define __HAL_RCC_LVDSPHYKERCLK_GETSOURCE() ( (RCC->LVDSCFGR & RCC_LVDSCFGR_LVDSPHYCKREFSEL_Msk))
+
+/** @defgroup RCC_DTS_Kernel_Clock_Source RCC_DTS_Kernel_Clock_Source
+  *  @{
+  */
+
+#define RCC_DTSKERCLKSOURCE_HSI_KER_CLK    (0x0 << RCC_DTSCFGR_DTSKERSEL_Pos)
+#define RCC_DTSKERCLKSOURCE_HSE_KER_CLK    (0x1 << RCC_DTSCFGR_DTSKERSEL_Pos)
+#define RCC_DTSKERCLKSOURCE_MSI_KER_CLK    (0x2 << RCC_DTSCFGR_DTSKERSEL_Pos)
+
+#define IS_RCC_DTSKERCLKSOURCE(SOURCE) (((SOURCE) == RCC_DTSKERCLKSOURCE_HSI_KER_CLK) || \
+                                        ((SOURCE) == RCC_DTSKERCLKSOURCE_HSE_KER_CLK) ||\
+                                        ((SOURCE) == RCC_DTSKERCLKSOURCE_MSI_KER_CLK))
+
+/**
+  * @brief  Macro to select DTS kernel source clock
+  *
+  * @param  __RCC_DTSKERSOURCE__: specifies the DTS entry kernel clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_DTSKERCLKSOURCE_HSI_KER_CLK:     "RCC_XBAR_CLKSRC_HSI_KER" RCC_Xbar_sourc
+  *            @arg RCC_DTSKERCLKSOURCE_HSE_KER_CLK:     "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  *            @arg RCC_DTSKERCLKSOURCE_MSI_KER_CLK:     "RCC_XBAR_CLKSRC_MSI_KER" RCC_Xbar_sourc
+  *
+  * @retval None
+  */
+#define __HAL_RCC_DTSKERCLK_SETSOURCE(__RCC_DTSKERSOURCE__) \
+  MODIFY_REG( RCC->TMPSENSCFGR, RCC_DTSCFGR_DTSKERSEL, (__RCC_DTSKERSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as DTS kernel source clock.
+  * @retval The clock source used as DTS kernel source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_DTSKERCLKSOURCE_HSI_KER_CLK:     "RCC_XBAR_CLKSRC_HSI_KER" RCC_Xbar_sourc
+  *            @arg RCC_DTSKERCLKSOURCE_HSE_KER_CLK:     "RCC_XBAR_CLKSRC_HSE_KER" RCC_Xbar_source
+  *            @arg RCC_DTSKERCLKSOURCE_MSI_KER_CLK:     "RCC_XBAR_CLKSRC_MSI_KER" RCC_Xbar_sourc
+  */
+#define __HAL_RCC_DTSKERCLK_GETSOURCE() ( (RCC->TMPSENSCFGR & RCC_DTSCFGR_DTSKERSEL_Msk))
+
+/** @defgroup RCC_RTC_Kernel_Clock_Source RCC_RTC_Kernel_Clock_Source
+  *  @{
+  */
+
+#define RCC_RTCKERCLKSOURCE_CLK_NONE       (0x0 << RCC_BDCR_RTCSRC_Pos)
+#define RCC_RTCKERCLKSOURCE_LSE_KER_CLK    (0x1 << RCC_BDCR_RTCSRC_Pos)
+#define RCC_RTCKERCLKSOURCE_LSI_KER_CLK    (0x2 << RCC_BDCR_RTCSRC_Pos)
+#define RCC_RTCKERCLKSOURCE_HSE_RTCDIV     (0x3 << RCC_BDCR_RTCSRC_Pos)
+
+#define IS_RCC_RTCKERCLKSOURCE(SOURCE) (((SOURCE) == RCC_RTCKERCLKSOURCE_CLK_NONE)    || \
+                                        ((SOURCE) == RCC_RTCKERCLKSOURCE_LSE_KER_CLK) || \
+                                        ((SOURCE) == RCC_RTCKERCLKSOURCE_LSI_KER_CLK) || \
+                                        ((SOURCE) == RCC_RTCKERCLKSOURCE_HSE_RTCDIV))
+
+/**
+  * @brief  Macro to select RTC kernel source clock
+  *
+  * @param  __RCC_RTCKERSOURCE__: specifies the RTC entry kernel clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_RTCKERCLKSOURCE_CLK_NONE:         No clock source
+  *            @arg RCC_RTCKERCLKSOURCE_LSE_KER_CLK:     "RCC_XBAR_CLKSRC_LSE" RCC_Xbar_sourc
+  *            @arg RCC_RTCKERCLKSOURCE_LSI_KER_CLK:     "RCC_XBAR_CLKSRC_LSI" RCC_Xbar_source
+  *            @arg RCC_RTCKERCLKSOURCE_HSE_RTCDIV:       RTC HSE PRESCALER
+  *
+  * @retval None
+  */
+#define __HAL_RCC_RTCKERCLK_SETSOURCE(__RCC_RTCKERSOURCE__) \
+  MODIFY_REG( RCC->BDCR, RCC_BDCR_RTCSRC, (__RCC_RTCKERSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as RTC kernel source clock.
+  * @retval The clock source used as RTC kernel source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_RTCKERCLKSOURCE_CLK_NONE:         No clock source
+  *            @arg RCC_RTCKERCLKSOURCE_LSE_KER_CLK:     "RCC_XBAR_CLKSRC_LSE" RCC_Xbar_sourc
+  *            @arg RCC_RTCKERCLKSOURCE_LSI_KER_CLK:     "RCC_XBAR_CLKSRC_LSI" RCC_Xbar_source
+  *            @arg RCC_RTCKERCLKSOURCE_HSE_RTCDIV:       RTC HSE PRESCALER
+  */
+#define __HAL_RCC_RTCKERCLK_GETSOURCE() ( (RCC->BDCR & RCC_BDCR_RTCSRC_Msk))
+
+/**
+  * @brief  Macro to select HSE Prescaler for RTC Clock
+  *
+  * @param  __RCC_RTCPRESCALER__: specifies the RTC prescaler value
+  *          This parameter can be one of the following values:
+  *         @arg  RCC_RTC_HSE_DIV_1
+  *         @arg  RCC_RTC_HSE_DIV_2
+  *         @arg  RCC_RTC_HSE_DIV_3
+  *         @arg  RCC_RTC_HSE_DIV_4
+  *         @arg  RCC_RTC_HSE_DIV_5
+  *         @arg  RCC_RTC_HSE_DIV_6
+  *         @arg  RCC_RTC_HSE_DIV_7
+  *         @arg  RCC_RTC_HSE_DIV_8
+  *         @arg  RCC_RTC_HSE_DIV_9
+  *         @arg  RCC_RTC_HSE_DIV_10
+  *         @arg  RCC_RTC_HSE_DIV_11
+  *         @arg  RCC_RTC_HSE_DIV_12
+  *         @arg  RCC_RTC_HSE_DIV_13
+  *         @arg  RCC_RTC_HSE_DIV_14
+  *         @arg  RCC_RTC_HSE_DIV_15
+  *         @arg  RCC_RTC_HSE_DIV_16
+  *         @arg  RCC_RTC_HSE_DIV_17
+  *         @arg  RCC_RTC_HSE_DIV_18
+  *         @arg  RCC_RTC_HSE_DIV_19
+  *         @arg  RCC_RTC_HSE_DIV_20
+  *         @arg  RCC_RTC_HSE_DIV_21
+  *         @arg  RCC_RTC_HSE_DIV_22
+  *         @arg  RCC_RTC_HSE_DIV_23
+  *         @arg  RCC_RTC_HSE_DIV_24
+  *         @arg  RCC_RTC_HSE_DIV_25
+  *         @arg  RCC_RTC_HSE_DIV_26
+  *         @arg  RCC_RTC_HSE_DIV_27
+  *         @arg  RCC_RTC_HSE_DIV_28
+  *         @arg  RCC_RTC_HSE_DIV_29
+  *         @arg  RCC_RTC_HSE_DIV_30
+  *         @arg  RCC_RTC_HSE_DIV_31
+  *         @arg  RCC_RTC_HSE_DIV_32
+  *         @arg  RCC_RTC_HSE_DIV_33
+  *         @arg  RCC_RTC_HSE_DIV_34
+  *         @arg  RCC_RTC_HSE_DIV_35
+  *         @arg  RCC_RTC_HSE_DIV_36
+  *         @arg  RCC_RTC_HSE_DIV_37
+  *         @arg  RCC_RTC_HSE_DIV_38
+  *         @arg  RCC_RTC_HSE_DIV_39
+  *         @arg  RCC_RTC_HSE_DIV_40
+  *         @arg  RCC_RTC_HSE_DIV_41
+  *         @arg  RCC_RTC_HSE_DIV_42
+  *         @arg  RCC_RTC_HSE_DIV_43
+  *         @arg  RCC_RTC_HSE_DIV_44
+  *         @arg  RCC_RTC_HSE_DIV_45
+  *         @arg  RCC_RTC_HSE_DIV_46
+  *         @arg  RCC_RTC_HSE_DIV_47
+  *         @arg  RCC_RTC_HSE_DIV_48
+  *         @arg  RCC_RTC_HSE_DIV_49
+  *         @arg  RCC_RTC_HSE_DIV_50
+  *         @arg  RCC_RTC_HSE_DIV_51
+  *         @arg  RCC_RTC_HSE_DIV_52
+  *         @arg  RCC_RTC_HSE_DIV_53
+  *         @arg  RCC_RTC_HSE_DIV_54
+  *         @arg  RCC_RTC_HSE_DIV_55
+  *         @arg  RCC_RTC_HSE_DIV_56
+  *         @arg  RCC_RTC_HSE_DIV_57
+  *         @arg  RCC_RTC_HSE_DIV_58
+  *         @arg  RCC_RTC_HSE_DIV_59
+  *         @arg  RCC_RTC_HSE_DIV_60
+  *         @arg  RCC_RTC_HSE_DIV_61
+  *         @arg  RCC_RTC_HSE_DIV_62
+  *         @arg  RCC_RTC_HSE_DIV_63
+  *         @arg  RCC_RTC_HSE_DIV_64
+  * @retval None
+  */
+#define __HAL_RCC_RTC_SETPRESCALER(__RCC_RTCPRESCALER__) \
+  MODIFY_REG( RCC->RTCDIVR, RCC_RTCDIVR_RTCDIV, (__RCC_RTCPRESCALER__) )
+
+/**
+  * @brief  Macro to Get HSE Prescaler for RTC Clock
+  *
+  * @retval  This parameter can be one of the following values:
+  *         @arg  RCC_RTC_HSE_DIV_1
+  *         @arg  RCC_RTC_HSE_DIV_2
+  *         @arg  RCC_RTC_HSE_DIV_3
+  *         @arg  RCC_RTC_HSE_DIV_4
+  *         @arg  RCC_RTC_HSE_DIV_5
+  *         @arg  RCC_RTC_HSE_DIV_6
+  *         @arg  RCC_RTC_HSE_DIV_7
+  *         @arg  RCC_RTC_HSE_DIV_8
+  *         @arg  RCC_RTC_HSE_DIV_9
+  *         @arg  RCC_RTC_HSE_DIV_10
+  *         @arg  RCC_RTC_HSE_DIV_11
+  *         @arg  RCC_RTC_HSE_DIV_12
+  *         @arg  RCC_RTC_HSE_DIV_13
+  *         @arg  RCC_RTC_HSE_DIV_14
+  *         @arg  RCC_RTC_HSE_DIV_15
+  *         @arg  RCC_RTC_HSE_DIV_16
+  *         @arg  RCC_RTC_HSE_DIV_17
+  *         @arg  RCC_RTC_HSE_DIV_18
+  *         @arg  RCC_RTC_HSE_DIV_19
+  *         @arg  RCC_RTC_HSE_DIV_20
+  *         @arg  RCC_RTC_HSE_DIV_21
+  *         @arg  RCC_RTC_HSE_DIV_22
+  *         @arg  RCC_RTC_HSE_DIV_23
+  *         @arg  RCC_RTC_HSE_DIV_24
+  *         @arg  RCC_RTC_HSE_DIV_25
+  *         @arg  RCC_RTC_HSE_DIV_26
+  *         @arg  RCC_RTC_HSE_DIV_27
+  *         @arg  RCC_RTC_HSE_DIV_28
+  *         @arg  RCC_RTC_HSE_DIV_29
+  *         @arg  RCC_RTC_HSE_DIV_30
+  *         @arg  RCC_RTC_HSE_DIV_31
+  *         @arg  RCC_RTC_HSE_DIV_32
+  *         @arg  RCC_RTC_HSE_DIV_33
+  *         @arg  RCC_RTC_HSE_DIV_34
+  *         @arg  RCC_RTC_HSE_DIV_35
+  *         @arg  RCC_RTC_HSE_DIV_36
+  *         @arg  RCC_RTC_HSE_DIV_37
+  *         @arg  RCC_RTC_HSE_DIV_38
+  *         @arg  RCC_RTC_HSE_DIV_39
+  *         @arg  RCC_RTC_HSE_DIV_40
+  *         @arg  RCC_RTC_HSE_DIV_41
+  *         @arg  RCC_RTC_HSE_DIV_42
+  *         @arg  RCC_RTC_HSE_DIV_43
+  *         @arg  RCC_RTC_HSE_DIV_44
+  *         @arg  RCC_RTC_HSE_DIV_45
+  *         @arg  RCC_RTC_HSE_DIV_46
+  *         @arg  RCC_RTC_HSE_DIV_47
+  *         @arg  RCC_RTC_HSE_DIV_48
+  *         @arg  RCC_RTC_HSE_DIV_49
+  *         @arg  RCC_RTC_HSE_DIV_50
+  *         @arg  RCC_RTC_HSE_DIV_51
+  *         @arg  RCC_RTC_HSE_DIV_52
+  *         @arg  RCC_RTC_HSE_DIV_53
+  *         @arg  RCC_RTC_HSE_DIV_54
+  *         @arg  RCC_RTC_HSE_DIV_55
+  *         @arg  RCC_RTC_HSE_DIV_56
+  *         @arg  RCC_RTC_HSE_DIV_57
+  *         @arg  RCC_RTC_HSE_DIV_58
+  *         @arg  RCC_RTC_HSE_DIV_59
+  *         @arg  RCC_RTC_HSE_DIV_60
+  *         @arg  RCC_RTC_HSE_DIV_61
+  *         @arg  RCC_RTC_HSE_DIV_62
+  *         @arg  RCC_RTC_HSE_DIV_63
+  *         @arg  RCC_RTC_HSE_DIV_64
+  */
+#define __HAL_RCC_RTC_GETPRESCALER() ( (RCC->RTCDIVR & RCC_BDCR_RTCSRC_Msk))
+
+/** @defgroup RCC_MCO1_Clock_Output_Source RCC_MCO1_Kernel_Clock_Output_Source
+  *  @{
+  */
+
+#define RCC_MCO1CLKOUTPUTSOURCE_CLK_MCO1       (0x0 << RCC_MCO1CFGR_MCO1SEL_Pos)
+#define RCC_MCO1CLKOUTPUTSOURCE_CLK_CKOBS0     (0x1 << RCC_MCO1CFGR_MCO1SEL_Pos)
+
+#define IS_RCC_MCO1CLKOUTPUTSOURCE(SOURCE) (((SOURCE) == RCC_MCO1CLKOUTPUTSOURCE_CLK_MCO1) || \
+                                            ((SOURCE) == RCC_MCO1CLKOUTPUTSOURCE_CLK_CKOBS0) )
+
+/**
+  * @brief  Macro to select MCO1 ouput source clock
+  *
+  * @param  __RCC_MCO1OUTPUTSOURCE__: specifies the MCO1 output clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_MCO1CLKOUTPUTSOURCE_CLK_MCO1:     "ck_mco1"   Flexiclockgen output 61
+  *            @arg RCC_MCO1CLKOUTPUTSOURCE_CLK_CKOBS0:   "ck_obs0"   Flexiclockgen channel 0
+  *
+  * @retval None
+  */
+#define __HAL_RCC_MCO1KERCLK_SETSOURCE(__RCC_MCO1OUTPUTSOURCE__) \
+  MODIFY_REG( RCC->MCO1CFGR, RCC_MCO1CFGR_MCO1SEL, (__RCC_MCO1OUTPUTSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as MCO1 output source clock.
+  * @retval The clock source used as MCO1 output source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_MCO1CLKOUTPUTSOURCE_CLK_MCO1:     "ck_mco1"   Flexiclockgen output 61
+  *            @arg RCC_MCO1CLKOUTPUTSOURCE_CLK_CKOBS0:   "ck_obs0"   Flexiclockgen channel 0
+  */
+#define __HAL_RCC_MCO1KERCLK_GETSOURCE() ( (RCC->MCO1CFGR & RCC_MCO1CFGR_MCO1SEL_Msk))
+
+/** @defgroup RCC_MCO2_Clock_Output_Source RCC_MCO2_Kernel_Clock_Output_Source
+  *  @{
+  */
+
+#define RCC_MCO2CLKOUTPUTSOURCE_CLK_MCO2       (0x0 << RCC_MCO2CFGR_MCO2SEL_Pos)
+#define RCC_MCO2CLKOUTPUTSOURCE_CLK_CKOBS1     (0x1 << RCC_MCO2CFGR_MCO2SEL_Pos)
+
+#define IS_RCC_MCO2CLKOUTPUTSOURCE(SOURCE) (((SOURCE) == RCC_MCO2CLKOUTPUTSOURCE_CLK_MCO2) || \
+                                            ((SOURCE) == RCC_MCO2CLKOUTPUTSOURCE_CLK_CKOBS1) )
+
+/**
+  * @brief  Macro to select MCO2 ouput source clock
+  *
+  * @param  __RCC_MCO2OUTPUTSOURCE__: specifies the MCO2 output clock source.
+  *          This parameter can be one of the following values:
+  *            @arg RCC_MCO2CLKOUTPUTSOURCE_CLK_MCO2:     "ck_MCO2"   Flexiclockgen output 62
+  *            @arg RCC_MCO2CLKOUTPUTSOURCE_CLK_CKOBS1:   "ck_obs0"   Flexiclockgen channel 1
+  *
+  * @retval None
+  */
+#define __HAL_RCC_MCO2KERCLK_SETSOURCE(__RCC_MCO2OUTPUTSOURCE__) \
+  MODIFY_REG( RCC->MCO2CFGR, RCC_MCO2CFGR_MCO2SEL, (__RCC_MCO2OUTPUTSOURCE__)  )
+
+/** @brief  Macro to get the clock source used as MCO2 output source clock.
+  * @retval The clock source used as MCO2 output source clock. The returned value can be one
+  *         of the following:
+  *            @arg RCC_MCO2CLKOUTPUTSOURCE_CLK_MCO2:     "ck_MCO2"   Flexiclockgen output 62
+  *            @arg RCC_MCO2CLKOUTPUTSOURCE_CLK_CKOBS1:   "ck_obs0"   Flexiclockgen channel 1
+  */
+#define __HAL_RCC_MCO2KERCLK_GETSOURCE() ( (RCC->MCO2CFGR & RCC_MCO2CFGR_MCO2SEL_Msk))
 
 /** @brief Enable RCC interrupt (Perform Byte access to RCC_CIR[14:8] bits to enable
   *        the selected interrupts).
@@ -1943,8 +2435,8 @@ typedef struct
   */
 
 /* RCC_Calibration limits */
-#define IS_RCC_HSICALIBRATION_VALUE(VALUE) ((VALUE) <= 0x1FF)
-#define IS_RCC_MSICALIBRATION_VALUE(VALUE) ((VALUE) <= 0xFF)
+#define IS_RCC_HSICALIBRATION_VALUE(VALUE) ((VALUE) <= 0x1FFU)
+#define IS_RCC_MSICALIBRATION_VALUE(VALUE) ((VALUE) <= 0xFFU)
 
 /* MCO1 clock output control */
 #define __HAL_RCC_MCO1_ENABLE()   SET_BIT(RCC->MCO1CFGR, RCC_MCO1CFGR_MCO1ON)
@@ -2014,7 +2506,7 @@ HAL_StatusTypeDef HAL_RCC_DeInit(void);
 HAL_StatusTypeDef HAL_RCC_OscConfig(RCC_OscInitTypeDef *pRCC_OscInitStruct);
 void HAL_RCC_GetOscConfig(RCC_OscInitTypeDef  *pRCC_OscInitStruct);
 HAL_StatusTypeDef HAL_RCC_ClockConfig(const RCC_ClkInitTypeDef *const pRCC_ClkInitStruct, uint32_t FLatency);
-void HAL_RCC_GetClockConfig(RCC_ClkInitTypeDef  *pRCC_ClkInitStruct, uint32_t *pFLatency);
+void HAL_RCC_GetClockConfig(RCC_ClkInitTypeDef  *pRCC_ClkInitStruct, const uint32_t *pFLatency);
 void HAL_RCC_IRQHandler(void);
 void HAL_RCC_WAKEUP_IRQHandler(void);
 void HAL_RCC_HSIMON_Callback(uint32_t Flags);

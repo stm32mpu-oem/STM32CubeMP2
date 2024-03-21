@@ -75,11 +75,11 @@ HAL_StatusTypeDef HAL_InitTick (uint32_t TickPriority)
   /* Compute TIM6 clock */
   if (uwAPB1Prescaler == RCC_APB1_DIV1) 
   {
-    uwTimclock = HAL_RCCEx_GetPCLK1Freq();
+    uwTimclock = HAL_RCC_GetFreq(RCC_CLOCKTYPE_ICN_APB1);
   }
   else
   {
-    uwTimclock = 2*HAL_RCCEx_GetPCLK1Freq();
+    uwTimclock = 2*HAL_RCC_GetFreq(RCC_CLOCKTYPE_ICN_APB1);
   }
   
   /* Compute the prescaler value to have TIM6 counter clock equal to 1MHz */

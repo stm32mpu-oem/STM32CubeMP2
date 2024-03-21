@@ -26,6 +26,11 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32mp2xx.h"
+#ifdef  USE_FULL_ASSERT
+#include "stm32_assert.h"
+#else
+#define assert_param(expr) ((void)0U)
+#endif /* USE_FULL_ASSERT */
 
 /** @addtogroup STM32MP2xx_LL_Driver
   * @{
