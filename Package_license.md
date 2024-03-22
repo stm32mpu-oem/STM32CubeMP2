@@ -4,27 +4,13 @@ lang: en
 header-includes: <link rel="icon" type="image/x-icon" href="_htmresc/favicon.png" />
 ---
 
-::: {.row}
-::: {.col-sm-12 .col-lg-3}
 
-<center>
-# These are full license terms for
-
-# <mark>STM32CubeMP2</mark>
+# These are full license terms for <mark>STM32CubeMP2</mark>
 
 Copyright &copy; 2022 STMicroelectronics
 
 All rights reserved
     
-[![ST logo](_htmresc/st_logo_2020.png)](https://www.st.com){.logo}
-</center>
-:::
-
-::: {.col-sm-12 .col-lg-9}
-::: {.collapse}
-<input type="checkbox" id="collapse-section1" checked aria-hidden="true">
-<label for="collapse-section1" aria-hidden="true">__SLA0048__</label>
-<div>
 
 SLA0048 Rev4/March 2018
 
@@ -103,36 +89,28 @@ THIRD-PARTY SOFTWARE INCORPORATED IN THE SOFTWARE PACKAGE AND OPEN SOURCE TERMS 
 APPLICABLE, NO LICENSE OR OTHER RIGHTS, WHETHER EXPRESS OR IMPLIED, ARE GRANTED UNDER ANY
 PATENT OR OTHER INTELLECTUAL PROPERTY RIGHTS OF STMICROELECTRONICS OR ANY THIRD PARTY.
 
-</div>
-:::
-
-::: {.collapse}
-<input type="checkbox" id="collapse-section2" checked aria-hidden="true">
-<label for="collapse-section2" aria-hidden="true">__ANNEX 1: LIST OF SOFTWARE COMPONENTS (AND ASSOCIATED LICENSES) IN THE SOFTWARE PACKAGE__</label>
-<div>
-
-Component                     Copyright                                                                                  License      
-----------------------------  -------------------------------------------------------------------                        ---------------------- 
-CMSIS Core                    ARM Limited                                                                                [Apache License 2.0](https://opensource.org/licenses/Apache-2.0)
-CMSIS Device                  ARM Limited, STMicroelectronics                                                            [Apache License 2.0](https://opensource.org/licenses/Apache-2.0)
-Drivers HAL/LL                STMicroelectronics                                                                         [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
-Drivers BSP Boards            STMicroelectronics                                                                         [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
-BSP Components                STMicroelectronics                                                                         [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
-Azure RTOS ThreadX            Microsoft Corporation                                                                      Microsoft Software License for Azure RTOS
-Azure RTOS NetXDuo            Microsoft Corporation                                                                      Microsoft Software License for Azure RTOS
-Azure RTOS FileX              Microsoft Corporation                                                                      Microsoft Software License for Azure RTOS
-Azure RTOS LeveLX             Microsoft Corporation                                                                      Microsoft Software License for Azure RTOS
-CMSIS RTOS Threadx wrapper    STMicroelectronics                                                                         SLA0044
-STM32 USBPD Core Library      STMicroelectronics                                                                         SLA0044
-STM32 USBPD Device Library    STMicroelectronics                                                                         SLA0044
-OpenAMP                       Xilinx Inc. and Contributors                                                               [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
-STM32 Projects                STMicroelectronics                                                                         SLA0044 (BSD-3-Clause for basic Examples)
-STM32 Utilities               STMicroelectronics                                                                         [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
-optee_os                      Linaro Limited and STMicroelectronics                                                      [BSD-2-Clause](https://opensource.org/licenses/BSD-2-Clause) and [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
-
-</div>
-:::
 
 
-:::
-:::
+---
+
+### __ANNEX 1: LIST OF SOFTWARE COMPONENTS (AND ASSOCIATED LICENSES) IN THE SOFTWARE PACKAGE__
+
+| Component | Copyright | License |
+|:-------   |:--------- |:------- |
+| CMSIS Core                  | ARM Limited                                                                              | [Apache License 2.0](https://opensource.org/licenses/Apache-2.0) |
+| CMSIS Device                | ARM Limited, STMicroelectronics                                                          | [Apache License 2.0](https://opensource.org/licenses/Apache-2.0) |
+| Drivers HAL/LL              | STMicroelectronics                                                                       | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause) |
+| Drivers BSP Boards          | STMicroelectronics                                                                       | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause) |
+| BSP Components              | STMicroelectronics                                                                       | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause) |
+| BSP STM32MP257F-EV1         | STMicroelectronics                                                                       | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause) |
+| Azure RTOS ThreadX          | Microsoft Corporation                                                                    | Microsoft Software License for Azure RTOS |
+| Azure RTOS NetXDuo          | Microsoft Corporation                                                                    | Microsoft Software License for Azure RTOS |
+| Azure RTOS FileX            | Microsoft Corporation                                                                    | Microsoft Software License for Azure RTOS |
+| Azure RTOS LeveLX           | Microsoft Corporation                                                                    | Microsoft Software License for Azure RTOS |
+| CMSIS RTOS Threadx wrapper  | STMicroelectronics                                                                       | SLA0044 |
+| STM32 USBPD Core Library    | STMicroelectronics                                                                       | SLA0044 |
+| STM32 USBPD Device Library  | STMicroelectronics                                                                       | SLA0044 |
+| OpenAMP                     | Xilinx Inc. and Contributors                                                             | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause) |
+| STM32 Projects              | STMicroelectronics                                                                       | SLA0044 (BSD-3-Clause for basic Examples) |
+| STM32 Utilities             | STMicroelectronics                                                                       | [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause) |
+| optee_os                    | Linaro Limited and STMicroelectronics                                                    | [BSD-2-Clause](https://opensource.org/licenses/BSD-2-Clause) and [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause) |
